@@ -1,0 +1,3 @@
+niva.geoserver.process.PointAggregateGridProcess
+niva.geoserver.process.LinearPointToLineProcess
+niva.geoserver.process.DissolveProcess

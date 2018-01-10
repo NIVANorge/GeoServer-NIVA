@@ -1,0 +1,241 @@
+package niva.aquamonitor.data.ws;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.logging.Logger;
+
+import org.apache.http.HttpHeaders;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicHeader;
+
+import org.geotools.util.logging.Logging;
+
+import org.json.simple.parser.ContentHandler;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+public class JsonStreamIterator implements Iterator<Object>, ContentHandler {
+	
+	private final static Logger LOGGER = Logging.getLogger(JsonStreamIterator.class);
+	
+	private CloseableHttpClient client;
+	private InputStreamReader reader;
+	private JSONParser parser;
+	
+	private boolean hasReadHeader = false;
+	private boolean hasMessage = false;
+	
+	private String actKey = null;
+	private List<Object> actArray;
+	
+	private Object nextObject = null;
+	
+	private Integer timeoutMins = null;
+	
+	
+	private String url;
+	
+	public JsonStreamIterator(String url) {
+		this.url = url;
+	}
+	
+	public void setTimeoutMins(int timeoutmins) {
+		this.timeoutMins = timeoutmins;
+	}
+	
+	public void read() throws IOException {
+
+		Header accept = new BasicHeader(HttpHeaders.ACCEPT, "application/json");
+		
+		List<Header> headers = new ArrayList<Header>(1);
+		headers.add(accept);
+		
+		client = HttpClients.custom().setDefaultHeaders(headers).build();
+		LOGGER.fine("Calling webservice: " + url);
+			
+		HttpGet get = new HttpGet(url);
+		
+		if (timeoutMins != null) {
+			RequestConfig config = RequestConfig.custom()
+												.setConnectTimeout(1000)
+												.setSocketTimeout(timeoutMins * 60 * 1000)
+												.build();
+			get.setConfig(config);
+		}
+
+		CloseableHttpResponse resp = client.execute(get);
+		
+		HttpEntity entity = resp.getEntity();
+				
+		if (entity != null) {
+			InputStream stream = entity.getContent();
+			parser = new JSONParser();
+			reader = new InputStreamReader(stream, "utf-8");
+			try {
+				parser.parse(reader, this);
+				hasReadHeader = true;
+			}
+			catch (ParseException pe) {
+				
+				if ("Unexpected character (<) at position 0.".equals(pe.toString())) {
+					throw new IOException("WebService seems to return HTML instead of Json.");
+				}
+				else {
+					LOGGER.warning(pe.toString());
+					throw new IOException("Json parser exception.");
+				}
+			}
+		}
+	}
+	
+
+	@Override
+	public boolean hasNext() {
+		if (nextObject == null) {
+			try {
+				parser.parse(reader, this, true);
+			} catch (IOException ie) {
+				LOGGER.warning(ie.toString());
+			} catch (ParseException pe) {
+				LOGGER.warning(pe.toString());
+			}
+			
+			return (nextObject != null);
+		}
+		else
+			return true;
+	}
+
+	@Override
+	public Object next() {
+		if (hasNext()) {
+			Object ret = nextObject;
+			nextObject = null;
+			return ret;
+		}
+		else
+			throw new NoSuchElementException();
+	}
+
+	@Override
+	public void remove() {
+	}
+
+	@Override
+	public void startJSON() throws ParseException, IOException {
+	}
+
+
+	@Override
+	public void endJSON() throws ParseException, IOException {
+		try {
+			client.close();
+		} catch (IOException e) {
+			LOGGER.warning(e.getMessage());
+		}
+	}
+
+
+	@Override
+	public boolean startObject() throws ParseException, IOException {
+		if (hasReadHeader)
+			nextObject = new HashMap<String, Object>();
+		
+		return true;
+	}
+
+
+	@Override
+	public boolean endObject() throws ParseException, IOException {
+		return false; // Stop parsing at the end of every object
+	}
+
+
+	@Override
+	public boolean startObjectEntry(String key) throws ParseException, IOException {
+		
+		if (hasReadHeader) {
+			actKey = key;
+		}
+		else if ("Message".equals(key)) {
+			hasMessage = true;
+		}
+		
+		return true;
+	}
+
+
+	@Override
+	public boolean endObjectEntry() throws ParseException, IOException {
+		if (hasReadHeader)
+			actKey = null;
+		
+		return true;
+	}
+
+
+	@Override
+	public boolean startArray() throws ParseException, IOException {
+		
+		if (hasReadHeader) {
+			actArray = new ArrayList<Object>();
+			return true;
+		}
+		else {
+			return false; // Stop initial parsing at the start of the array.
+		}
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean endArray() throws ParseException, IOException {
+		if (actArray != null) {
+			((Map<String, Object>)nextObject).put(actKey, actArray);
+			actArray = null;
+			return true;
+		}
+		else {
+			nextObject = null;
+			return true;
+		}
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean primitive(Object value) throws ParseException, IOException {
+		if (hasReadHeader) {
+			if (actArray != null) {
+				actArray.add(value);
+				return true;
+			}
+			else if (actKey != null) {
+				((Map<String, Object>)nextObject).put(actKey, value);
+				return true;
+			}
+			else {
+				nextObject = value;
+				return false;
+			}
+		}
+		else if (hasMessage) {
+			throw new IOException((String)value);
+		}
+		else
+			return true;
+	}
+}

@@ -1,0 +1,1700 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:FeatureCollection xmlns:feature="http://www.aquamonitor.no/"
+    xmlns:ogc="http://www.opengis.net/ogc"
+    xmlns:wfs="http://www.opengis.net/wfs"
+    xmlns:gml="http://www.opengis.net/gml" >
+
+    <gml:boundedBy>
+
+        <gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#4326" >
+
+            <gml:coord>
+
+                <gml:X>
+7.90331005
+                </gml:X>
+
+                <gml:Y>
+58.25861373
+                </gml:Y>
+            </gml:coord>
+
+            <gml:coord>
+
+                <gml:X>
+17.54400063
+                </gml:X>
+
+                <gml:Y>
+68.844
+                </gml:Y>
+            </gml:coord>
+        </gml:Box>
+    </gml:boundedBy>
+
+    <gml:featureMember>
+
+        <feature:Intern_stations_datatype fid="Intern_stations_datatype.9718" >
+
+            <gml:boundedBy>
+
+                <gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#4326" >
+
+                    <gml:coord>
+
+                        <gml:X>
+10.77200031
+                        </gml:X>
+
+                        <gml:Y>
+59.69200134
+                        </gml:Y>
+                    </gml:coord>
+
+                    <gml:coord>
+
+                        <gml:X>
+10.77200031
+                        </gml:X>
+
+                        <gml:Y>
+59.69200134
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Box>
+            </gml:boundedBy>
+
+            <feature:shape>
+
+                <gml:Point>
+
+                    <gml:coord>
+
+                        <gml:X>
+10.77200031
+                        </gml:X>
+
+                        <gml:Y>
+59.69200134
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Point>
+            </feature:shape>
+
+            <feature:STATION_ID>
+39953
+            </feature:STATION_ID>
+
+            <feature:STATION_TYPE_ID>
+9
+            </feature:STATION_TYPE_ID>
+
+            <feature:STATION_TYPE>
+Deponi
+            </feature:STATION_TYPE>
+
+            <feature:VANNKJEMI>
+0
+            </feature:VANNKJEMI>
+
+            <feature:SEDIMENTKJEMI>
+0
+            </feature:SEDIMENTKJEMI>
+
+            <feature:BIOTAKJEMI>
+0
+            </feature:BIOTAKJEMI>
+
+            <feature:SEWAGEKJEMI>
+0
+            </feature:SEWAGEKJEMI>
+
+            <feature:BLOTBUNN>
+0
+            </feature:BLOTBUNN>
+
+            <feature:HARDBUNN>
+0
+            </feature:HARDBUNN>
+
+            <feature:PLANKTON>
+0
+            </feature:PLANKTON>
+
+            <feature:ALGA>
+0
+            </feature:ALGA>
+
+            <feature:VANNPLANTER>
+0
+            </feature:VANNPLANTER>
+
+            <feature:BUNNDYR>
+0
+            </feature:BUNNDYR>
+
+            <feature:BEGROING>
+0
+            </feature:BEGROING>
+
+            <feature:LUFT>
+0
+            </feature:LUFT>
+        </feature:Intern_stations_datatype>
+    </gml:featureMember>
+
+    <gml:featureMember>
+
+        <feature:Intern_stations_datatype fid="Intern_stations_datatype.9719" >
+
+            <gml:boundedBy>
+
+                <gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#4326" >
+
+                    <gml:coord>
+
+                        <gml:X>
+10.03800011
+                        </gml:X>
+
+                        <gml:Y>
+59.7480011
+                        </gml:Y>
+                    </gml:coord>
+
+                    <gml:coord>
+
+                        <gml:X>
+10.03800011
+                        </gml:X>
+
+                        <gml:Y>
+59.7480011
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Box>
+            </gml:boundedBy>
+
+            <feature:shape>
+
+                <gml:Point>
+
+                    <gml:coord>
+
+                        <gml:X>
+10.03800011
+                        </gml:X>
+
+                        <gml:Y>
+59.7480011
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Point>
+            </feature:shape>
+
+            <feature:STATION_ID>
+39955
+            </feature:STATION_ID>
+
+            <feature:STATION_TYPE_ID>
+9
+            </feature:STATION_TYPE_ID>
+
+            <feature:STATION_TYPE>
+Deponi
+            </feature:STATION_TYPE>
+
+            <feature:VANNKJEMI>
+0
+            </feature:VANNKJEMI>
+
+            <feature:SEDIMENTKJEMI>
+0
+            </feature:SEDIMENTKJEMI>
+
+            <feature:BIOTAKJEMI>
+0
+            </feature:BIOTAKJEMI>
+
+            <feature:SEWAGEKJEMI>
+0
+            </feature:SEWAGEKJEMI>
+
+            <feature:BLOTBUNN>
+0
+            </feature:BLOTBUNN>
+
+            <feature:HARDBUNN>
+0
+            </feature:HARDBUNN>
+
+            <feature:PLANKTON>
+0
+            </feature:PLANKTON>
+
+            <feature:ALGA>
+0
+            </feature:ALGA>
+
+            <feature:VANNPLANTER>
+0
+            </feature:VANNPLANTER>
+
+            <feature:BUNNDYR>
+0
+            </feature:BUNNDYR>
+
+            <feature:BEGROING>
+0
+            </feature:BEGROING>
+
+            <feature:LUFT>
+0
+            </feature:LUFT>
+        </feature:Intern_stations_datatype>
+    </gml:featureMember>
+
+    <gml:featureMember>
+
+        <feature:Intern_stations_datatype fid="Intern_stations_datatype.9724" >
+
+            <gml:boundedBy>
+
+                <gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#4326" >
+
+                    <gml:coord>
+
+                        <gml:X>
+10.85599995
+                        </gml:X>
+
+                        <gml:Y>
+59.83800125
+                        </gml:Y>
+                    </gml:coord>
+
+                    <gml:coord>
+
+                        <gml:X>
+10.85599995
+                        </gml:X>
+
+                        <gml:Y>
+59.83800125
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Box>
+            </gml:boundedBy>
+
+            <feature:shape>
+
+                <gml:Point>
+
+                    <gml:coord>
+
+                        <gml:X>
+10.85599995
+                        </gml:X>
+
+                        <gml:Y>
+59.83800125
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Point>
+            </feature:shape>
+
+            <feature:STATION_ID>
+39960
+            </feature:STATION_ID>
+
+            <feature:STATION_TYPE_ID>
+9
+            </feature:STATION_TYPE_ID>
+
+            <feature:STATION_TYPE>
+Deponi
+            </feature:STATION_TYPE>
+
+            <feature:VANNKJEMI>
+0
+            </feature:VANNKJEMI>
+
+            <feature:SEDIMENTKJEMI>
+0
+            </feature:SEDIMENTKJEMI>
+
+            <feature:BIOTAKJEMI>
+0
+            </feature:BIOTAKJEMI>
+
+            <feature:SEWAGEKJEMI>
+0
+            </feature:SEWAGEKJEMI>
+
+            <feature:BLOTBUNN>
+0
+            </feature:BLOTBUNN>
+
+            <feature:HARDBUNN>
+0
+            </feature:HARDBUNN>
+
+            <feature:PLANKTON>
+0
+            </feature:PLANKTON>
+
+            <feature:ALGA>
+0
+            </feature:ALGA>
+
+            <feature:VANNPLANTER>
+0
+            </feature:VANNPLANTER>
+
+            <feature:BUNNDYR>
+0
+            </feature:BUNNDYR>
+
+            <feature:BEGROING>
+0
+            </feature:BEGROING>
+
+            <feature:LUFT>
+0
+            </feature:LUFT>
+        </feature:Intern_stations_datatype>
+    </gml:featureMember>
+
+    <gml:featureMember>
+
+        <feature:Intern_stations_datatype fid="Intern_stations_datatype.9728" >
+
+            <gml:boundedBy>
+
+                <gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#4326" >
+
+                    <gml:coord>
+
+                        <gml:X>
+11.60200024
+                        </gml:X>
+
+                        <gml:Y>
+59.92699814
+                        </gml:Y>
+                    </gml:coord>
+
+                    <gml:coord>
+
+                        <gml:X>
+11.60200024
+                        </gml:X>
+
+                        <gml:Y>
+59.92699814
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Box>
+            </gml:boundedBy>
+
+            <feature:shape>
+
+                <gml:Point>
+
+                    <gml:coord>
+
+                        <gml:X>
+11.60200024
+                        </gml:X>
+
+                        <gml:Y>
+59.92699814
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Point>
+            </feature:shape>
+
+            <feature:STATION_ID>
+39964
+            </feature:STATION_ID>
+
+            <feature:STATION_TYPE_ID>
+9
+            </feature:STATION_TYPE_ID>
+
+            <feature:STATION_TYPE>
+Deponi
+            </feature:STATION_TYPE>
+
+            <feature:VANNKJEMI>
+0
+            </feature:VANNKJEMI>
+
+            <feature:SEDIMENTKJEMI>
+0
+            </feature:SEDIMENTKJEMI>
+
+            <feature:BIOTAKJEMI>
+0
+            </feature:BIOTAKJEMI>
+
+            <feature:SEWAGEKJEMI>
+0
+            </feature:SEWAGEKJEMI>
+
+            <feature:BLOTBUNN>
+0
+            </feature:BLOTBUNN>
+
+            <feature:HARDBUNN>
+0
+            </feature:HARDBUNN>
+
+            <feature:PLANKTON>
+0
+            </feature:PLANKTON>
+
+            <feature:ALGA>
+0
+            </feature:ALGA>
+
+            <feature:VANNPLANTER>
+0
+            </feature:VANNPLANTER>
+
+            <feature:BUNNDYR>
+0
+            </feature:BUNNDYR>
+
+            <feature:BEGROING>
+0
+            </feature:BEGROING>
+
+            <feature:LUFT>
+0
+            </feature:LUFT>
+        </feature:Intern_stations_datatype>
+    </gml:featureMember>
+
+    <gml:featureMember>
+
+        <feature:Intern_stations_datatype fid="Intern_stations_datatype.9733" >
+
+            <gml:boundedBy>
+
+                <gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#4326" >
+
+                    <gml:coord>
+
+                        <gml:X>
+11.39999962
+                        </gml:X>
+
+                        <gml:Y>
+60.18700027
+                        </gml:Y>
+                    </gml:coord>
+
+                    <gml:coord>
+
+                        <gml:X>
+11.39999962
+                        </gml:X>
+
+                        <gml:Y>
+60.18700027
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Box>
+            </gml:boundedBy>
+
+            <feature:shape>
+
+                <gml:Point>
+
+                    <gml:coord>
+
+                        <gml:X>
+11.39999962
+                        </gml:X>
+
+                        <gml:Y>
+60.18700027
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Point>
+            </feature:shape>
+
+            <feature:STATION_ID>
+39969
+            </feature:STATION_ID>
+
+            <feature:STATION_TYPE_ID>
+9
+            </feature:STATION_TYPE_ID>
+
+            <feature:STATION_TYPE>
+Deponi
+            </feature:STATION_TYPE>
+
+            <feature:VANNKJEMI>
+0
+            </feature:VANNKJEMI>
+
+            <feature:SEDIMENTKJEMI>
+0
+            </feature:SEDIMENTKJEMI>
+
+            <feature:BIOTAKJEMI>
+0
+            </feature:BIOTAKJEMI>
+
+            <feature:SEWAGEKJEMI>
+0
+            </feature:SEWAGEKJEMI>
+
+            <feature:BLOTBUNN>
+0
+            </feature:BLOTBUNN>
+
+            <feature:HARDBUNN>
+0
+            </feature:HARDBUNN>
+
+            <feature:PLANKTON>
+0
+            </feature:PLANKTON>
+
+            <feature:ALGA>
+0
+            </feature:ALGA>
+
+            <feature:VANNPLANTER>
+0
+            </feature:VANNPLANTER>
+
+            <feature:BUNNDYR>
+0
+            </feature:BUNNDYR>
+
+            <feature:BEGROING>
+0
+            </feature:BEGROING>
+
+            <feature:LUFT>
+0
+            </feature:LUFT>
+        </feature:Intern_stations_datatype>
+    </gml:featureMember>
+
+    <gml:featureMember>
+
+        <feature:Intern_stations_datatype fid="Intern_stations_datatype.9734" >
+
+            <gml:boundedBy>
+
+                <gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#4326" >
+
+                    <gml:coord>
+
+                        <gml:X>
+10.342
+                        </gml:X>
+
+                        <gml:Y>
+60.226
+                        </gml:Y>
+                    </gml:coord>
+
+                    <gml:coord>
+
+                        <gml:X>
+10.342
+                        </gml:X>
+
+                        <gml:Y>
+60.226
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Box>
+            </gml:boundedBy>
+
+            <feature:shape>
+
+                <gml:Point>
+
+                    <gml:coord>
+
+                        <gml:X>
+10.342
+                        </gml:X>
+
+                        <gml:Y>
+60.226
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Point>
+            </feature:shape>
+
+            <feature:STATION_ID>
+39970
+            </feature:STATION_ID>
+
+            <feature:STATION_TYPE_ID>
+9
+            </feature:STATION_TYPE_ID>
+
+            <feature:STATION_TYPE>
+Deponi
+            </feature:STATION_TYPE>
+
+            <feature:VANNKJEMI>
+0
+            </feature:VANNKJEMI>
+
+            <feature:SEDIMENTKJEMI>
+0
+            </feature:SEDIMENTKJEMI>
+
+            <feature:BIOTAKJEMI>
+0
+            </feature:BIOTAKJEMI>
+
+            <feature:SEWAGEKJEMI>
+0
+            </feature:SEWAGEKJEMI>
+
+            <feature:BLOTBUNN>
+0
+            </feature:BLOTBUNN>
+
+            <feature:HARDBUNN>
+0
+            </feature:HARDBUNN>
+
+            <feature:PLANKTON>
+0
+            </feature:PLANKTON>
+
+            <feature:ALGA>
+0
+            </feature:ALGA>
+
+            <feature:VANNPLANTER>
+0
+            </feature:VANNPLANTER>
+
+            <feature:BUNNDYR>
+0
+            </feature:BUNNDYR>
+
+            <feature:BEGROING>
+0
+            </feature:BEGROING>
+
+            <feature:LUFT>
+0
+            </feature:LUFT>
+        </feature:Intern_stations_datatype>
+    </gml:featureMember>
+
+    <gml:featureMember>
+
+        <feature:Intern_stations_datatype fid="Intern_stations_datatype.9755" >
+
+            <gml:boundedBy>
+
+                <gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#4326" >
+
+                    <gml:coord>
+
+                        <gml:X>
+17.54400063
+                        </gml:X>
+
+                        <gml:Y>
+68.45200348
+                        </gml:Y>
+                    </gml:coord>
+
+                    <gml:coord>
+
+                        <gml:X>
+17.54400063
+                        </gml:X>
+
+                        <gml:Y>
+68.45200348
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Box>
+            </gml:boundedBy>
+
+            <feature:shape>
+
+                <gml:Point>
+
+                    <gml:coord>
+
+                        <gml:X>
+17.54400063
+                        </gml:X>
+
+                        <gml:Y>
+68.45200348
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Point>
+            </feature:shape>
+
+            <feature:STATION_ID>
+39992
+            </feature:STATION_ID>
+
+            <feature:STATION_TYPE_ID>
+9
+            </feature:STATION_TYPE_ID>
+
+            <feature:STATION_TYPE>
+Deponi
+            </feature:STATION_TYPE>
+
+            <feature:VANNKJEMI>
+0
+            </feature:VANNKJEMI>
+
+            <feature:SEDIMENTKJEMI>
+0
+            </feature:SEDIMENTKJEMI>
+
+            <feature:BIOTAKJEMI>
+0
+            </feature:BIOTAKJEMI>
+
+            <feature:SEWAGEKJEMI>
+0
+            </feature:SEWAGEKJEMI>
+
+            <feature:BLOTBUNN>
+0
+            </feature:BLOTBUNN>
+
+            <feature:HARDBUNN>
+0
+            </feature:HARDBUNN>
+
+            <feature:PLANKTON>
+0
+            </feature:PLANKTON>
+
+            <feature:ALGA>
+0
+            </feature:ALGA>
+
+            <feature:VANNPLANTER>
+0
+            </feature:VANNPLANTER>
+
+            <feature:BUNNDYR>
+0
+            </feature:BUNNDYR>
+
+            <feature:BEGROING>
+0
+            </feature:BEGROING>
+
+            <feature:LUFT>
+0
+            </feature:LUFT>
+        </feature:Intern_stations_datatype>
+    </gml:featureMember>
+
+    <gml:featureMember>
+
+        <feature:Intern_stations_datatype fid="Intern_stations_datatype.9756" >
+
+            <gml:boundedBy>
+
+                <gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#4326" >
+
+                    <gml:coord>
+
+                        <gml:X>
+15.389
+                        </gml:X>
+
+                        <gml:Y>
+68.844
+                        </gml:Y>
+                    </gml:coord>
+
+                    <gml:coord>
+
+                        <gml:X>
+15.389
+                        </gml:X>
+
+                        <gml:Y>
+68.844
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Box>
+            </gml:boundedBy>
+
+            <feature:shape>
+
+                <gml:Point>
+
+                    <gml:coord>
+
+                        <gml:X>
+15.389
+                        </gml:X>
+
+                        <gml:Y>
+68.844
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Point>
+            </feature:shape>
+
+            <feature:STATION_ID>
+39993
+            </feature:STATION_ID>
+
+            <feature:STATION_TYPE_ID>
+9
+            </feature:STATION_TYPE_ID>
+
+            <feature:STATION_TYPE>
+Deponi
+            </feature:STATION_TYPE>
+
+            <feature:VANNKJEMI>
+0
+            </feature:VANNKJEMI>
+
+            <feature:SEDIMENTKJEMI>
+0
+            </feature:SEDIMENTKJEMI>
+
+            <feature:BIOTAKJEMI>
+0
+            </feature:BIOTAKJEMI>
+
+            <feature:SEWAGEKJEMI>
+0
+            </feature:SEWAGEKJEMI>
+
+            <feature:BLOTBUNN>
+0
+            </feature:BLOTBUNN>
+
+            <feature:HARDBUNN>
+0
+            </feature:HARDBUNN>
+
+            <feature:PLANKTON>
+0
+            </feature:PLANKTON>
+
+            <feature:ALGA>
+0
+            </feature:ALGA>
+
+            <feature:VANNPLANTER>
+0
+            </feature:VANNPLANTER>
+
+            <feature:BUNNDYR>
+0
+            </feature:BUNNDYR>
+
+            <feature:BEGROING>
+0
+            </feature:BEGROING>
+
+            <feature:LUFT>
+0
+            </feature:LUFT>
+        </feature:Intern_stations_datatype>
+    </gml:featureMember>
+
+    <gml:featureMember>
+
+        <feature:Intern_stations_datatype fid="Intern_stations_datatype.16572" >
+
+            <gml:boundedBy>
+
+                <gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#4326" >
+
+                    <gml:coord>
+
+                        <gml:X>
+10.473
+                        </gml:X>
+
+                        <gml:Y>
+59.696
+                        </gml:Y>
+                    </gml:coord>
+
+                    <gml:coord>
+
+                        <gml:X>
+10.473
+                        </gml:X>
+
+                        <gml:Y>
+59.696
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Box>
+            </gml:boundedBy>
+
+            <feature:shape>
+
+                <gml:Point>
+
+                    <gml:coord>
+
+                        <gml:X>
+10.473
+                        </gml:X>
+
+                        <gml:Y>
+59.696
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Point>
+            </feature:shape>
+
+            <feature:STATION_ID>
+51343
+            </feature:STATION_ID>
+
+            <feature:STATION_TYPE_ID>
+9
+            </feature:STATION_TYPE_ID>
+
+            <feature:STATION_TYPE>
+Deponi
+            </feature:STATION_TYPE>
+
+            <feature:VANNKJEMI>
+0
+            </feature:VANNKJEMI>
+
+            <feature:SEDIMENTKJEMI>
+1
+            </feature:SEDIMENTKJEMI>
+
+            <feature:BIOTAKJEMI>
+0
+            </feature:BIOTAKJEMI>
+
+            <feature:SEWAGEKJEMI>
+0
+            </feature:SEWAGEKJEMI>
+
+            <feature:BLOTBUNN>
+0
+            </feature:BLOTBUNN>
+
+            <feature:HARDBUNN>
+0
+            </feature:HARDBUNN>
+
+            <feature:PLANKTON>
+0
+            </feature:PLANKTON>
+
+            <feature:ALGA>
+0
+            </feature:ALGA>
+
+            <feature:VANNPLANTER>
+0
+            </feature:VANNPLANTER>
+
+            <feature:BUNNDYR>
+0
+            </feature:BUNNDYR>
+
+            <feature:BEGROING>
+0
+            </feature:BEGROING>
+
+            <feature:LUFT>
+0
+            </feature:LUFT>
+        </feature:Intern_stations_datatype>
+    </gml:featureMember>
+
+    <gml:featureMember>
+
+        <feature:Intern_stations_datatype fid="Intern_stations_datatype.16574" >
+
+            <gml:boundedBy>
+
+                <gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#4326" >
+
+                    <gml:coord>
+
+                        <gml:X>
+11.668
+                        </gml:X>
+
+                        <gml:Y>
+58.936
+                        </gml:Y>
+                    </gml:coord>
+
+                    <gml:coord>
+
+                        <gml:X>
+11.668
+                        </gml:X>
+
+                        <gml:Y>
+58.936
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Box>
+            </gml:boundedBy>
+
+            <feature:shape>
+
+                <gml:Point>
+
+                    <gml:coord>
+
+                        <gml:X>
+11.668
+                        </gml:X>
+
+                        <gml:Y>
+58.936
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Point>
+            </feature:shape>
+
+            <feature:STATION_ID>
+51345
+            </feature:STATION_ID>
+
+            <feature:STATION_TYPE_ID>
+9
+            </feature:STATION_TYPE_ID>
+
+            <feature:STATION_TYPE>
+Deponi
+            </feature:STATION_TYPE>
+
+            <feature:VANNKJEMI>
+0
+            </feature:VANNKJEMI>
+
+            <feature:SEDIMENTKJEMI>
+0
+            </feature:SEDIMENTKJEMI>
+
+            <feature:BIOTAKJEMI>
+0
+            </feature:BIOTAKJEMI>
+
+            <feature:SEWAGEKJEMI>
+0
+            </feature:SEWAGEKJEMI>
+
+            <feature:BLOTBUNN>
+0
+            </feature:BLOTBUNN>
+
+            <feature:HARDBUNN>
+0
+            </feature:HARDBUNN>
+
+            <feature:PLANKTON>
+0
+            </feature:PLANKTON>
+
+            <feature:ALGA>
+0
+            </feature:ALGA>
+
+            <feature:VANNPLANTER>
+0
+            </feature:VANNPLANTER>
+
+            <feature:BUNNDYR>
+0
+            </feature:BUNNDYR>
+
+            <feature:BEGROING>
+0
+            </feature:BEGROING>
+
+            <feature:LUFT>
+0
+            </feature:LUFT>
+        </feature:Intern_stations_datatype>
+    </gml:featureMember>
+
+    <gml:featureMember>
+
+        <feature:Intern_stations_datatype fid="Intern_stations_datatype.16575" >
+
+            <gml:boundedBy>
+
+                <gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#4326" >
+
+                    <gml:coord>
+
+                        <gml:X>
+10.391
+                        </gml:X>
+
+                        <gml:Y>
+63.383
+                        </gml:Y>
+                    </gml:coord>
+
+                    <gml:coord>
+
+                        <gml:X>
+10.391
+                        </gml:X>
+
+                        <gml:Y>
+63.383
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Box>
+            </gml:boundedBy>
+
+            <feature:shape>
+
+                <gml:Point>
+
+                    <gml:coord>
+
+                        <gml:X>
+10.391
+                        </gml:X>
+
+                        <gml:Y>
+63.383
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Point>
+            </feature:shape>
+
+            <feature:STATION_ID>
+51346
+            </feature:STATION_ID>
+
+            <feature:STATION_TYPE_ID>
+9
+            </feature:STATION_TYPE_ID>
+
+            <feature:STATION_TYPE>
+Deponi
+            </feature:STATION_TYPE>
+
+            <feature:VANNKJEMI>
+0
+            </feature:VANNKJEMI>
+
+            <feature:SEDIMENTKJEMI>
+0
+            </feature:SEDIMENTKJEMI>
+
+            <feature:BIOTAKJEMI>
+0
+            </feature:BIOTAKJEMI>
+
+            <feature:SEWAGEKJEMI>
+0
+            </feature:SEWAGEKJEMI>
+
+            <feature:BLOTBUNN>
+0
+            </feature:BLOTBUNN>
+
+            <feature:HARDBUNN>
+0
+            </feature:HARDBUNN>
+
+            <feature:PLANKTON>
+0
+            </feature:PLANKTON>
+
+            <feature:ALGA>
+0
+            </feature:ALGA>
+
+            <feature:VANNPLANTER>
+0
+            </feature:VANNPLANTER>
+
+            <feature:BUNNDYR>
+0
+            </feature:BUNNDYR>
+
+            <feature:BEGROING>
+0
+            </feature:BEGROING>
+
+            <feature:LUFT>
+0
+            </feature:LUFT>
+        </feature:Intern_stations_datatype>
+    </gml:featureMember>
+
+    <gml:featureMember>
+
+        <feature:Intern_stations_datatype fid="Intern_stations_datatype.16580" >
+
+            <gml:boundedBy>
+
+                <gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#4326" >
+
+                    <gml:coord>
+
+                        <gml:X>
+7.90331005
+                        </gml:X>
+
+                        <gml:Y>
+58.25861373
+                        </gml:Y>
+                    </gml:coord>
+
+                    <gml:coord>
+
+                        <gml:X>
+7.90331005
+                        </gml:X>
+
+                        <gml:Y>
+58.25861373
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Box>
+            </gml:boundedBy>
+
+            <feature:shape>
+
+                <gml:Point>
+
+                    <gml:coord>
+
+                        <gml:X>
+7.90331005
+                        </gml:X>
+
+                        <gml:Y>
+58.25861373
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Point>
+            </feature:shape>
+
+            <feature:STATION_ID>
+51351
+            </feature:STATION_ID>
+
+            <feature:STATION_TYPE_ID>
+9
+            </feature:STATION_TYPE_ID>
+
+            <feature:STATION_TYPE>
+Deponi
+            </feature:STATION_TYPE>
+
+            <feature:VANNKJEMI>
+0
+            </feature:VANNKJEMI>
+
+            <feature:SEDIMENTKJEMI>
+1
+            </feature:SEDIMENTKJEMI>
+
+            <feature:BIOTAKJEMI>
+0
+            </feature:BIOTAKJEMI>
+
+            <feature:SEWAGEKJEMI>
+0
+            </feature:SEWAGEKJEMI>
+
+            <feature:BLOTBUNN>
+0
+            </feature:BLOTBUNN>
+
+            <feature:HARDBUNN>
+0
+            </feature:HARDBUNN>
+
+            <feature:PLANKTON>
+0
+            </feature:PLANKTON>
+
+            <feature:ALGA>
+0
+            </feature:ALGA>
+
+            <feature:VANNPLANTER>
+0
+            </feature:VANNPLANTER>
+
+            <feature:BUNNDYR>
+0
+            </feature:BUNNDYR>
+
+            <feature:BEGROING>
+0
+            </feature:BEGROING>
+
+            <feature:LUFT>
+0
+            </feature:LUFT>
+        </feature:Intern_stations_datatype>
+    </gml:featureMember>
+
+    <gml:featureMember>
+
+        <feature:Intern_stations_datatype fid="Intern_stations_datatype.16584" >
+
+            <gml:boundedBy>
+
+                <gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#4326" >
+
+                    <gml:coord>
+
+                        <gml:X>
+11.249
+                        </gml:X>
+
+                        <gml:Y>
+60.611
+                        </gml:Y>
+                    </gml:coord>
+
+                    <gml:coord>
+
+                        <gml:X>
+11.249
+                        </gml:X>
+
+                        <gml:Y>
+60.611
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Box>
+            </gml:boundedBy>
+
+            <feature:shape>
+
+                <gml:Point>
+
+                    <gml:coord>
+
+                        <gml:X>
+11.249
+                        </gml:X>
+
+                        <gml:Y>
+60.611
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Point>
+            </feature:shape>
+
+            <feature:STATION_ID>
+51355
+            </feature:STATION_ID>
+
+            <feature:STATION_TYPE_ID>
+9
+            </feature:STATION_TYPE_ID>
+
+            <feature:STATION_TYPE>
+Deponi
+            </feature:STATION_TYPE>
+
+            <feature:VANNKJEMI>
+0
+            </feature:VANNKJEMI>
+
+            <feature:SEDIMENTKJEMI>
+1
+            </feature:SEDIMENTKJEMI>
+
+            <feature:BIOTAKJEMI>
+0
+            </feature:BIOTAKJEMI>
+
+            <feature:SEWAGEKJEMI>
+0
+            </feature:SEWAGEKJEMI>
+
+            <feature:BLOTBUNN>
+0
+            </feature:BLOTBUNN>
+
+            <feature:HARDBUNN>
+0
+            </feature:HARDBUNN>
+
+            <feature:PLANKTON>
+0
+            </feature:PLANKTON>
+
+            <feature:ALGA>
+0
+            </feature:ALGA>
+
+            <feature:VANNPLANTER>
+0
+            </feature:VANNPLANTER>
+
+            <feature:BUNNDYR>
+0
+            </feature:BUNNDYR>
+
+            <feature:BEGROING>
+0
+            </feature:BEGROING>
+
+            <feature:LUFT>
+0
+            </feature:LUFT>
+        </feature:Intern_stations_datatype>
+    </gml:featureMember>
+
+    <gml:featureMember>
+
+        <feature:Intern_stations_datatype fid="Intern_stations_datatype.19327" >
+
+            <gml:boundedBy>
+
+                <gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#4326" >
+
+                    <gml:coord>
+
+                        <gml:X>
+10.25848333
+                        </gml:X>
+
+                        <gml:Y>
+59.675667
+                        </gml:Y>
+                    </gml:coord>
+
+                    <gml:coord>
+
+                        <gml:X>
+10.25848333
+                        </gml:X>
+
+                        <gml:Y>
+59.675667
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Box>
+            </gml:boundedBy>
+
+            <feature:shape>
+
+                <gml:Point>
+
+                    <gml:coord>
+
+                        <gml:X>
+10.25848333
+                        </gml:X>
+
+                        <gml:Y>
+59.675667
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Point>
+            </feature:shape>
+
+            <feature:STATION_ID>
+55582
+            </feature:STATION_ID>
+
+            <feature:STATION_TYPE_ID>
+9
+            </feature:STATION_TYPE_ID>
+
+            <feature:STATION_TYPE>
+Deponi
+            </feature:STATION_TYPE>
+
+            <feature:VANNKJEMI>
+0
+            </feature:VANNKJEMI>
+
+            <feature:SEDIMENTKJEMI>
+0
+            </feature:SEDIMENTKJEMI>
+
+            <feature:BIOTAKJEMI>
+0
+            </feature:BIOTAKJEMI>
+
+            <feature:SEWAGEKJEMI>
+0
+            </feature:SEWAGEKJEMI>
+
+            <feature:BLOTBUNN>
+0
+            </feature:BLOTBUNN>
+
+            <feature:HARDBUNN>
+0
+            </feature:HARDBUNN>
+
+            <feature:PLANKTON>
+0
+            </feature:PLANKTON>
+
+            <feature:ALGA>
+0
+            </feature:ALGA>
+
+            <feature:VANNPLANTER>
+0
+            </feature:VANNPLANTER>
+
+            <feature:BUNNDYR>
+0
+            </feature:BUNNDYR>
+
+            <feature:BEGROING>
+0
+            </feature:BEGROING>
+
+            <feature:LUFT>
+0
+            </feature:LUFT>
+        </feature:Intern_stations_datatype>
+    </gml:featureMember>
+
+    <gml:featureMember>
+
+        <feature:Intern_stations_datatype fid="Intern_stations_datatype.19328" >
+
+            <gml:boundedBy>
+
+                <gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#4326" >
+
+                    <gml:coord>
+
+                        <gml:X>
+9.9388667
+                        </gml:X>
+
+                        <gml:Y>
+59.75585
+                        </gml:Y>
+                    </gml:coord>
+
+                    <gml:coord>
+
+                        <gml:X>
+9.9388667
+                        </gml:X>
+
+                        <gml:Y>
+59.75585
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Box>
+            </gml:boundedBy>
+
+            <feature:shape>
+
+                <gml:Point>
+
+                    <gml:coord>
+
+                        <gml:X>
+9.9388667
+                        </gml:X>
+
+                        <gml:Y>
+59.75585
+                        </gml:Y>
+                    </gml:coord>
+                </gml:Point>
+            </feature:shape>
+
+            <feature:STATION_ID>
+55583
+            </feature:STATION_ID>
+
+            <feature:STATION_TYPE_ID>
+9
+            </feature:STATION_TYPE_ID>
+
+            <feature:STATION_TYPE>
+Deponi
+            </feature:STATION_TYPE>
+
+            <feature:VANNKJEMI>
+0
+            </feature:VANNKJEMI>
+
+            <feature:SEDIMENTKJEMI>
+0
+            </feature:SEDIMENTKJEMI>
+
+            <feature:BIOTAKJEMI>
+0
+            </feature:BIOTAKJEMI>
+
+            <feature:SEWAGEKJEMI>
+0
+            </feature:SEWAGEKJEMI>
+
+            <feature:BLOTBUNN>
+0
+            </feature:BLOTBUNN>
+
+            <feature:HARDBUNN>
+0
+            </feature:HARDBUNN>
+
+            <feature:PLANKTON>
+0
+            </feature:PLANKTON>
+
+            <feature:ALGA>
+0
+            </feature:ALGA>
+
+            <feature:VANNPLANTER>
+0
+            </feature:VANNPLANTER>
+
+            <feature:BUNNDYR>
+0
+            </feature:BUNNDYR>
+
+            <feature:BEGROING>
+0
+            </feature:BEGROING>
+
+            <feature:LUFT>
+0
+            </feature:LUFT>
+        </feature:Intern_stations_datatype>
+    </gml:featureMember>
+
+</wfs:FeatureCollection>

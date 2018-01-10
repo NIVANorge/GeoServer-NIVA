@@ -1,0 +1,123 @@
+package niva.aquamonitor.data.ws;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+
+import org.apache.http.HttpHeaders;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicHeader;
+
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+
+
+/**
+ * Uses the WebService LoginService.asmx with GET method and JSON format.
+ * 
+ * @author Roar Brænden, NIVA
+ *
+ */
+public class LoginWebService extends AquaWebService {
+	
+
+	
+	private static final String SERVICE_ADDRESS = "/WebServices/LoginService.asmx";
+	
+	public static LoginWebService createService(String host, String site)    {
+		return new LoginWebService(host + site + SERVICE_ADDRESS);
+	}
+	
+	public static LoginWebService createService(String host)    {
+		return createService(host, AquaWebService.DEFAULT_SITE);
+	}
+	
+	public static LoginWebService createService() {
+		return createService(AquaWebService.HOST_ADDRESS, AquaWebService.DEFAULT_SITE);
+	}
+
+	
+	public LoginWebService(String url) {
+		super(url);
+	}
+	
+	public UserCargo authenticateUser(String username, String password) throws IOException {
+		return callWebService(getUrl() + "/AuthenticateUser?username='" + username + "'&password='" + password + "'");
+	}
+	
+	public UserCargo authenticateToken(String token) throws IOException  {
+		return callWebService(getUrl() + "/AuthenticateToken?token='" + token + "'");
+	}
+	
+	
+	
+	private UserCargo callWebService(String url) throws IOException {
+
+		Header accept = new BasicHeader(HttpHeaders.ACCEPT, "application/json");
+		
+		List<Header> headers = new ArrayList<Header>(1);
+		headers.add(accept);
+		
+		CloseableHttpClient client = HttpClients.custom().setDefaultHeaders(headers).build();
+		HttpGet get = new HttpGet(url);
+		UserCargo user = null;
+		
+		try {
+		
+			CloseableHttpResponse resp = client.execute(get);
+			JSONParser parser = new JSONParser();
+			
+			try {
+				HttpEntity entity = resp.getEntity();
+				
+				if (entity != null) {
+					InputStream inp = entity.getContent();
+					try {
+						Object res = parser.parse(new InputStreamReader(inp));
+						Object userJson = ((JSONObject)res).get("d");
+						user = readUserJson((JSONObject)userJson);
+					}
+					catch (ParseException pe) {
+						throw new IOException(pe);
+					}
+					finally {
+						inp.close();
+					}
+				}
+			}
+			finally {
+				resp.close();
+			}
+		}
+		finally {
+			get.releaseConnection();
+			client.close();
+		}
+
+		return user;
+	}
+	
+	private UserCargo readUserJson(JSONObject json) {
+		UserCargo user = new UserCargo();
+		user.key = (String)json.get("Key");
+		user.token = (String)json.get("Token");
+		user.userid = (int)(long)json.get("Userid");
+		user.username = (String)json.get("Username");
+		user.usertype = (String)json.get("Usertype");
+		
+		return user;
+	}
+	
+
+}
