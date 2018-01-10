@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.rest.RestException;
-import org.geoserver.rest.wrapper.RestWrapper;
 
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -41,7 +40,7 @@ public class ExtentController extends QueryBaseController {
 
 	@SuppressWarnings("rawtypes")
 	@GetMapping()
-	public RestWrapper<HashMap> get(@PathVariable String workspace, @PathVariable String layer) {
+	public HashMap get(@PathVariable String workspace, @PathVariable String layer) {
 		SimpleFeatureSource source = this.extractSourceFromPathVariable(workspace, layer);
 		try {
 			ReferencedEnvelope env = source.getBounds();
@@ -53,7 +52,7 @@ public class ExtentController extends QueryBaseController {
 			extent.put("minY", env.getMinY());
 			extent.put("maxY", env.getMaxY());
 			
-			return wrapObject(extent, HashMap.class);
+			return extent;
 		}
 		catch (IOException ie) {
 			throw new RestException("Exception while getting extent.", HttpStatus.INTERNAL_SERVER_ERROR);

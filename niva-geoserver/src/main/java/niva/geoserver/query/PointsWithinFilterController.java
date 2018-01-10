@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.rest.RestException;
-import org.geoserver.rest.wrapper.RestWrapper;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
@@ -68,8 +67,9 @@ public class PointsWithinFilterController extends QueryBaseController {
 
 	
 
+	@SuppressWarnings("rawtypes")
 	@GetMapping
-	public RestWrapper<HashMap> get(@PathVariable String workspace,
+	public HashMap get(@PathVariable String workspace,
 									@PathVariable String layer,
 									@PathVariable String workspace2,
 									@PathVariable String layer2,
@@ -112,7 +112,7 @@ public class PointsWithinFilterController extends QueryBaseController {
 			
 			SimpleFeatureCollection result = source.getFeatures(within);
 		
-			return wrapObject(createResultMap(result), HashMap.class);
+			return createResultMap(result);
 		}
 		catch (TransformException | FactoryException | CQLException | IOException ex) {
 			throw new RestException(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

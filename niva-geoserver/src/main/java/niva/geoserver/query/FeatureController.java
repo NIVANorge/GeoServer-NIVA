@@ -11,7 +11,6 @@ import org.geotools.geometry.jts.spatialschema.geometry.primitive.PrimitiveFacto
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.rest.RestException;
-import org.geoserver.rest.wrapper.RestWrapper;
 
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
@@ -49,8 +48,10 @@ public class FeatureController extends QueryBaseController {
 		super(catalog);
 	}
 
+	
+	@SuppressWarnings("rawtypes")
 	@GetMapping
-	public RestWrapper<HashMap> get(@PathVariable String workspace,
+	public HashMap get(@PathVariable String workspace,
 									@PathVariable String layer,
 									@PathVariable String epsg,
 									@PathVariable Double north,
@@ -80,7 +81,7 @@ public class FeatureController extends QueryBaseController {
 			
 			SimpleFeatureCollection coll = source.getFeatures(withinFilt);
 			
-			return wrapObject(createResultMap(coll), HashMap.class);
+			return createResultMap(coll);
 
 		}
 		catch (TransformException | CQLException | IOException ex) {

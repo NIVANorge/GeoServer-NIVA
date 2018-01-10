@@ -18,9 +18,12 @@ import org.geotools.util.logging.Logging;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.rest.RestBaseController;
 import org.geoserver.rest.RestException;
-
+import org.geoserver.rest.converters.XStreamMessageConverter;
+import org.geoserver.rest.wrapper.RestWrapper;
+import org.geoserver.rest.wrapper.RestWrapperAdapter;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.referencing.FactoryException;
@@ -30,6 +33,8 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.springframework.http.HttpStatus;
 
 import com.vividsolutions.jts.geom.Geometry;
+
+import freemarker.template.Template;
 
 
 /**
@@ -51,7 +56,8 @@ public abstract class QueryBaseController extends RestBaseController {
 	public QueryBaseController(Catalog catalog) {
 		this.catalog = catalog;
 	}
-	
+
+
 	protected SimpleFeatureSource extractSourceFromPathVariable(String workspace, String layer) throws RestException {
 		
 		if (workspace==null || layer == null) {

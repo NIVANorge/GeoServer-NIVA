@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.feature.ReprojectingFeatureCollection;
 import org.geoserver.rest.RestException;
-import org.geoserver.rest.wrapper.RestWrapper;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
@@ -55,8 +54,9 @@ public class PolygonsOverlapsGeometryController extends QueryBaseController {
 	}
 
 
+	@SuppressWarnings("rawtypes")
 	@GetMapping
-	public  RestWrapper<HashMap> get(@PathVariable String workspace,
+	public HashMap get(@PathVariable String workspace,
 									 @PathVariable String layer,
 									 @PathVariable String epsg,
 									 @PathVariable String geometry,
@@ -84,7 +84,7 @@ public class PolygonsOverlapsGeometryController extends QueryBaseController {
 			
 			result = cp.execute(features, geom, true);
 			
-			return wrapObject(createResultMapWithArea(result), HashMap.class);
+			return createResultMapWithArea(result);
 		}
 		catch (ParseException | FactoryException | SchemaException | IOException ex) {
 			throw new RestException(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.rest.RestException;
-import org.geoserver.rest.wrapper.RestWrapper;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
@@ -51,8 +50,9 @@ public class PointsWithinDistanceController extends QueryBaseController {
 	}
 
 	
+	@SuppressWarnings("rawtypes")
 	@GetMapping
-	public RestWrapper<HashMap> get(@PathVariable String workspace,
+	public HashMap get(@PathVariable String workspace,
 									@PathVariable String layer,
 									@PathVariable String epsg,
 									@PathVariable Double north,
@@ -83,7 +83,7 @@ public class PointsWithinDistanceController extends QueryBaseController {
 			
 			SimpleFeatureCollection coll = source.getFeatures(withinFilt);
 			
-			return wrapObject(createResultMap(coll), HashMap.class);
+			return createResultMap(coll);
 		}
 		catch (TransformException | CQLException | IOException ex) {
 			throw new RestException(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

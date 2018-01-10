@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.feature.ReprojectingFeatureCollection;
 import org.geoserver.rest.RestException;
-import org.geoserver.rest.wrapper.RestWrapper;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
@@ -22,6 +21,7 @@ import org.opengis.filter.Filter;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -57,7 +57,9 @@ public class PointsWithinGeometryController extends QueryBaseController {
 
 	
 
-	public RestWrapper<HashMap> get(@PathVariable String workspace,
+	@SuppressWarnings("rawtypes")
+	@GetMapping
+	public HashMap get(@PathVariable String workspace,
 									@PathVariable String layer,
 									@PathVariable String epsg,
 									@PathVariable String geometry,
@@ -85,7 +87,7 @@ public class PointsWithinGeometryController extends QueryBaseController {
 				result = new ReprojectingFeatureCollection(source.getFeatures(), crs).subCollection(within);
 			}
 		
-			return wrapObject(createResultMap(result), HashMap.class);
+			return createResultMap(result);
 		}
 		catch (FactoryException | CQLException | SchemaException | IOException ex) {
 			throw new RestException(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
