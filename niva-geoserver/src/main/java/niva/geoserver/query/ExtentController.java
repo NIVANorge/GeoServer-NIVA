@@ -2,12 +2,14 @@ package niva.geoserver.query;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.rest.RestException;
 
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.util.logging.Logging;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +33,7 @@ import org.springframework.http.MediaType;
 @RequestMapping(path=QueryBaseController.QUERY_ROOT_PATH + "/extent.{format}", produces= {MediaType.APPLICATION_JSON_VALUE})
 public class ExtentController extends QueryBaseController {
 	
+	private static final Logger LOGGER = Logging.getLogger(ExtentController.class);
 
 	@Autowired
 	public ExtentController(@Qualifier("catalog") Catalog catalog) {
@@ -55,7 +58,8 @@ public class ExtentController extends QueryBaseController {
 			return extent;
 		}
 		catch (IOException ie) {
-			throw new RestException("Exception while getting extent.", HttpStatus.INTERNAL_SERVER_ERROR);
+			LOGGER.severe(ie.getMessage());
+			throw new RestException("Exception while getting extent of layer:" + layer + ".", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 }
