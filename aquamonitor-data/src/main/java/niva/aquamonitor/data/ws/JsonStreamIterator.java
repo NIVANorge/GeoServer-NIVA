@@ -27,6 +27,12 @@ import org.json.simple.parser.ContentHandler;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+/**
+ * Stream from a AquaMonitor WebService call returning JSON. 
+ *
+ * @author Roar Brænden, NIVA
+ *
+ */
 public class JsonStreamIterator implements Iterator<Object>, ContentHandler {
 	
 	private final static Logger LOGGER = Logging.getLogger(JsonStreamIterator.class);
@@ -164,6 +170,10 @@ public class JsonStreamIterator implements Iterator<Object>, ContentHandler {
 	}
 
 
+	/**
+	 * If a json object has a property named Message, we will set the hasMessage to true.
+	 * This will be an Exception.
+	 */
 	@Override
 	public boolean startObjectEntry(String key) throws ParseException, IOException {
 		

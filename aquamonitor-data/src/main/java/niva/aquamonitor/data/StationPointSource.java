@@ -19,6 +19,14 @@ import com.vividsolutions.jts.geom.Point;
 
 import niva.geotools.referencing.CRS;
 
+/**
+ * Represents the Stations as a point with attributes: sample_point_id, longitude, latitude, project_id, project_name, station_id,
+ * station_type_id, station_type, station_code and station_name.
+ * 
+ * 
+ * @author Roar Brænden, NIVA
+ *
+ */
 public class StationPointSource extends ContentFeatureSource {
 	
 	private niva.aquamonitor.data.ws.StationPointReader reader;
@@ -103,8 +111,23 @@ public class StationPointSource extends ContentFeatureSource {
 		}
 	}
 
+	/**
+	 * Try to report a user-friendly exception.
+	 */
 	@Override
 	protected FeatureReader<SimpleFeatureType, SimpleFeature> getReaderInternal(Query query) throws IOException {
-		return new StationPointReader(buildFeatureType(), reader);
+		try {
+			return new StationPointReader(buildFeatureType(), reader);
+		}
+		catch (IOException ie) {
+			String message = ie.getMessage();
+			
+			if (message != null && message.startsWith("Given key") && message.endsWith("is missing.")) {
+				throw new IOException("Store " + this.getEntry().getTypeName() + " represents a session that has expired.", ie);
+			}
+			else {
+				throw ie;
+			}
+		}
 	}
 }
