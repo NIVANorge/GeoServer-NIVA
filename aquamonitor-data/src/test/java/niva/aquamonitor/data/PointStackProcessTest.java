@@ -8,12 +8,14 @@ import org.geotools.data.store.ContentFeatureCollection;
 import org.geotools.data.store.ContentFeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.process.vector.PointStackerProcess;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class PointStackProcessTest {
 
 
 	@Test
+	@Ignore
 	public void stackLoimpStations() throws Exception {
 		ProjectUserDataStore dataStore = new ProjectUserDataStore("LOIMP");
 		ContentFeatureSource stationSource = dataStore.getFeatureSource(ProjectUserDataStore.DEFAULT_LAYERS[0]);

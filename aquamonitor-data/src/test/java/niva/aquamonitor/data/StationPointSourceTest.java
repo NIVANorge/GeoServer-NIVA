@@ -10,6 +10,7 @@ import niva.aquamonitor.data.ProjectUserDataStore;
 import niva.aquamonitor.data.ProjectUserDataStoreFactory;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.After;
 import org.opengis.feature.simple.SimpleFeature;
@@ -27,6 +28,7 @@ import org.geotools.filter.text.cql2.CQL;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 
 
+@Ignore
 public class StationPointSourceTest {
 	
 	private final String TEST_USER = "mjosutfylling";
