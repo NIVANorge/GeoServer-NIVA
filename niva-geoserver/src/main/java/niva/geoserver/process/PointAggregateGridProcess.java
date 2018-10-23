@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.store.ReprojectingFeatureCollection;
@@ -20,6 +21,7 @@ import org.geotools.process.factory.DescribeParameter;
 import org.geotools.process.factory.DescribeProcess;
 import org.geotools.process.factory.DescribeResult;
 import org.geotools.process.vector.ClipProcess;
+
 
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -35,13 +37,14 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.Point;
 
 
-@DescribeProcess(title = "Aggregate points grid", description = "Collects points into different grid cells based on input. Sums up attributes and finds centroid point.")
+
 /**
  * Creates a grid based on input of image size / cell size, collects features into cells, sums attribute values and creates centroid point.
  * 
  * @author Roar Brænden, NIVA
  *
  */
+@DescribeProcess(title = "Aggregate points grid", description = "Collects points into different grid cells based on input. Sums up attributes and finds centroid point.")
 public class PointAggregateGridProcess implements NivaProcess {
 	
 

@@ -5,6 +5,7 @@ import java.util.AbstractSet;
 import java.util.Iterator;
 import java.util.Set;
 
+
 import org.geoserver.wps.WPSTestSupport;
 import org.geotools.data.memory.MemoryFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -24,13 +25,15 @@ import com.vividsolutions.jts.geom.Point;
 import niva.geotools.referencing.CRS;
 
 
+import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import org.junit.Test;
 
 public class PointAggregateGridProcessTest extends WPSTestSupport{
+
 	
 	@Test
 	public void testPlain() throws Exception {
@@ -65,6 +68,22 @@ public class PointAggregateGridProcessTest extends WPSTestSupport{
 		assertEquals(1, first.getAttribute("COUNT"));
 		assertNotNull(first.getAttribute("STATION_TYPE"));
 	}
+	
+	@Test
+	public void testOtherCRS() throws Exception {
+		
+		final ReferencedEnvelope outputBbox = ReferencedEnvelope.create(new Envelope(221288, 283749, 6661953, 6769393), CRS.getUtm33());
+		
+		final SimpleFeatureCollection result = new PointAggregateGridProcess().execute(TestData.getPlain(),
+																					   outputBbox,
+																					   100,
+																					   100,
+																					   50,
+																					   TestData.getAttributes());
+		
+		assertEquals(1, result.size());
+	}
+
 	
 	
 	private static class TestData {
@@ -126,7 +145,7 @@ public class PointAggregateGridProcessTest extends WPSTestSupport{
 		}
 
 		static SimpleFeatureType getFeatureType() {
-			SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
+			final SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
 			builder.setCRS(CRS.getBreddeLengdegrad());
 			builder.setName("Testdata");
 			builder.add("theGeom", Point.class);

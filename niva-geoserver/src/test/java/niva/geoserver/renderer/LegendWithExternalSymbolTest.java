@@ -80,7 +80,7 @@ public class LegendWithExternalSymbolTest extends WMSTestSupport {
 		assertNotNull(graphic);
 		assertTrue(graphic instanceof BufferedImageLegendGraphic);
 
-		//ImageIO.write(((BufferedImageLegendGraphic)graphic).getLegend(), "png", new File("C:\\temp\\legend.png"));
+		ImageIO.write(((BufferedImageLegendGraphic)graphic).getLegend(), "png", new File("C:\\temp\\legend.png"));
 		
 		testImage(((BufferedImageLegendGraphic)graphic).getLegend());
 	}
