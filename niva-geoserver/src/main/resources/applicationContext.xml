@@ -11,6 +11,13 @@
     <bean id="aquamonitorSecurityProvider" class="niva.geoserver.security.AquamonitorSecurityProvider" >
   	</bean>
 
+    <bean id="aquamonitorAuthenticationProviderPanelInfo" class="niva.geoserver.security.AquamonitorAuthenticationProviderPanelInfo">
+        <property name="id" value="idAuthProvider" />
+        <property name="shortTitleKey" value="shortAuthProviderPanel"/>
+        <property name="titleKey" value="titleAuthProviderPanel"/>
+        <property name="descriptionKey" value="descriptionAuthProviderPanel"/>
+    </bean>
+    
 	<context:component-scan base-package="niva.geoserver.query"/>
 	
 </beans>
