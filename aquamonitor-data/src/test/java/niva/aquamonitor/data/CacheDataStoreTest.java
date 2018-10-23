@@ -112,7 +112,7 @@ public class CacheDataStoreTest {
 		params.put(CacheDataStoreFactory.NAMESPACE_PARAM.key, new URI("http;//www.aquamonitor.no/"));		
 		params.put(CacheDataStoreFactory.DBTYPE_PARAM.key, (Serializable) CacheDataStoreFactory.DBTYPE_PARAM.sample);
 		params.put(CacheDataStoreFactory.BACKEND_PARAM.key, "dbtype=aquamonitor;user=Ostfold");
-		params.put(CacheDataStoreFactory.CACHE_PARAM.key, "dbtype=arcsde;server=tista.niva.no;port=5151;user=RBR;password=RBR");
+		params.put(CacheDataStoreFactory.CACHE_PARAM.key, "dbtype=arcsde;server=tista.niva.no;port=5151;user=RBR;password=orient");
 		params.put(CacheDataStoreFactory.INTERVAL_PARAM.key, 0);
 		params.put(CacheDataStoreFactory.CACHE_TYPE_NAME_PARAM.key, "RBR.DELETE_%1s");
 		
