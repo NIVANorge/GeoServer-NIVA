@@ -18,7 +18,7 @@ public class NaturbasenStoreFactoryTest {
 	static {
 		PARAMS = new HashMap<String, Serializable>();
 		PARAMS.put(NaturbasenStoreFactory.PARAMETERS[0].key, (String)NaturbasenStoreFactory.PARAMETERS[0].sample);
-		PARAMS.put(NaturbasenStoreFactory.PARAMETERS[1].key, "etna;nivabase");
+		PARAMS.put(NaturbasenStoreFactory.PARAMETERS[1].key, "tista;nivabase");
 		PARAMS.put(NaturbasenStoreFactory.PARAMETERS[2].key, "BM");
 		PARAMS.put(NaturbasenStoreFactory.PARAMETERS[3].key, 3);
 		PARAMS.put(NaturbasenStoreFactory.PARAMETERS[4].key, 1);	

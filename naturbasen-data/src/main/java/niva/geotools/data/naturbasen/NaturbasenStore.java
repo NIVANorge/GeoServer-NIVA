@@ -32,6 +32,13 @@ public class NaturbasenStore extends ContentDataStore {
 		this.dbStore = dbStore;
 	}
 	
+	@Override
+	public void dispose() {
+		super.dispose();
+		arcStore.dispose();
+		dbStore.dispose();
+	}
+	
 	
 	@Override
 	protected ContentFeatureSource createFeatureSource(ContentEntry entry) throws IOException {

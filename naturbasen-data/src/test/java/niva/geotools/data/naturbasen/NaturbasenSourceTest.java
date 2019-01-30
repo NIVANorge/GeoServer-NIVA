@@ -26,8 +26,9 @@ public class NaturbasenSourceTest {
 	
 	@After
 	public void close() {
-		if (store != null)
+		if (store != null) { 
 			store.dispose();
+		}
 	}
 
 	@Test
