@@ -14,18 +14,14 @@ import org.junit.Test;
 public class GeographyWebServiceTest {
 	
 	
-	//private String host = "http://www.aquamonitor.no/";
-	//private String site = "Intern";
-	
-	
-	private String host = "http://localhost/";
-	private String site = "AquaMonitorIntern";
+	private String host = "http://aquamon.niva.corp/";
+	private String site = "Intern";
 	
 
 	@Test
 	public void getAllStationsEasy() throws Exception {
 		GeographyWebService ws = GeographyWebService.createService(host, site);
-		StationPointReader reader = ws.getProjectUserStationReader("mjosutfylling");
+		StationPointReader reader = ws.getProjectUserStationReader("Mjøsa");
 		Iterator<StationPointCargo> iter = reader.iterator();
 		
 		assertTrue(iter.hasNext());
@@ -43,7 +39,7 @@ public class GeographyWebServiceTest {
 			Assert.fail();
 		}
 		catch (IOException ie) {
-			assertEquals("java.io.IOException: Exception of type 'Niva.AquaMonitor.IllegalUserException' was thrown.", ie.toString());
+			assertEquals("java.io.IOException: Kun gyldig for brukere av typen Project.", ie.toString());
 		}
 	}
 	
@@ -91,9 +87,12 @@ public class GeographyWebServiceTest {
 		Iterator<String> iter = reader.iterator();
 		boolean foundWater = false;
 		
-		while (iter.hasNext())
-			if (iter.next().equals("Water"))
+		while (iter.hasNext()) {
+			if (iter.next().equals("Water")) {
 				foundWater = true;
+				break;
+			}
+		}
 		
 		assertTrue(foundWater);
 	}
