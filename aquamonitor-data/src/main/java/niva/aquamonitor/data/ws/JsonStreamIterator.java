@@ -12,6 +12,7 @@ import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
 import org.apache.http.HttpHeaders;
+import org.apache.http.HttpStatus;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -84,8 +85,14 @@ public class JsonStreamIterator implements Iterator<Object>, ContentHandler {
 
 		CloseableHttpResponse resp = client.execute(get);
 		
+		int respStatusCode = resp.getStatusLine().getStatusCode();
+		
+		if (respStatusCode == HttpStatus.SC_NOT_FOUND) {
+			throw new IOException("Url: " + this.url + " responds with http status code 404.");
+		}
+		
 		HttpEntity entity = resp.getEntity();
-				
+
 		if (entity != null) {
 			InputStream stream = entity.getContent();
 			parser = new JSONParser();
