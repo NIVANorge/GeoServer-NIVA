@@ -12,6 +12,9 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
@@ -24,7 +27,7 @@ import org.json.simple.parser.ParseException;
 
 
 /**
- * Uses the WebService LoginService.asmx with GET method and JSON format.
+ * Uses the WebService LoginService.asmx with POST method and JSON format.
  * 
  * @author Roar Brænden, NIVA
  *
@@ -34,6 +37,7 @@ public class LoginWebService extends AquaWebService {
 
 	
 	private static final String SERVICE_ADDRESS = "/WebServices/LoginService.asmx";
+	
 	
 	public static LoginWebService createService(String host, String site)    {
 		return new LoginWebService(host + site + SERVICE_ADDRESS);
@@ -53,16 +57,16 @@ public class LoginWebService extends AquaWebService {
 	}
 	
 	public UserCargo authenticateUser(String username, String password) throws IOException {
-		return callWebService(getUrl() + "/AuthenticateUser?username='" + username + "'&password='" + password + "'");
+		return callWebService(getUrl() + "/AuthenticateUser", "{'username':'" + username + "','password':'" + password + "'}");
 	}
 	
 	public UserCargo authenticateToken(String token) throws IOException  {
-		return callWebService(getUrl() + "/AuthenticateToken?token='" + token + "'");
+		return callWebService(getUrl() + "/AuthenticateToken", "{'token':'" + token + "'}");
 	}
 	
 	
 	
-	private UserCargo callWebService(String url) throws IOException {
+	private UserCargo callWebService(String url, String json) throws IOException {
 
 		Header accept = new BasicHeader(HttpHeaders.ACCEPT, "application/json");
 		
@@ -70,12 +74,14 @@ public class LoginWebService extends AquaWebService {
 		headers.add(accept);
 		
 		CloseableHttpClient client = HttpClients.custom().setDefaultHeaders(headers).build();
-		HttpGet get = new HttpGet(url);
+		HttpPost post = new HttpPost(url);
+		post.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
+		
 		UserCargo user = null;
 		
 		try {
 		
-			CloseableHttpResponse resp = client.execute(get);
+			CloseableHttpResponse resp = client.execute(post);
 			JSONParser parser = new JSONParser();
 			
 			try {
@@ -101,7 +107,7 @@ public class LoginWebService extends AquaWebService {
 			}
 		}
 		finally {
-			get.releaseConnection();
+			post.releaseConnection();
 			client.close();
 		}
 
