@@ -59,7 +59,7 @@
     <dependency>
     	<groupId>niva.geotools</groupId>
     	<artifactId>aquamonitor-data</artifactId>
-    	<version>6.1</version>
+    	<version>6.2</version>
   </dependency>
   <dependency>
     	<groupId>niva.geotools</groupId>
@@ -115,13 +115,13 @@
       <artifactId>gs-wps-core</artifactId>
       <version>${gs.version}</version>
       <scope>test</scope>
-      <classifier>tests</classifier>
   </dependency>
   <dependency>
       <groupId>org.geoserver.extension</groupId>
       <artifactId>gs-wps-core</artifactId>
       <version>${gs.version}</version>
       <scope>test</scope>
+      <classifier>tests</classifier>
   </dependency>
   <dependency>
       <groupId>org.geotools</groupId>
