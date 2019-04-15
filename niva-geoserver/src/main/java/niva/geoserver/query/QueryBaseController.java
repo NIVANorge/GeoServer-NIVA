@@ -18,12 +18,9 @@ import org.geotools.util.logging.Logging;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
-import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.rest.RestBaseController;
 import org.geoserver.rest.RestException;
-import org.geoserver.rest.converters.XStreamMessageConverter;
-import org.geoserver.rest.wrapper.RestWrapper;
-import org.geoserver.rest.wrapper.RestWrapperAdapter;
+
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.referencing.FactoryException;
@@ -34,7 +31,6 @@ import org.springframework.http.HttpStatus;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-import freemarker.template.Template;
 
 
 /**
@@ -65,10 +61,11 @@ public abstract class QueryBaseController extends RestBaseController {
 		}
 
 		try {
+			
 			SimpleFeatureSource source = getFeatureSource(workspace, layer);
 
 			if (source == null) {
-				throw new RestException("Missing layer: " + layer, HttpStatus.NOT_FOUND);
+				throw new RestException("Missing layer: " + workspace + ":" + layer, HttpStatus.NOT_FOUND);
 			}
 
 			return source;
@@ -119,8 +116,19 @@ public abstract class QueryBaseController extends RestBaseController {
 		return this.catalog;
 	}
 	
+	
+	/**
+	 * 
+	 * @param workspace
+	 * @param layer
+	 * @return Null if layer is not found.
+	 * @throws IOException
+	 */
 	protected SimpleFeatureSource getFeatureSource(String workspace, String layer) throws IOException {
 		FeatureTypeInfo info = getCatalog().getFeatureTypeByName(new NameImpl(workspace, layer));
+		if (info == null) {
+			return null;
+		}
 		return (SimpleFeatureSource)info.getFeatureSource(null, null);
 	}
 	
