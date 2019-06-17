@@ -5,13 +5,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.logging.Logger;
 
 import org.apache.http.HttpHeaders;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -19,10 +18,11 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 
-
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import org.geotools.util.logging.Logging;
 
 
 
@@ -38,6 +38,9 @@ public class LoginWebService extends AquaWebService {
 	
 	private static final String SERVICE_ADDRESS = "/WebServices/LoginService.asmx";
 	
+
+	/** Logger. */
+	private final static Logger LOGGER = Logging.getLogger(LoginWebService.class);
 	
 	public static LoginWebService createService(String host, String site)    {
 		return new LoginWebService(host + site + SERVICE_ADDRESS);
@@ -68,6 +71,8 @@ public class LoginWebService extends AquaWebService {
 	
 	private UserCargo callWebService(String url, String json) throws IOException {
 
+		LOGGER.fine("call login at: " + url);
+		
 		Header accept = new BasicHeader(HttpHeaders.ACCEPT, "application/json");
 		
 		List<Header> headers = new ArrayList<Header>(1);
