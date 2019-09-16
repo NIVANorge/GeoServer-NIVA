@@ -28,7 +28,7 @@ public class GeographyWebService extends AquaWebService {
 	}
 	
 	public static GeographyWebService createService() {
-		return createService(AquaWebService.HOST_ADDRESS, AquaWebService.DEFAULT_SITE);
+		return createService(getHostAddress(), AquaWebService.DEFAULT_SITE);
 	}
 	
 	public GeographyWebService(String url)   {

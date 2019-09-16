@@ -51,7 +51,7 @@ public class LoginWebService extends AquaWebService {
 	}
 	
 	public static LoginWebService createService() {
-		return createService(AquaWebService.HOST_ADDRESS, AquaWebService.DEFAULT_SITE);
+		return createService(getHostAddress(), AquaWebService.DEFAULT_SITE);
 	}
 
 	
