@@ -75,7 +75,7 @@ public class CacheDataStoreTest {
 		File cacheFolder = TestData.file(this, "cache");
 		params.put(CacheDataStoreFactory.NAMESPACE_PARAM.key, new URI("http;//www.aquamonitor.no/"));	
 		params.put(CacheDataStoreFactory.DBTYPE_PARAM.key, (Serializable) CacheDataStoreFactory.DBTYPE_PARAM.sample);
-		params.put(CacheDataStoreFactory.BACKEND_PARAM.key, "dbtype=aquamonitor-site;site=Intern;host=http://www.aquamonitor.no/");
+		params.put(CacheDataStoreFactory.BACKEND_PARAM.key, "dbtype=aquamonitor-site;site=Intern;host=https://test-aquamonitor.niva.no/");
 		params.put(CacheDataStoreFactory.CACHE_PARAM.key, "dbtype=shapefile;url=file:" + cacheFolder.getAbsolutePath());
 		params.put(CacheDataStoreFactory.INTERVAL_PARAM.key, (Serializable) CacheDataStoreFactory.INTERVAL_PARAM.sample);
 		params.put(CacheDataStoreFactory.CACHE_TYPE_NAME_PARAM.key, "INTERN_%1s");
@@ -159,7 +159,7 @@ public class CacheDataStoreTest {
 		
 		params.put(CacheDataStoreFactory.NAMESPACE_PARAM.key, new URI("http;//www.aquamonitor.no/"));	
 		params.put(CacheDataStoreFactory.DBTYPE_PARAM.key, (Serializable) CacheDataStoreFactory.DBTYPE_PARAM.sample);
-		params.put(CacheDataStoreFactory.BACKEND_PARAM.key, "dbtype=aquamonitor;user=Ostfold;host=http://www.aquamonitor.no/");
+		params.put(CacheDataStoreFactory.BACKEND_PARAM.key, "dbtype=aquamonitor;user=Ostfold;host=https://test-aquamonitor.niva.no/");
 		params.put(CacheDataStoreFactory.CACHE_PARAM.key, "dbtype=shapefile;url=file:" + cacheFolder.getAbsolutePath());
 		params.put(CacheDataStoreFactory.INTERVAL_PARAM.key, (Serializable) CacheDataStoreFactory.INTERVAL_PARAM.sample);
 		

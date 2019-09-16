@@ -14,7 +14,7 @@ import org.junit.Test;
 public class GeographyWebServiceTest {
 	
 	
-	private String host = "http://aquamon.niva.corp/";
+	private String host = "https://test-aquamonitor.niva.no/";
 	private String site = "Intern";
 	
 
