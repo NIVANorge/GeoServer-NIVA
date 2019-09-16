@@ -21,6 +21,7 @@ import org.geotools.data.store.ContentFeatureSource;
 import org.geotools.feature.FeatureTypes;
 import org.geotools.feature.NameImpl;
 import org.geotools.util.logging.Logging;
+
 import org.opengis.feature.type.Name;
 
 
@@ -110,8 +111,8 @@ public class SiteDataStore extends ContentDataStore {
 	
 
 	/**
-	 * Noen typeNames er faste StationPoint f.eks.
-	 * De andre er avhengige av at vi har en temporær lagring, som er populert gjennom createChema
+	 * Which layers do exist for this DataStore.
+	 * 
 	 */
 	@Override
 	protected List<Name> createTypeNames() throws IOException {
@@ -120,20 +121,17 @@ public class SiteDataStore extends ContentDataStore {
 		
 		list.add(new NameImpl(getNamespaceURI(), DEFAULT_LAYERS[0]));
 		
-		if (getKey() != null)
+		if (getKey() != null) {
 			list.add(new NameImpl(getNamespaceURI(), DEFAULT_LAYERS[1]));
-
+		}
 		
 		list.add(new NameImpl(getNamespaceURI(), DEFAULT_LAYERS[2]));
-		
-		if (this.geometryStore != null)
-			list.add(new NameImpl(getNamespaceURI(), DEFAULT_LAYERS[3]));
 		
 		return list;
 	}
 
 	/***
-	 * Returnerer en egnet FeatureSource
+	 * Returns a suitable FeatureSource
 	 */
 	@Override
 	protected ContentFeatureSource createFeatureSource(ContentEntry entry) throws IOException {
@@ -192,7 +190,7 @@ public class SiteDataStore extends ContentDataStore {
 			else {
 				reader = ws.getCurrentStationSectorsReader(key);
 			}
-			
+			LOGGER.warning("This layer uses a type that will not be supported in the future: " + entry.getName());
 			return new StationSectorSource(entry, geometryStore, reader);
 		}
 		else {

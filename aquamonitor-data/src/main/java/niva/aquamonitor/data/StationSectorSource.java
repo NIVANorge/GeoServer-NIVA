@@ -36,9 +36,12 @@ import com.vividsolutions.jts.geom.MultiPolygon;
  * 
  * StationSectorSource combines the result of a call to webservice with the ArcSde layer SAMPLING_SECTORS.
  * 
+ * @deprecated - This was a bad idea. We will not do it like this.
+ * 
  * @author Roar Brænden, Niva
  *
  */
+@Deprecated
 public class StationSectorSource extends ContentFeatureSource {
 
 	private AquaReader<StationGeometryCargo> reader;
