@@ -50,7 +50,7 @@ public class ShapefileCacheDataStoreTest {
 		HashMap<String, Serializable> params = new HashMap<String, Serializable>();
 		
 		File cacheFolder = TestData.file(this, "cache");
-		params.put(CacheDataStoreFactory.NAMESPACE_PARAM.key, new URI("http;//www.aquamonitor.no/"));
+		params.put(CacheDataStoreFactory.NAMESPACE_PARAM.key, "http://www.aquamonitor.no/");
 		params.put(CacheDataStoreFactory.DBTYPE_PARAM.key, (Serializable) CacheDataStoreFactory.DBTYPE_PARAM.sample);
 		params.put(CacheDataStoreFactory.BACKEND_PARAM.key, "dbtype=aquamonitor;user=Ostfold");
 		params.put(CacheDataStoreFactory.CACHE_PARAM.key, "dbtype=shapefile;url=file:" + cacheFolder.getAbsolutePath());
@@ -72,7 +72,7 @@ public class ShapefileCacheDataStoreTest {
 		HashMap<String, Serializable> params = new HashMap<String, Serializable>();
 		
 		File cacheFolder = TestData.file(this, "cache");
-		params.put(CacheDataStoreFactory.NAMESPACE_PARAM.key, new URI("http;//www.aquamonitor.no/"));	
+		params.put(CacheDataStoreFactory.NAMESPACE_PARAM.key, "http://www.aquamonitor.no/");	
 		params.put(CacheDataStoreFactory.DBTYPE_PARAM.key, (Serializable) CacheDataStoreFactory.DBTYPE_PARAM.sample);
 		params.put(CacheDataStoreFactory.BACKEND_PARAM.key, "dbtype=aquamonitor-site;site=Intern;host=https://test-aquamonitor.niva.no/");
 		params.put(CacheDataStoreFactory.CACHE_PARAM.key, "dbtype=shapefile;url=file:" + cacheFolder.getAbsolutePath());
@@ -106,7 +106,7 @@ public class ShapefileCacheDataStoreTest {
 	public void stationPointToMemoryTest() throws Exception {
 		CacheDataStoreFactory factory = new CacheDataStoreFactory();
 		HashMap<String, Serializable> params = new HashMap<String, Serializable>();
-		params.put(CacheDataStoreFactory.NAMESPACE_PARAM.key, new URI("http;//www.aquamonitor.no/"));		
+		params.put(CacheDataStoreFactory.NAMESPACE_PARAM.key, "http://www.aquamonitor.no/");		
 		params.put(CacheDataStoreFactory.DBTYPE_PARAM.key, (Serializable) CacheDataStoreFactory.DBTYPE_PARAM.sample);
 		params.put(CacheDataStoreFactory.BACKEND_PARAM.key, "dbtype=aquamonitor;user=Ostfold");
 		params.put(CacheDataStoreFactory.INTERVAL_PARAM.key, 0);
@@ -132,7 +132,7 @@ public class ShapefileCacheDataStoreTest {
 		}
 		cacheFolder.mkdir();
 		
-		params.put(CacheDataStoreFactory.NAMESPACE_PARAM.key, new URI("http;//www.aquamonitor.no/"));	
+		params.put(CacheDataStoreFactory.NAMESPACE_PARAM.key, "http://www.aquamonitor.no/");	
 		params.put(CacheDataStoreFactory.DBTYPE_PARAM.key, (Serializable) CacheDataStoreFactory.DBTYPE_PARAM.sample);
 		params.put(CacheDataStoreFactory.BACKEND_PARAM.key, "dbtype=aquamonitor;user=Ostfold;host=https://test-aquamonitor.niva.no/");
 		params.put(CacheDataStoreFactory.CACHE_PARAM.key, "dbtype=shapefile;url=file:" + cacheFolder.getAbsolutePath());
