@@ -8,8 +8,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 
-import org.junit.Ignore;
-import org.junit.Test;
 
 import org.apache.commons.io.FileUtils;
 
@@ -27,7 +25,6 @@ import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.filter.text.cql2.CQL;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 
-
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.Name;
@@ -38,12 +35,14 @@ import niva.geotools.data.CacheDataStoreFactory;
 import niva.geotools.data.CacheFeatureStore;
 
 
+import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class CacheDataStoreTest {
+public class ShapefileCacheDataStoreTest {
 
 	@Test
 	public void stationPointToShapeTest() throws Exception {
@@ -100,30 +99,6 @@ public class CacheDataStoreTest {
 		assertNotNull(env);
 		
 		System.out.println(env);
-	}
-	
-	
-	@Test
-	@Ignore
-	public void stationPointToArcSDETest() throws Exception {
-
-		CacheDataStoreFactory factory = new CacheDataStoreFactory();
-		HashMap<String, Serializable> params = new HashMap<String, Serializable>();
-		params.put(CacheDataStoreFactory.NAMESPACE_PARAM.key, new URI("http;//www.aquamonitor.no/"));		
-		params.put(CacheDataStoreFactory.DBTYPE_PARAM.key, (Serializable) CacheDataStoreFactory.DBTYPE_PARAM.sample);
-		params.put(CacheDataStoreFactory.BACKEND_PARAM.key, "dbtype=aquamonitor;user=Ostfold");
-		params.put(CacheDataStoreFactory.CACHE_PARAM.key, "dbtype=arcsde;server=tista.niva.no;port=5151;user=RBR;password=orient");
-		params.put(CacheDataStoreFactory.INTERVAL_PARAM.key, 0);
-		params.put(CacheDataStoreFactory.CACHE_TYPE_NAME_PARAM.key, "RBR.DELETE_%1s");
-		
-		
-		CacheDataStore store = factory.createDataStore(params);
-		List<Name> names = store.getNames();
-		
-		CacheFeatureStore source = store.getFeatureSource(names.get(0));
-		
-		int i = source.getCount(Query.ALL);
-		assertTrue(i > 0);
 	}
 	
 	
