@@ -6,7 +6,6 @@ import java.util.HashMap;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.rest.RestException;
 
-import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
@@ -34,13 +33,13 @@ import org.springframework.http.MediaType;
  * Returns a simple representation of the features within a distance from a point.
  * Specification is like:
  * 
- * /query/{workspace}/{layer}/distance/{epsg}_{north}_{east}_{dist}/features.{format}
+ * /query/{workspace}/{layer}/distance/{epsg}_{north}_{east}_{dist}/features.json
  * 
  * @author Roar Brænden, NIVA
  *
  */
 @RestController
-@RequestMapping(path = QueryBaseController.QUERY_ROOT_PATH + "/distance/{epsg}_{north}_{east}_{dist}/features.{format}",
+@RequestMapping(path = QueryBaseController.QUERY_ROOT_PATH + "/distance/{epsg}_{north}_{east}_{dist}/features.json",
 				produces = {MediaType.APPLICATION_JSON_VALUE})
 public class PointsWithinDistanceController extends QueryBaseController {
 
@@ -50,40 +49,34 @@ public class PointsWithinDistanceController extends QueryBaseController {
 	}
 
 	
-	@SuppressWarnings("rawtypes")
 	@GetMapping
 	public HashMap get(@PathVariable String workspace,
 									@PathVariable String layer,
 									@PathVariable String epsg,
 									@PathVariable Double north,
 									@PathVariable Double east,
-									@PathVariable Double dist,
-									@PathVariable String json) {
+									@PathVariable Double dist) {
 
-		SimpleFeatureSource source = this.extractSourceFromPathVariable(workspace, layer);
-
-		CoordinateReferenceSystem crs = this.extractCRSFromPathVariable(epsg);
+		final SimpleFeatureSource source = this.extractSourceFromPathVariable(workspace, layer);
+		final CoordinateReferenceSystem crs = this.extractCRSFromPathVariable(epsg);
+		final PrimitiveFactory gFact = new PrimitiveFactoryImpl( crs );
 		
-		PrimitiveFactory gFact = new PrimitiveFactoryImpl( crs );
 		Point pnt = gFact.createPoint( new double[] {east, north} );
 		try {
 			if ( !crs.equals(source.getSchema().getCoordinateReferenceSystem()) ) {
 				pnt = (Point)pnt.transform( source.getSchema().getCoordinateReferenceSystem() ); 
 			}
 			
-			DirectPosition dp = pnt.getDirectPosition();
+			final DirectPosition dp = pnt.getDirectPosition();
 
-			GeometryDescriptor geometry = source.getSchema().getGeometryDescriptor();
+			final GeometryDescriptor geometry = source.getSchema().getGeometryDescriptor();
 			
 
-			Filter withinFilt = CQL.toFilter("DWITHIN( " + geometry.getLocalName() 
+			final Filter withinFilt = CQL.toFilter("DWITHIN( " + geometry.getLocalName() 
 					+ ", POINT(" + Double.toString(dp.getOrdinate(0)) + " " + Double.toString(dp.getOrdinate(1)) + ")"
 					+ "," + Double.toString(dist) + ",meters)");
 			
-			
-			SimpleFeatureCollection coll = source.getFeatures(withinFilt);
-			
-			return createResultMap(coll);
+			return createResultMap(source.getFeatures(withinFilt));
 		}
 		catch (TransformException | CQLException | IOException ex) {
 			throw new RestException(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

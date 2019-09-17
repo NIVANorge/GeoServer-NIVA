@@ -33,13 +33,13 @@ import org.springframework.http.MediaType;
  * Returns a simple representation of the features within a distance from a point.
  * Specification is like:
  * 
- * /query/{workspace}/{layer}/{epsg}_{north}_{east}_{dist}/feature.{format}
+ * /query/{workspace}/{layer}/{epsg}_{north}_{east}_{dist}/feature.json
  * 
  * @author Roar Brænden, NIVA
  *
  */
 @RestController
-@RequestMapping(path = QueryBaseController.QUERY_ROOT_PATH + "/{epsg}_{north}_{east}_{dist}/feature.{format}",
+@RequestMapping(path = QueryBaseController.QUERY_ROOT_PATH + "/{epsg}_{north}_{east}_{dist}/feature.json",
 				produces = { MediaType.APPLICATION_JSON_VALUE} )
 public class FeatureController extends QueryBaseController {
 
@@ -56,8 +56,7 @@ public class FeatureController extends QueryBaseController {
 									@PathVariable String epsg,
 									@PathVariable Double north,
 									@PathVariable Double east,
-									@PathVariable Double dist,
-									@PathVariable String format) {
+									@PathVariable Double dist) {
 		
 		SimpleFeatureSource source = this.extractSourceFromPathVariable(workspace, layer);
 		CoordinateReferenceSystem crs = this.extractCRSFromPathVariable(epsg);

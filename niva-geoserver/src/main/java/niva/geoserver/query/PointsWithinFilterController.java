@@ -43,14 +43,14 @@ import com.vividsolutions.jts.geom.Geometry;
  * Returns a collection of points that is within a given polygon.
  * Spesifikasjonen er som følger:
  * 
- * /query/{workspace}/{layer}/filter/{workspace2}/{layer2}/{filter}/features.{format}
+ * /query/{workspace}/{layer}/filter/{workspace2}/{layer2}/{filter}/features.json
  * 
  * Resultatet returneres som et array med de resulterende features.
  * @author Roar Brænden
  *
  */
 @RestController
-@RequestMapping(path = QueryBaseController.QUERY_ROOT_PATH + "/filter/{workspace2}/{layer2}/{filter}/features.{format}",
+@RequestMapping(path = QueryBaseController.QUERY_ROOT_PATH + "/filter/{workspace2}/{layer2}/{filter}/features.json",
 				produces = { MediaType.APPLICATION_JSON_VALUE })
 public class PointsWithinFilterController extends QueryBaseController {
 	
@@ -73,8 +73,7 @@ public class PointsWithinFilterController extends QueryBaseController {
 									@PathVariable String layer,
 									@PathVariable String workspace2,
 									@PathVariable String layer2,
-									@PathVariable String filter,
-									@PathVariable String format) {
+									@PathVariable String filter) {
 		
 		SimpleFeatureSource source = this.extractSourceFromPathVariable(workspace, layer);
 		SimpleFeatureSource polySource = this.extractSourceFromPathVariable(workspace2, layer2);

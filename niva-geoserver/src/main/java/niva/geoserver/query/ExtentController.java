@@ -24,13 +24,13 @@ import org.springframework.http.MediaType;
  * Returnerer extent av et feature layer. Bruker getBounds().
  * Spesifikasjonen er som følger:
  * 
- * /query/{workspace}/{layer}/extent.{format}
+ * /query/{workspace}/{layer}/extent.json
  * 
  * @author Roar Brænden
  *
  */
 @RestController
-@RequestMapping(path=QueryBaseController.QUERY_ROOT_PATH + "/extent.{format}", produces= {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(path=QueryBaseController.QUERY_ROOT_PATH + "/extent.json", produces= {MediaType.APPLICATION_JSON_VALUE})
 public class ExtentController extends QueryBaseController {
 	
 	private static final Logger LOGGER = Logging.getLogger(ExtentController.class);

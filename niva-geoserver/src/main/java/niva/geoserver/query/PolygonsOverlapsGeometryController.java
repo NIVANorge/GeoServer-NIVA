@@ -36,13 +36,13 @@ import com.vividsolutions.jts.io.WKTReader;
  * Returns a simple representation of the features within a distance from a point.
  * Specification is like:
  * 
- * /query/{workspace}/{layer}/overlaps/{epsg}_{geometry}/features.{format}
+ * /query/{workspace}/{layer}/overlaps/{epsg}_{geometry}/features.json
  * 
  * @author Roar Brænden, NIVA
  *
  */
 @RestController
-@RequestMapping(path = QueryBaseController.QUERY_ROOT_PATH + "/overlaps/{epsg}_{geometry}/features.{format}",
+@RequestMapping(path = QueryBaseController.QUERY_ROOT_PATH + "/overlaps/{epsg}_{geometry}/features.json",
 				produces = { MediaType.APPLICATION_JSON_VALUE })
 public class PolygonsOverlapsGeometryController extends QueryBaseController {
 
@@ -59,8 +59,7 @@ public class PolygonsOverlapsGeometryController extends QueryBaseController {
 	public HashMap get(@PathVariable String workspace,
 									 @PathVariable String layer,
 									 @PathVariable String epsg,
-									 @PathVariable String geometry,
-									 @PathVariable String format) {
+									 @PathVariable String geometry) {
 		
 		SimpleFeatureSource source = this.extractSourceFromPathVariable(workspace, layer);
 		CoordinateReferenceSystem crs = this.extractCRSFromPathVariable(epsg);

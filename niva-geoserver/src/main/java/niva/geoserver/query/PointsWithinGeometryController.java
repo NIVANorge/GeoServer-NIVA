@@ -36,14 +36,14 @@ import org.springframework.http.MediaType;
  * Returns a collection of points that is within a given geometry.
  * Spesifikasjonen er som følger:
  * 
- * /query/{workspace}/{layer}/geometry/{epsg}_{geometry}/features.{format}
+ * /query/{workspace}/{layer}/geometry/{epsg}_{geometry}/features.json
  * 
  * Resultatet returneres som et array med de resulterende features.
  * @author Roar Brænden
  *
  */
 @RestController
-@RequestMapping(path = QueryBaseController.QUERY_ROOT_PATH + "/geometry/{epsg}_{geometry}/features.{format}",
+@RequestMapping(path = QueryBaseController.QUERY_ROOT_PATH + "/geometry/{epsg}_{geometry}/features.json",
 				produces = {MediaType.APPLICATION_JSON_VALUE})
 public class PointsWithinGeometryController extends QueryBaseController {
 	
@@ -62,8 +62,7 @@ public class PointsWithinGeometryController extends QueryBaseController {
 	public HashMap get(@PathVariable String workspace,
 									@PathVariable String layer,
 									@PathVariable String epsg,
-									@PathVariable String geometry,
-									@PathVariable String format) {
+									@PathVariable String geometry) {
 		LOGGER.fine("Query a geometry.");
 		
 		SimpleFeatureSource source = this.extractSourceFromPathVariable(workspace, layer);
