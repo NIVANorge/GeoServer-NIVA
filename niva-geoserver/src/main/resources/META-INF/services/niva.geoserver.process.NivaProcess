@@ -1,3 +1,4 @@
 niva.geoserver.process.PointAggregateGridProcess
 niva.geoserver.process.LinearPointToLineProcess
 niva.geoserver.process.DissolveProcess
+niva.geoserver.process.MSAccessProcess
