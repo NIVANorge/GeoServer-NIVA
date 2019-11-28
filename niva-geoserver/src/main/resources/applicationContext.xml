@@ -18,6 +18,8 @@
         <property name="descriptionKey" value="descriptionAuthProviderPanel"/>
     </bean>
     
+    <bean id="dataAccessReportPPIO" class="niva.geoserver.process.DataAccessReportPPIO" /> 
+    
 	<context:component-scan base-package="niva.geoserver.query"/>
 	
 </beans>

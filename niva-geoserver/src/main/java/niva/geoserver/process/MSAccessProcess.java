@@ -16,6 +16,7 @@ import org.geotools.util.logging.Logging;
 
 import niva.geotools.data.msaccess.BegroingDataAccess;
 import niva.geotools.data.msaccess.BunndyrDataAccess;
+import niva.geotools.data.msaccess.DataAccessReport;
 
 @DescribeProcess(title = "MS Access XY-table", description = "Update featureStore based on some prefined tables within MS Access database.")
 public class MSAccessProcess implements NivaProcess {
@@ -29,8 +30,8 @@ public class MSAccessProcess implements NivaProcess {
 	}
 			
 	
-	@DescribeResult(description = "Returns true or exception")
-	public boolean execute(@DescribeParameter(name= "workspace")String workspace,
+	@DescribeResult(description = "Returns a report")
+	public DataAccessReport execute(@DescribeParameter(name= "workspace")String workspace,
 			@DescribeParameter(name="storeName")String storeName,
 			@DescribeParameter(name="accessPath")String accessPath,
 			@DescribeParameter(name="database", description="Begroing;Bunndyr")String database) 
@@ -42,16 +43,18 @@ public class MSAccessProcess implements NivaProcess {
 			final JDBCDataStore dataStore = (JDBCDataStore) geoserver.getCatalog()
 																	 .getDataStoreByName(workspace, storeName)
 																	 .getDataStore( null );
+			DataAccessReport report = null;
 			
 			switch (database.toLowerCase()) {
 			case "begroing":
-					new BegroingDataAccess(dataStore, accessPath).updateAll();
-					break;
+				report = new BegroingDataAccess(dataStore, accessPath).updateAll();
+				break;
 			case "bunndyr":
-				new BunndyrDataAccess(dataStore, accessPath).updateAll();
+				report = new BunndyrDataAccess(dataStore, accessPath).updateAll();
 				break;
 			}
-			return true;
+			
+			return report;
 		} catch (IOException | SQLException ex) {
 			LOGGER.severe(ex.getMessage());
 			throw new ProcessException("MS Access processing failed.", ex);
