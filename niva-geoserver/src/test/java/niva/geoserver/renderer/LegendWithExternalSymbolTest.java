@@ -1,9 +1,5 @@
 package niva.geoserver.renderer;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-
-import javax.imageio.ImageIO;
 
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.wms.DefaultWebMapService;
@@ -13,7 +9,7 @@ import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSTestSupport;
 import org.geoserver.wms.legendgraphic.BufferedImageLegendGraphic;
 
-import org.geotools.TestData;
+
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.styling.ExternalGraphic;
 import org.geotools.styling.FeatureTypeStyle;
@@ -28,7 +24,8 @@ import org.opengis.filter.FilterFactory;
 import org.junit.Test;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+
+import static niva.geoserver.renderer.ResourceImageTester.assertImage;
 
 /**
  * Test for a problem with geoServer handling of external symbols within the Legend part of a SLD.
@@ -89,29 +86,7 @@ public class LegendWithExternalSymbolTest extends WMSTestSupport {
 		assertNotNull(legendGraphic);
 		assertTrue(legendGraphic instanceof BufferedImageLegendGraphic);
 		
-		final File tmpLegendFile = TestData.temp(LegendWithExternalSymbolTest.class, "legend.png");
-
-		ImageIO.write(((BufferedImageLegendGraphic)legendGraphic).getLegend(), "png", tmpLegendFile);
-		
-		testImage(((BufferedImageLegendGraphic)legendGraphic).getLegend());
+		assertImage("legend.png", ((BufferedImageLegendGraphic)legendGraphic).getLegend());
 	}
 
-	private void testImage(BufferedImage generatedImage) throws Exception {
-		final File testFile = TestData.file(LegendWithExternalSymbolTest.class, "legend.png");
-		
-		final int width = generatedImage.getWidth();
-		final int height = generatedImage.getHeight();
-		
-		final BufferedImage testImage = ImageIO.read(testFile);
-		assertTrue("The two pictures doesn't have the same dimension.", width == testImage.getWidth() 
-																		&& height == testImage.getHeight());
-
-		for (int y = 0; y < height; y++){
-			for (int x = 0; x < width; x++){
-				if (generatedImage.getRGB(x, y) != testImage.getRGB(x, y)) {
-					fail("The two legends doesn't match.");
-				}
-			}
-		}
-	}
 }
