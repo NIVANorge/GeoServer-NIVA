@@ -14,7 +14,7 @@ import org.geoserver.wms.WMSTestSupport;
 import org.geoserver.wms.legendgraphic.BufferedImageLegendGraphic;
 
 import org.geotools.TestData;
-import org.geotools.filter.FilterFactoryImpl;
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.styling.ExternalGraphic;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Graphic;
@@ -22,7 +22,6 @@ import org.geotools.styling.PointSymbolizer;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
-import org.geotools.styling.StyleFactoryImpl;
 
 import org.opengis.filter.FilterFactory;
 
@@ -38,9 +37,9 @@ import static org.junit.Assert.fail;
  */
 public class LegendWithExternalSymbolTest extends WMSTestSupport {
 	
-	private static StyleFactory styleFact = new StyleFactoryImpl();
+	private static StyleFactory styleFact = CommonFactoryFinder.getStyleFactory();
 	
-	private static FilterFactory filterFact = new FilterFactoryImpl();
+	private static FilterFactory filterFact = CommonFactoryFinder.getFilterFactory();
 	
 
 	@Test
