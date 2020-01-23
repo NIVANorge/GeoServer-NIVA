@@ -9,6 +9,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.wms.DefaultWebMapService;
 import org.geoserver.wms.GetLegendGraphic;
 import org.geoserver.wms.GetLegendGraphicRequest;
+import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSTestSupport;
 import org.geoserver.wms.legendgraphic.BufferedImageLegendGraphic;
 
@@ -36,68 +37,80 @@ import static org.junit.Assert.fail;
  *
  */
 public class LegendWithExternalSymbolTest extends WMSTestSupport {
+	
+	private static StyleFactory styleFact = new StyleFactoryImpl();
+	
+	private static FilterFactory filterFact = new FilterFactoryImpl();
+	
 
 	@Test
 	public void testgetLegendGraphic() throws Exception {
+		final WMS wms = getWMS();
 		
-		DefaultWebMapService reflector = new DefaultWebMapService(getWMS());
-		GetLegendGraphic glg = new GetLegendGraphic(getWMS());
-		reflector.setGetLegendGraphic(glg);
-		FeatureTypeInfo pointsLayer = getWMS().getCatalog().getFeatureTypeByName("Points");
+		final FeatureTypeInfo pointsLayer = wms.getCatalog().getFeatureTypeByName("Points");
+		
 		assertNotNull(pointsLayer);
 		assertNotNull(pointsLayer.getFeatureType());
 		
-		StyleFactory sf = new StyleFactoryImpl();
-		ExternalGraphic eg = sf.createExternalGraphic("http://aquamonitor?cnt=2&cols=56ddff", "application/chart");
+		final Graphic symbolizerGraph = styleFact.createGraphic(new ExternalGraphic[] {
+																	styleFact.createExternalGraphic("http://aquamonitor?cnt=2&cols=56ddff",
+																									"application/chart")
+																		}, // externalGraphics
+																null, // marks
+																null, // symbols
+																null, // opacity
+																filterFact.literal(40), // size
+																null); // rotation
 
-		FilterFactory ff = new FilterFactoryImpl();
-		Graphic graph = sf.createGraphic(new ExternalGraphic[] {eg}, null, null, null, ff.literal(40), null);
-
+		final PointSymbolizer symbolizer = styleFact.createPointSymbolizer();
+		symbolizer.setGraphic(symbolizerGraph);
 		
-		PointSymbolizer symb = sf.createPointSymbolizer();
-		symb.setGraphic(graph);
+		Rule rule = styleFact.createRule();
+		rule.symbolizers().add(symbolizer);
+		rule.setLegend(symbolizerGraph);
 		
-		Rule rule = sf.createRule();
-		rule.symbolizers().add(symb);
-		rule.setLegend(graph);
-		
-		FeatureTypeStyle fts = sf.createFeatureTypeStyle();
+		final FeatureTypeStyle fts = styleFact.createFeatureTypeStyle();
 		fts.rules().add(rule);
 
-		Style symbolStyle = sf.createStyle();
+		final Style symbolStyle = styleFact.createStyle();
 		symbolStyle.featureTypeStyles().add(fts);
 								
-		GetLegendGraphicRequest request = new GetLegendGraphicRequest();
+		final GetLegendGraphicRequest request = new GetLegendGraphicRequest();
 		request.setFormat("image/png");
 		request.setLayer(pointsLayer.getFeatureType());
 		request.setStyle(symbolStyle);
 		request.setWidth(50);
 		request.setHeight(50);
 		
+		final DefaultWebMapService reflector = new DefaultWebMapService(wms);
+		reflector.setGetLegendGraphic(new GetLegendGraphic(wms));
 		
-		Object graphic = reflector.getLegendGraphic(request);
+		final Object legendGraphic = reflector.getLegendGraphic(request);
 		
-		assertNotNull(graphic);
-		assertTrue(graphic instanceof BufferedImageLegendGraphic);
+		assertNotNull(legendGraphic);
+		assertTrue(legendGraphic instanceof BufferedImageLegendGraphic);
+		
+		final File tmpLegendFile = TestData.temp(LegendWithExternalSymbolTest.class, "legend.png");
 
-		ImageIO.write(((BufferedImageLegendGraphic)graphic).getLegend(), "png", new File("C:\\temp\\legend.png"));
+		ImageIO.write(((BufferedImageLegendGraphic)legendGraphic).getLegend(), "png", tmpLegendFile);
 		
-		testImage(((BufferedImageLegendGraphic)graphic).getLegend());
+		testImage(((BufferedImageLegendGraphic)legendGraphic).getLegend());
 	}
 
 	private void testImage(BufferedImage generatedImage) throws Exception {
-		File testFile = TestData.file(LegendWithExternalSymbolTest.class, "legend.png");
+		final File testFile = TestData.file(LegendWithExternalSymbolTest.class, "legend.png");
 		
-		BufferedImage testImage = ImageIO.read(testFile);
-		assertTrue("The two pictures doesn't have the same dimension.", generatedImage.getWidth() == testImage.getWidth() && generatedImage.getHeight() == testImage.getHeight());
+		final int width = generatedImage.getWidth();
+		final int height = generatedImage.getHeight();
 		
-		int width = generatedImage.getWidth();
-		int height = generatedImage.getHeight();
-		
+		final BufferedImage testImage = ImageIO.read(testFile);
+		assertTrue("The two pictures doesn't have the same dimension.", width == testImage.getWidth() 
+																		&& height == testImage.getHeight());
+
 		for (int y = 0; y < height; y++){
 			for (int x = 0; x < width; x++){
 				if (generatedImage.getRGB(x, y) != testImage.getRGB(x, y)) {
-					fail("The two pictures doesn't match.");
+					fail("The two legends doesn't match.");
 				}
 			}
 		}
