@@ -71,7 +71,8 @@ public class AquamonitorFullBlownLegendTest extends WMSTestSupport {
 		final String requestURL = "wms?LAYERS=no.niva.aquamonitor:Intern_station_datatype&"
 								+ "FORMAT=image/png&TRANSPARENT=TRUE&SERVICE=WMS&"
 								+ "VERSION=1.1.1&REQUEST=GetLegendGraphic&STYLES=&"
-								+ "SRS=EPSG:32633&LAYER=no.niva.aquamonitor:Intern_station_datatype&WIDTH=350";
+								+ "SRS=EPSG:32633&LAYER=no.niva.aquamonitor:Intern_station_datatype"
+								+ "&legend_options=rescaleSymbols:off";
 		
         final Map rawKvp = caseInsensitiveKvp(KvpUtils.parseQueryString(requestURL));
         final GetLegendGraphicKvpReader reader = new GetLegendGraphicKvpReader(getWMS());
@@ -79,7 +80,7 @@ public class AquamonitorFullBlownLegendTest extends WMSTestSupport {
         																		  parseKvp(rawKvp),
         																		  rawKvp));
         
-        ImageIO.write(image, "png", new File("C:\\temp\\legend.png"));
+        ImageIO.write(image, "png", new File("C:\\temp\\Internal_legend.png"));
         
         assertImage("Internal_legend.png", image);
         

@@ -328,6 +328,33 @@
           </PointSymbolizer>
         </Rule>
         <Rule>
+          <Title>Myr</Title>
+          <LegendGraphic>
+            <Graphic>
+              <ExternalGraphic>
+                <OnlineResource xlink:href="http://aquamonitor?typ=Y" />
+                <Format>application/chart</Format>
+              </ExternalGraphic>
+              <Size>20</Size>
+            </Graphic>
+          </LegendGraphic>
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>STATION_TYPE</ogc:PropertyName>
+              <ogc:Literal>Myr</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+          <PointSymbolizer>
+            <Graphic>
+               <ExternalGraphic>
+                 <OnlineResource xlink:href="http://aquamonitor?typ=Y&amp;vals=${Water},${Sediment},${Biota},${Sewage},${Blotbunn},${Hardbunn},${Plankton},${Vannplanter},${Bunndyr},${Begroing},${Air},${EMPTY}&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
+                 <Format>application/chart</Format>
+               </ExternalGraphic>
+              <Size>20</Size>
+            </Graphic>
+          </PointSymbolizer>
+        </Rule>
+        <Rule>
           <Title>Overvann</Title>
           <LegendGraphic>
             <Graphic>
