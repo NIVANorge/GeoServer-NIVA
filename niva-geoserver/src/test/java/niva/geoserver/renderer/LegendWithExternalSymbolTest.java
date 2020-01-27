@@ -24,7 +24,9 @@ import org.opengis.filter.FilterFactory;
 import org.junit.Test;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
+import java.awt.image.BufferedImage;
+import java.io.File;
+import javax.imageio.ImageIO;
 import static niva.geoserver.renderer.ResourceImageTester.assertImage;
 
 /**
@@ -61,7 +63,7 @@ public class LegendWithExternalSymbolTest extends WMSTestSupport {
 		final PointSymbolizer symbolizer = styleFact.createPointSymbolizer();
 		symbolizer.setGraphic(symbolizerGraph);
 		
-		Rule rule = styleFact.createRule();
+		final Rule rule = styleFact.createRule();
 		rule.symbolizers().add(symbolizer);
 		rule.setLegend(symbolizerGraph);
 		
@@ -75,8 +77,6 @@ public class LegendWithExternalSymbolTest extends WMSTestSupport {
 		request.setFormat("image/png");
 		request.setLayer(pointsLayer.getFeatureType());
 		request.setStyle(symbolStyle);
-		request.setWidth(50);
-		request.setHeight(50);
 		
 		final DefaultWebMapService reflector = new DefaultWebMapService(wms);
 		reflector.setGetLegendGraphic(new GetLegendGraphic(wms));
@@ -85,6 +85,10 @@ public class LegendWithExternalSymbolTest extends WMSTestSupport {
 		
 		assertNotNull(legendGraphic);
 		assertTrue(legendGraphic instanceof BufferedImageLegendGraphic);
+		
+		final BufferedImage legendImage = ((BufferedImageLegendGraphic)legendGraphic).getLegend();
+		ImageIO.write(legendImage, "png", new File("C:\\temp\\legend.png"));
+        
 		
 		assertImage("legend.png", ((BufferedImageLegendGraphic)legendGraphic).getLegend());
 	}
