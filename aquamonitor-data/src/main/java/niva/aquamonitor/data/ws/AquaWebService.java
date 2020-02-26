@@ -9,7 +9,18 @@ import javax.servlet.ServletContext;
 import org.geotools.util.logging.Logging;
 
 /**
- * Base class for all webservices. Functionality to create address for aquamonitor web server.
+ * Base class for calling a AquaMonitor webservice.
+ * Functionality to create the address for a AquaMonitor web server.
+ * <br>
+ * It could be configured by either:
+ * <li>Java environment variable</li>
+ * <li>Servlet context parameter</li>
+ * <li>System environment variable</li>
+ * <br>
+ * The name for the variable should be: <b>AQUAMONITOR_HOST_ADDRESS</b>
+ * <br>
+ * Default is set to http://www.aquamonitor.no/
+ * 
  * @author Roar Brænden, NIVA
  *
  */
@@ -19,6 +30,8 @@ public abstract class AquaWebService {
 	private static final String NAMESPACE = "http://www.aquamonitor.no/";
 	private static final String HOST_ADDRESS = "http://www.aquamonitor.no/";
 	protected static final String DEFAULT_SITE = "AquaServices";
+
+    private static final String HOST_ADDRESS_VARIABLE = "AQUAMONITOR_HOST_ADDRESS";
 	
 	private static String defaultHostAddress = null;
 	private static Map<ServletContext, String> hostAddresses = new HashMap<ServletContext, String>();
@@ -43,15 +56,13 @@ public abstract class AquaWebService {
 	
 	
     private static String lookupHostAddress(ServletContext servContext) {
+    	LOGGER.fine("Lookup AquaMonitor host address.");
     	
-
         final String[] typeStrs = {
             "Java environment variable ",
             "Servlet context parameter ",
             "System environment variable "
         };
-
-        final String varStr = "AQUAMONITOR_HOST_ADDRESS";
 
         String hostAddress = null;
 
@@ -62,13 +73,13 @@ public abstract class AquaWebService {
             // Lookup section
             switch (j) {
                 case 0:
-                    value = System.getProperty(varStr);
+                    value = System.getProperty(HOST_ADDRESS_VARIABLE);
                     break;
                 case 1:
-                    value = (servContext != null ? servContext.getInitParameter(varStr) : null);
+                    value = (servContext != null ? servContext.getInitParameter(HOST_ADDRESS_VARIABLE) : null);
                     break;
                 case 2:
-                    value = System.getenv(varStr);
+                    value = System.getenv(HOST_ADDRESS_VARIABLE);
                     break;
             }
 
