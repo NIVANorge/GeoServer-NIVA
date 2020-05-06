@@ -14,6 +14,28 @@
    <spring.security.version>4.0.4.RELEASE</spring.security.version>
    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
  </properties>
+ 
+   <repositories>
+    <repository>
+      <id>central.maven.org</id>
+      <name>Central Maven repository</name>
+      <url>https://repo1.maven.org/maven2</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+
+    <repository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>osgeo</id>
+      <name>Open Source Geospatial Foundation Repository</name>
+      <url>https://repo.osgeo.org/repository/release/</url>
+    </repository>
+
+  </repositories>
+ 
  <dependencies>
   <dependency>
    <groupId>org.geoserver</groupId>
@@ -29,6 +51,11 @@
   	<groupId>org.geoserver.web</groupId>
   	<artifactId>gs-web-sec-core</artifactId>
   	<version>${gs.version}</version>
+  </dependency>
+  <dependency>
+    <groupId>org.geoserver.extension</groupId>
+    <artifactId>gs-wps-core</artifactId>
+    <version>${gs.version}</version>
   </dependency>
   <dependency>
     <groupId>org.apache.commons</groupId>
@@ -53,17 +80,12 @@
   <dependency>
 	<groupId>niva.geotools</groupId>
   	<artifactId>niva-tools</artifactId>
-  	<version>5.3</version>
-  </dependency>
-    <dependency>
-    	<groupId>niva.geotools</groupId>
-    	<artifactId>aquamonitor-data</artifactId>
-    	<version>6.2</version>
+  	<version>5.4</version>
   </dependency>
   <dependency>
-    	<groupId>niva.geotools</groupId>
-    	<artifactId>naturbasen-data</artifactId>
-    	<version>6.1</version>
+    <groupId>niva.geotools</groupId>
+    <artifactId>aquamonitor-data</artifactId>
+    <version>6.2</version>
   </dependency>
   <dependency>
    <groupId>junit</groupId>
@@ -71,16 +93,16 @@
    <version>4.11</version>
    <scope>test</scope>
   </dependency>
-    <dependency>
-      <groupId>junit-addons</groupId>
-      <artifactId>junit-addons</artifactId>
-      <version>1.4</version>
-      <scope>test</scope>
-    </dependency>
   <dependency>
-  	<groupId>com.mockrunner</groupId>
-  	<artifactId>mockrunner</artifactId>
-  	<version>0.3.6</version>
+    <groupId>junit-addons</groupId>
+    <artifactId>junit-addons</artifactId>
+    <version>1.4</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>com.mockrunner</groupId>
+    <artifactId>mockrunner</artifactId>
+    <version>0.3.6</version>
   	<scope>test</scope>
   </dependency>
   <dependency>
@@ -110,23 +132,17 @@
    <classifier>tests</classifier>
   </dependency>
   <dependency>
-      <groupId>org.geoserver.extension</groupId>
-      <artifactId>gs-wps-core</artifactId>
-      <version>${gs.version}</version>
-      <scope>test</scope>
+    <groupId>org.geoserver.extension</groupId>
+    <artifactId>gs-wps-core</artifactId>
+    <version>${gs.version}</version>
+    <scope>test</scope>
+    <classifier>tests</classifier>
   </dependency>
   <dependency>
-      <groupId>org.geoserver.extension</groupId>
-      <artifactId>gs-wps-core</artifactId>
-      <version>${gs.version}</version>
-      <scope>test</scope>
-      <classifier>tests</classifier>
-  </dependency>
-  <dependency>
-      <groupId>org.geotools</groupId>
-      <artifactId>gt-sample-data</artifactId>
-      <version>${gt.version}</version>
-      <scope>test</scope>
+    <groupId>org.geotools</groupId>
+    <artifactId>gt-sample-data</artifactId>
+    <version>${gt.version}</version>
+    <scope>test</scope>
   </dependency>
   <dependency>
    <groupId>javax.servlet</groupId>
