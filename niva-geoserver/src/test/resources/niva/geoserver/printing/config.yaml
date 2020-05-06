@@ -1,0 +1,98 @@
+#===========================================================================
+# allowed DPIs
+#===========================================================================
+dpis: [75, 150, 300]
+
+
+#===========================================================================
+# allowed formats
+#===========================================================================
+formats:
+  - pdf
+  - png
+
+#===========================================================================
+# the allowed scales
+#===========================================================================
+scales:
+  - 25000
+  - 50000
+  - 100000
+  - 200000
+  - 500000
+  - 1000000
+  - 1733376
+  - 2000000
+  - 4000000
+
+
+#===========================================================================
+# the list of allowed hosts
+#===========================================================================
+hosts:
+  - !localMatch
+    dummy: true
+  - !dnsMatch
+    host: test-aquamonitor.niva.no
+  - !dnsMatch
+    host: tile.openstreetmap.org
+
+security:
+  - !basicAuth
+       matcher: !localMatch
+          dummy: true
+       username: aquamonitor
+       password: trommer
+       preemptive: true
+
+layouts:
+  Image:
+    mainPage:
+      pageSize: '728 591'
+      marginTop: 0
+      marginBottom: 0
+      marginLeft: 0
+      marginRight: 0
+      items:
+        - !map
+          spacingAfter: 0
+          width: 728
+          height: 591
+  #===========================================================================
+  A4 english:
+  #===========================================================================
+    metaData:
+#      title: '${mapTitle}'
+      author: 'NIVA'
+      subject: 'Map from AquaMonitor'
+      keywords: 'map,print'
+      creator: 'AquaMonitor - Geoserver'
+    #-------------------------------------------------------------------------
+    mainPage:
+      pageSize: A4
+      rotation: true
+      items:
+        - !text
+          text: '${mapTitle}'
+          fontSize: 24
+          spacingAfter: 30
+        - !map
+          spacingAfter: 30
+          width: 511
+          height: 420
+        - !columns
+          items:
+            - !text
+              text: '${comment}'
+            - !scalebar
+              type: bar
+              maxSize: 100
+              barBgColor: white
+              fontSize: 8
+              align: right
+      footer:
+          height: 60
+          items:
+            - !image
+              maxHeight: 60
+              url: 'http://www.aquamonitor.no/SI/images/NIVA_logo_en.gif'

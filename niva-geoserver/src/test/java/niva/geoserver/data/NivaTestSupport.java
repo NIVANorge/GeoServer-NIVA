@@ -22,7 +22,14 @@ import org.geoserver.catalog.impl.LayerInfoImpl;
 import org.geoserver.data.test.SystemTestData;
 import org.geoserver.test.GeoServerSystemTestSupport;
 
-
+/**
+ * Base class for NIVA related Geoserver setup.
+ * 
+ * 
+ * 
+ * @author Roar Brænden, NIVA
+ *
+ */
 public class NivaTestSupport extends GeoServerSystemTestSupport {
 	
 	@Override
@@ -32,8 +39,9 @@ public class NivaTestSupport extends GeoServerSystemTestSupport {
 		testData.addWorkspace("no.norgedigitalt", "http://www.norgedigitalt.no", catalog);
 		
 		File dataDir = new File(testData.getDataDirectoryRoot(), "data");
-        if (!dataDir.exists())
+        if (!dataDir.exists()) {
         	dataDir.mkdir();
+        }
         
         setupESRIPropertyFile();
 	}
@@ -48,7 +56,7 @@ public class NivaTestSupport extends GeoServerSystemTestSupport {
         if (file.exists()) {
             file.delete();
         }
-        org.geoserver.data.util.IOUtils.copy(input, file);
+        org.geoserver.util.IOUtils.copy(input, file);
     }
     
     private String get4326_ESRI_WKTContent() {
