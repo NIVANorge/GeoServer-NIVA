@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
+import javax.net.ssl.SSLHandshakeException;
+
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.Header;
@@ -34,7 +36,7 @@ import org.json.simple.parser.ParseException;
  * @author Roar Brænden, NIVA
  *
  */
-public class JsonStreamIterator implements Iterator<Object>, ContentHandler {
+public class JsonStreamIterator implements Iterator<Object>, ContentHandler, AutoCloseable {
 	
 	private final static Logger LOGGER = Logging.getLogger(JsonStreamIterator.class);
 	
@@ -83,33 +85,44 @@ public class JsonStreamIterator implements Iterator<Object>, ContentHandler {
 			get.setConfig(config);
 		}
 
-		CloseableHttpResponse resp = client.execute(get);
-		
-		int respStatusCode = resp.getStatusLine().getStatusCode();
-		
-		if (respStatusCode == HttpStatus.SC_NOT_FOUND) {
-			throw new IOException("Url: " + this.url + " responds with http status code 404.");
-		}
-		
-		HttpEntity entity = resp.getEntity();
-
-		if (entity != null) {
-			InputStream stream = entity.getContent();
-			parser = new JSONParser();
-			reader = new InputStreamReader(stream, "utf-8");
-			try {
-				parser.parse(reader, this);
-				hasReadHeader = true;
+		try {
+			CloseableHttpResponse resp = client.execute(get);
+			
+			int respStatusCode = resp.getStatusLine().getStatusCode();
+			
+			if (respStatusCode == HttpStatus.SC_NOT_FOUND) {
+				throw new IOException("Url: " + this.url + " responds with http status code 404.");
 			}
-			catch (ParseException pe) {
-				
-				if ("Unexpected character (<) at position 0.".equals(pe.toString())) {
-					throw new IOException("WebService seems to return HTML instead of Json.");
+			
+			HttpEntity entity = resp.getEntity();
+	
+			if (entity != null) {
+				InputStream stream = entity.getContent();
+				parser = new JSONParser();
+				reader = new InputStreamReader(stream, "utf-8");
+				try {
+					parser.parse(reader, this);
+					hasReadHeader = true;
 				}
-				else {
-					LOGGER.warning(pe.toString());
-					throw new IOException("Json parser exception.");
+				catch (ParseException pe) {
+					
+					if ("Unexpected character (<) at position 0.".equals(pe.toString())) {
+						throw new IOException("WebService seems to return HTML instead of Json.");
+					}
+					else {
+						LOGGER.warning(pe.toString());
+						throw new IOException("Json parser exception.");
+					}
 				}
+			}
+		}
+		catch (SSLHandshakeException ex) {
+			if (ex.getMessage().startsWith("Unsupported curveId")) {
+				throw new IOException("The host " + get.getURI().getHost() + " doesn't respond correct on a HTTPS request.", ex);
+			}
+			else {
+				LOGGER.warning(ex.toString());
+				throw ex;
 			}
 		}
 	}
@@ -154,11 +167,6 @@ public class JsonStreamIterator implements Iterator<Object>, ContentHandler {
 
 	@Override
 	public void endJSON() throws ParseException, IOException {
-		try {
-			client.close();
-		} catch (IOException e) {
-			LOGGER.warning(e.getMessage());
-		}
 	}
 
 
@@ -254,5 +262,16 @@ public class JsonStreamIterator implements Iterator<Object>, ContentHandler {
 		}
 		else
 			return true;
+	}
+
+	@Override
+	public void close() throws Exception {
+		if (reader != null) {
+			reader.close();
+		}
+		
+		if (client != null) {
+			client.close();
+		}
 	}
 }

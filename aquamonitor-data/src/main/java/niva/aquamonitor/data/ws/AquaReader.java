@@ -5,9 +5,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+
 import com.vividsolutions.jts.geom.Envelope;
 
-public abstract class AquaReader<T> {
+/**
+ * Base functionality for reading content from a webservice in AquaMonitor.
+ * Content could be one of the Cargo classes. Which also has a super Reader class.
+ * 
+ * @author Roar Brænden, NIVA
+ *
+ * @param <TCargo>
+ */
+public abstract class AquaReader<TCargo> {
 	
 	private final AquaWebService webservice;
 	
@@ -59,7 +68,7 @@ public abstract class AquaReader<T> {
 	
 
 	public int getCount() throws IOException {
-		Iterator<T> iter = iterator();
+		Iterator<TCargo> iter = iterator();
 		
 		int ret = 0;
 		
@@ -73,7 +82,7 @@ public abstract class AquaReader<T> {
 
 
 	public Envelope getEnvelope() throws IOException {
-		Iterator<T> iter = iterator();
+		Iterator<TCargo> iter = iterator();
 		
 		double minLat, minLon, maxLat, maxLon;
 		
@@ -112,7 +121,7 @@ public abstract class AquaReader<T> {
 	}
 	
 
-	abstract public Iterator<T> iterator() throws IOException;
+	abstract public Iterator<TCargo> iterator() throws IOException;
 
 	
 	protected Iterator<Object> callJsonService() throws IOException {
@@ -128,10 +137,10 @@ public abstract class AquaReader<T> {
 			url += "?" + params.substring(1);
 		}
 		
-		JsonStreamIterator iter = new JsonStreamIterator(url);
-		if (timeoutMins != null) iter.setTimeoutMins(timeoutMins);
+		final JsonStreamIterator iter = new JsonStreamIterator(url);
+		iter.setTimeoutMins(timeoutMins);
 		iter.read();
-		
+
 		return iter;
 	}
 	
