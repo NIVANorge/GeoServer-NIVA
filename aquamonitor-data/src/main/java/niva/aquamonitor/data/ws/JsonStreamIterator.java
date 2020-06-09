@@ -36,7 +36,7 @@ import org.json.simple.parser.ParseException;
  * @author Roar Brænden, NIVA
  *
  */
-public class JsonStreamIterator implements Iterator<Object>, ContentHandler, AutoCloseable {
+class JsonStreamIterator implements Iterator<Object>, ContentHandler {
 	
 	private final static Logger LOGGER = Logging.getLogger(JsonStreamIterator.class);
 	
@@ -57,15 +57,15 @@ public class JsonStreamIterator implements Iterator<Object>, ContentHandler, Aut
 	
 	private String url;
 	
-	public JsonStreamIterator(String url) {
+	JsonStreamIterator(String url) {
 		this.url = url;
 	}
 	
-	public void setTimeoutMins(int timeoutmins) {
+	void setTimeoutMins(int timeoutmins) {
 		this.timeoutMins = timeoutmins;
 	}
 	
-	public void read() throws IOException {
+	void read() throws IOException {
 
 		Header accept = new BasicHeader(HttpHeaders.ACCEPT, "application/json");
 		
@@ -165,8 +165,27 @@ public class JsonStreamIterator implements Iterator<Object>, ContentHandler, Aut
 	}
 
 
+	/**
+	 * We close all streams when we're done with reading the json.
+	 * An explicit close call is harder to implement.
+	 */
 	@Override
 	public void endJSON() throws ParseException, IOException {
+		if (reader != null) {
+			try {
+				reader.close();
+			} catch (IOException ex) {
+				LOGGER.warning("Exception while closing reader: " + ex.getMessage());
+			}
+		}
+		
+		if (client != null) {
+			try {
+				client.close();
+			} catch (IOException ex) {
+				LOGGER.warning("Exception while closing client: " + ex.getMessage());
+			}
+		}
 	}
 
 
@@ -264,14 +283,4 @@ public class JsonStreamIterator implements Iterator<Object>, ContentHandler, Aut
 			return true;
 	}
 
-	@Override
-	public void close() throws Exception {
-		if (reader != null) {
-			reader.close();
-		}
-		
-		if (client != null) {
-			client.close();
-		}
-	}
 }

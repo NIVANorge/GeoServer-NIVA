@@ -13,9 +13,7 @@ public class StationPointReader extends AquaReader<StationPointCargo> {
 
 	@Override
 	public Iterator<StationPointCargo> iterator() throws IOException {
-		Iterator<Object> iter = callJsonService();
-		
-		return new StationCargoIterator(iter);
+		return new StationCargoIterator(callJsonService());
 	}
 	
 	class StationCargoIterator extends JsonMapper<StationPointCargo> {

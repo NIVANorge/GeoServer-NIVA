@@ -1,5 +1,6 @@
 package niva.aquamonitor.data;
 
+
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -10,6 +11,7 @@ import niva.aquamonitor.data.ws.DatatypeReader;
 import org.geotools.data.FeatureReader;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.geometry.jts.JTSFactoryFinder;
+
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
@@ -112,6 +114,7 @@ public class DatatypePointReader implements FeatureReader<SimpleFeatureType, Sim
 	 */
 	@Override
 	public void close() throws IOException {
+
 	}
 
 }

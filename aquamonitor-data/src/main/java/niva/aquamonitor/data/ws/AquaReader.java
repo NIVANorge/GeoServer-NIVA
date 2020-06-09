@@ -121,6 +121,11 @@ public abstract class AquaReader<TCargo> {
 	}
 	
 
+	/**
+	 * Super classes should return an iterator on TCargo. Often by wrapping a call to callJsonService.
+	 * @return
+	 * @throws IOException
+	 */
 	abstract public Iterator<TCargo> iterator() throws IOException;
 
 	
@@ -138,7 +143,9 @@ public abstract class AquaReader<TCargo> {
 		}
 		
 		final JsonStreamIterator iter = new JsonStreamIterator(url);
-		iter.setTimeoutMins(timeoutMins);
+		if (timeoutMins != null) {
+			iter.setTimeoutMins(timeoutMins);
+		}
 		iter.read();
 
 		return iter;
