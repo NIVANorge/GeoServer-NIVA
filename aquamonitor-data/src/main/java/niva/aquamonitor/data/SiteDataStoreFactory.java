@@ -9,9 +9,6 @@ import java.util.Map;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
-import org.geotools.data.DataStoreFinder;
-
-import niva.geotools.convert.StringToParams;
 
 
 /**
@@ -30,7 +27,6 @@ public class SiteDataStoreFactory implements DataStoreFactorySpi {
 	public static final Param SITE_PARAM = new Param("site", String.class, "name of AquaMonitor site", true, null);
     public static final Param KEY_PARAM = new Param("key", String.class, "key for a given user", false, null);
     public static final Param HOST_PARAM = new Param("host", String.class, "host of AquaMonitor site", false, "http://www.aquamonitor.no/");
-    public static final Param ARC_CONN_PARAM = new Param("arcsde", String.class, "connectionstring to ArcSDE", false, null);
     
 	
 	/**
@@ -43,18 +39,14 @@ public class SiteDataStoreFactory implements DataStoreFactorySpi {
         	String site = params.get(SITE_PARAM.key).toString();
 
         	Object keyObj = params.get(KEY_PARAM.key);
-        	SiteDataStore store = (keyObj == null ? new SiteDataStore(host, site) : new SiteDataStore(host, site, keyObj.toString()));
+        	SiteDataStore store = (keyObj == null ? 
+        	        new SiteDataStore(host, site) : 
+        	            new SiteDataStore(host, site, keyObj.toString()));
         	
         	Object namespace =  params.get(NAMESPACE_PARAM.key);
-        	if (namespace != null)
+        	if (namespace != null) {
         		store.setNamespaceURI(namespace.toString());
-        	
-        	Object arcConn = params.get(ARC_CONN_PARAM.key);
-        	if (arcConn != null) {
-        		DataStore arcStore = DataStoreFinder.getDataStore(StringToParams.createParams((String)arcConn));
-        		store.setGeometryStore(arcStore);
         	}
-        	
 
 			return store;
         }
@@ -89,7 +81,7 @@ public class SiteDataStoreFactory implements DataStoreFactorySpi {
 	}
 
 	public Param[] getParametersInfo() {
-		return new Param[] { NAMESPACE_PARAM, DBTYPE_PARAM, SITE_PARAM, KEY_PARAM, HOST_PARAM, ARC_CONN_PARAM};
+		return new Param[] { NAMESPACE_PARAM, DBTYPE_PARAM, SITE_PARAM, KEY_PARAM, HOST_PARAM};
 	}
 
 	@Override

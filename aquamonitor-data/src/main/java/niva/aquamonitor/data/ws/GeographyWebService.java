@@ -121,22 +121,6 @@ public class GeographyWebService extends AquaWebService {
 		
 		return reader;
 	}
-	
-	public StationGeometryReader getAllStationSectorsReader() throws IOException {
-		LOGGER.fine("GeographyWebService.GetAllStationSectors");
-		StationGeometryReader reader = new StationGeometryReader(this, "GetAllStationSectors");
-		reader.addArgument("token", "system");
-		
-		return reader;
-	}
-	
-	public StationGeometryReader getCurrentStationSectorsReader(String userkey) throws IOException {
-		LOGGER.fine("GeographyWebService.GetCurrentStationSectors");
-		StationGeometryReader reader = new StationGeometryReader(this, "GetCurrentStationSectors");
-		reader.addArgument("token", "system");
-		reader.addArgument("userkey", userkey);
-		
-		return reader;
-	}
+
 
 }

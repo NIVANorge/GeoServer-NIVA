@@ -8,11 +8,10 @@ import java.util.logging.Logger;
 
 import niva.aquamonitor.data.ws.DatatypeReader;
 import niva.aquamonitor.data.ws.GeographyWebService;
-import niva.aquamonitor.data.ws.StationGeometryReader;
 import niva.aquamonitor.data.ws.StationPointReader;
 import niva.aquamonitor.data.ws.StringReader;
 
-import org.geotools.data.DataStore;
+
 import org.geotools.data.DefaultServiceInfo;
 import org.geotools.data.ServiceInfo;
 import org.geotools.data.store.ContentDataStore;
@@ -39,8 +38,7 @@ public class SiteDataStore extends ContentDataStore {
 	
 	public static final String[] DEFAULT_LAYERS = new String[] { "STATION_POINTS"
 																, "ADMIN_STATION_POINTS"
-																, "STATION_DATATYPE_POINTS"
-																, "STATION_SECTORS" };
+																, "STATION_DATATYPE_POINTS" };
 	
 	
 	private static final Logger LOGGER = Logging.getLogger(SiteDataStore.class);
@@ -48,9 +46,7 @@ public class SiteDataStore extends ContentDataStore {
 	private String host;
 	private String site;
 	private String key = null;
-	
-	private DataStore geometryStore = null;
-	
+
 
 	public SiteDataStore(String host, String site) {
     	this.host = host;
@@ -75,29 +71,7 @@ public class SiteDataStore extends ContentDataStore {
 		return this.key;
 	}
 	
-	public DataStore getGeometryStore() {
-		return this.geometryStore;
-	}
-	
-	
-	public void setGeometryStore(DataStore geometryStore) {
-		this.geometryStore = geometryStore;
-	}
-	
-	
-	@Override
-	public void dispose() {
-		
-		if (this.geometryStore != null) {
-			try {
-				this.geometryStore.dispose();
-			}
-			finally {
-			}
-		}
-			
-		super.dispose();
-	}
+
 	
 
 	@Override
@@ -180,18 +154,6 @@ public class SiteDataStore extends ContentDataStore {
 			list.toArray(datatypes);
 			
 			return new DatatypePointSource(entry, reader, datatypes);
-		}
-		else if (entry.getTypeName().equals(DEFAULT_LAYERS[3])) {
-			StationGeometryReader reader;
-			
-			if (key == null) {
-				reader = ws.getAllStationSectorsReader();
-			}
-			else {
-				reader = ws.getCurrentStationSectorsReader(key);
-			}
-			LOGGER.warning("This layer uses a type that will not be supported in the future: " + entry.getName());
-			return new StationSectorSource(entry, geometryStore, reader);
 		}
 		else {
 			throw new IllegalArgumentException("Unknown typeName");
