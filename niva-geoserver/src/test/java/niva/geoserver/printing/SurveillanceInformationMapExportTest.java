@@ -56,7 +56,8 @@ public class SurveillanceInformationMapExportTest extends NivaTestSupport {
 	}
 
 	/**
-	 * Test for an anomalie with the color returned from open street map.
+	 * Test for an anomalie with the color returned from OpenStreetMap.
+	 * 
 	 * @throws Exception
 	 */
 	@Test
