@@ -13,7 +13,7 @@ import org.geotools.util.logging.Logging;
  * Functionality to create the address for a AquaMonitor web server.
  * <br>
  * It could be configured by either:
- * <li>Java environment variable</li>
+ * <li>Java system property (-D)</li>
  * <li>Servlet context parameter</li>
  * <li>System environment variable</li>
  * <br>
@@ -59,7 +59,7 @@ public abstract class AquaWebService {
     	LOGGER.fine("Lookup AquaMonitor host address.");
     	
         final String[] typeStrs = {
-            "Java environment variable ",
+            "Java system property ",
             "Servlet context parameter ",
             "System environment variable "
         };
