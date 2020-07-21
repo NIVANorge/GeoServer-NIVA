@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
-import org.geotools.factory.FactoryRegistryException;
 import org.geotools.feature.collection.AbstractFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -33,12 +32,12 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Envelope;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.geom.Point;
 
 
 
@@ -135,7 +134,7 @@ public class PointAggregateGridProcess implements NivaProcess {
 				        .getMathTransform();
 				tx.setMathTransform(transform);
 				
-			} catch (FactoryRegistryException | FactoryException ex) {
+			} catch (FactoryException ex) {
 				LOGGER.severe(ex.getMessage());
 			}
 		}

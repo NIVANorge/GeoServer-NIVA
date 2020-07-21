@@ -5,7 +5,7 @@ import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Point;
 
 import niva.aquamonitor.data.ws.GeographyWebService;
 import niva.geotools.referencing.CRS;

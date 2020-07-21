@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 
-import com.vividsolutions.jts.geom.Envelope;
+import org.locationtech.jts.geom.Envelope;
 
 /**
  * Base functionality for reading content from a webservice in AquaMonitor.

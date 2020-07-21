@@ -29,7 +29,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import org.springframework.http.HttpStatus;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 
 
