@@ -25,8 +25,10 @@ public class GeographyWebServiceTest {
 		Iterator<StationPointCargo> iter = reader.iterator();
 		
 		assertTrue(iter.hasNext());
-		assertEquals("Innsjø", iter.next().stationType);
 		
+		final String typ = iter.next().stationType;
+		
+		assertTrue("Innsjø".equals(typ) || "Elv".equals(typ));		
 	}
 	
 	@Test
