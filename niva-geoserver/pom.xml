@@ -10,33 +10,16 @@
  <properties>
    <gt.version>23-NIVA</gt.version>
    <gs.version>2.17-NIVA</gs.version>
-   <spring.version>4.3.7.RELEASE</spring.version>
-   <spring.security.version>4.0.4.RELEASE</spring.security.version>
+   <spring.version>5.1.16.RELEASE</spring.version>
+   <spring.security.version>5.1.11.RELEASE</spring.security.version>
    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
  </properties>
- 
-   <repositories>
-    <repository>
-      <id>central.maven.org</id>
-      <name>Central Maven repository</name>
-      <url>https://repo1.maven.org/maven2</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-
-    <repository>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>osgeo</id>
-      <name>Open Source Geospatial Foundation Repository</name>
-      <url>https://repo.osgeo.org/repository/release/</url>
-    </repository>
-
-  </repositories>
- 
  <dependencies>
+   <dependency>
+   <groupId>org.geoserver</groupId>
+   <artifactId>gs-wms</artifactId>
+   <version>${gs.version}</version>
+  </dependency>
   <dependency>
    <groupId>org.geoserver</groupId>
    <artifactId>gs-rest</artifactId>
@@ -81,6 +64,11 @@
      <groupId>org.springframework.security</groupId>
      <artifactId>spring-security-core</artifactId>
      <version>${spring.security.version}</version>
+  </dependency>
+  <dependency>
+     <groupId>com.fasterxml.jackson.core</groupId>
+     <artifactId>jackson-databind</artifactId>
+     <version>2.9.4</version>
   </dependency>
   <dependency>
 	<groupId>niva.geotools</groupId>
@@ -168,4 +156,14 @@
  		</plugin>
  	</plugins>
  </build>
+ <repositories>
+    <repository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>osgeo</id>
+      <name>Open Source Geospatial Foundation Repository</name>
+      <url>https://repo.osgeo.org/repository/release/</url>
+    </repository>
+  </repositories>
 </project>
