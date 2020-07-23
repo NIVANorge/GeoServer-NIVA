@@ -1,6 +1,8 @@
 package niva.geoserver.gwc;
 
 
+import static org.junit.Assert.assertNotNull;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -34,7 +36,7 @@ public class NorgeDigitaltWMSLayerTest extends NivaTestSupport {
 		WMSStoreInfoImpl store = new WMSStoreInfoImpl(catalog);
 		store.setName("Toporaster");
 		store.setWorkspace(catalog.getWorkspaceByName("no.norgedigitalt"));
-		store.setCapabilitiesURL("http://openwms.statkart.no/skwms1/wms.toporaster3?service=WMS&version=1.1.1");
+		store.setCapabilitiesURL("http://openwms.statkart.no/skwms1/wms.toporaster4?service=wms&version=1.3.0");
 		store.setMaxConnections(6);
 		store.setReadTimeout(120);
 		store.setConnectTimeout(60);
@@ -67,10 +69,18 @@ public class NorgeDigitaltWMSLayerTest extends NivaTestSupport {
 	
 
 	
+	/**
+	 * Fetches a map of Norway.
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testTopokartWMS() throws Exception {
 		BufferedImage bi = this.getAsImage("wms?service=WMS&version=1.1.0&request=GetMap&layers=no.norgedigitalt:toporaster&styles=&bbox=-127998.0,6377920.0,1145510.0,7976800.0&width=611&height=768&srs=EPSG:32633&format=image%2Fpng", "image/png");
+		assertNotNull(bi);
+		
 		ImageIO.write(bi, "png", new File("C:/temp/nd.png"));
+		
 	}
 
 }
