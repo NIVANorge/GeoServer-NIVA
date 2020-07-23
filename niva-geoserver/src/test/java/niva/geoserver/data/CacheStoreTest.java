@@ -62,8 +62,7 @@ public class CacheStoreTest extends NivaTestSupport {
 	public void testCreateCacheStore() throws Exception {
 		Catalog catalog = getCatalog();
 		
-		File dataDir = new File(testData.getDataDirectoryRoot(), "data");
-        File shpDir = new File(dataDir, "cache");
+        File shpDir = new File(new File(testData.getDataDirectoryRoot(), "data"), "cache");
         shpDir.mkdir();
        
 		addAquaMonitorStore("ShapeCache", getTestParameters(shpDir));
@@ -78,24 +77,29 @@ public class CacheStoreTest extends NivaTestSupport {
 		
 		if (dataStoreObj instanceof CacheDataStore) {
 			CacheDataStore cache = (CacheDataStore)dataStoreObj;
-			String[] names = cache.getTypeNames();
-			assertEquals("STATION_POINTS", names[0]);
-			
-			addStationLayer(storeCat, "Cache_points");
-			
-			LayerInfo layerCat = catalog.getLayerByName("Cache_points");
-			assertNotNull(layerCat);
-			
-			FeatureTypeInfo featureInfo = (FeatureTypeInfo)layerCat.getResource();
-			FeatureSource<? extends FeatureType, ? extends Feature> source = featureInfo.getFeatureSource(null, null);
-			
-			int cnt = source.getFeatures().size();
-			assertNotNull(source);
-			
-			ShapefileDataStoreFactory shpFact = new ShapefileDataStoreFactory();
-			FileDataStore shpStore = shpFact.createDataStore(new URL("file:" + new File(shpDir, "STATION_POINTS.shp").getAbsolutePath()));
-			
-			assertTrue(cnt == shpStore.getFeatureSource().getCount(Query.ALL));
+			try {
+				String[] names = cache.getTypeNames();
+				assertEquals("STATION_POINTS", names[0]);
+				
+				addStationLayer(storeCat, "Cache_points");
+				
+				LayerInfo layerCat = catalog.getLayerByName("Cache_points");
+				assertNotNull(layerCat);
+				
+				FeatureTypeInfo featureInfo = (FeatureTypeInfo)layerCat.getResource();
+				FeatureSource<? extends FeatureType, ? extends Feature> source = featureInfo.getFeatureSource(null, null);
+				
+				int cnt = source.getFeatures().size();
+				assertNotNull(source);
+				
+				ShapefileDataStoreFactory shpFact = new ShapefileDataStoreFactory();
+				FileDataStore shpStore = shpFact.createDataStore(new URL("file:" + new File(shpDir, "STATION_POINTS.shp").getAbsolutePath()));
+				
+				assertTrue(cnt == shpStore.getFeatureSource().getCount(Query.ALL));
+			}
+			finally {
+			    cache.dispose();	
+			}
 		}
 		else {
 			fail("Ikke CacheDataStore");
