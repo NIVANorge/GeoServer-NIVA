@@ -110,21 +110,15 @@ public class ShapefileCacheDataStoreTest {
 		params.put(CacheDataStoreFactory.BACKEND_PARAM.key, "dbtype=aquamonitor;user=Ostfold");
 		params.put(CacheDataStoreFactory.INTERVAL_PARAM.key, 0);
 		
-		try {
-		      CacheDataStore store = factory.createDataStore(params);
-		        List<Name> names = store.getNames();
-		        
-		        CacheFeatureStore source = store.getFeatureSource(names.get(0));
-		        int i = source.getCount(Query.ALL);
-		        
-		        assertTrue(i > 0);
-		}
-		catch (Exception ex) {
-            if (ex.getMessage().startsWith("Tried to use system from illegal host")) {
-                return;
-            }
-            throw ex;
-		}
+
+        CacheDataStore store = factory.createDataStore(params);
+        List<Name> names = store.getNames();
+        
+        CacheFeatureStore source = store.getFeatureSource(names.get(0));
+        int i = source.getCount(Query.ALL);
+        
+        assertTrue(i > 0);
+
 	}
 	
 	@Test
@@ -140,7 +134,7 @@ public class ShapefileCacheDataStoreTest {
 		HashMap<String, Serializable> params = new HashMap<String, Serializable>();
 		params.put(CacheDataStoreFactory.NAMESPACE_PARAM.key, "http://www.aquamonitor.no/");	
 		params.put(CacheDataStoreFactory.DBTYPE_PARAM.key, (Serializable) CacheDataStoreFactory.DBTYPE_PARAM.sample);
-		params.put(CacheDataStoreFactory.BACKEND_PARAM.key, "dbtype=aquamonitor;user=Ostfold;host=https://test-aquamonitor.niva.no/");
+		params.put(CacheDataStoreFactory.BACKEND_PARAM.key, "dbtype=aquamonitor;user=Ostfold");
 		params.put(CacheDataStoreFactory.CACHE_PARAM.key, "dbtype=shapefile;url=file:" + cacheFolder.getAbsolutePath());
 		params.put(CacheDataStoreFactory.INTERVAL_PARAM.key, (Serializable) CacheDataStoreFactory.INTERVAL_PARAM.sample);
 
@@ -214,12 +208,6 @@ public class ShapefileCacheDataStoreTest {
     		assertFalse(stationSource.getFeatures(secondFilter).isEmpty());
     		
     		assertTrue(stationSource.getFeatures(thirdFilter).isEmpty());
-        }
-        catch (Exception ex) {
-            if (ex.getMessage().startsWith("Tried to use system from illegal host")) {
-                return;
-            }
-            throw ex;
         }
         finally {
             if (shpDataStore != null) {

@@ -35,12 +35,23 @@ public class ProjectUserDataStore extends ContentDataStore {
 	
 	
 	private String username;
+	
+	private GeographyWebService service;
+	
+	public ProjectUserDataStore(String username, String host) {
+		if (username==null)
+			throw new IllegalArgumentException("Username must be specified.");
+		
+		this.username = username;
+		this.service = GeographyWebService.createService(host);
+	}
 
 	public ProjectUserDataStore(String username) {
 		if (username==null)
 			throw new IllegalArgumentException("Username must be specified.");
 		
 		this.username = username;
+		this.service = GeographyWebService.createService();
 	}
 
 
@@ -79,8 +90,7 @@ public class ProjectUserDataStore extends ContentDataStore {
 			
 			String username = getUsername();
 			
-			GeographyWebService ws = GeographyWebService.createService();
-			StationPointReader reader = ws.getProjectUserStationReader(username);
+			StationPointReader reader = this.service.getProjectUserStationReader(username);
 			
 			return new StationPointSource(entry, reader);
 		}
@@ -88,6 +98,5 @@ public class ProjectUserDataStore extends ContentDataStore {
 			throw new IllegalArgumentException("Unknown typeName");
 		}
 	}
-
 
 }

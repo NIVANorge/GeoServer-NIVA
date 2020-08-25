@@ -25,6 +25,7 @@ public class ProjectUserDataStoreFactory implements DataStoreFactorySpi {
 	public static final Param NAMESPACE_PARAM = new Param("namespace", URI.class, "namespace", true, null);
 	public static final Param DBTYPE_PARAM = new Param("dbtype", String.class, "dbtype må være aquamonitor", true, "aquamonitor");
     public static final Param USER_PARAM = new Param("user", String.class, "name of AquaMonitor project-user", true, null);
+    public static final Param HOST_PARAM = new Param("host", String.class, "host of AquaMonitor site", false, "http://www.aquamonitor.no/");
 
 	
 	/**
