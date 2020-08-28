@@ -255,8 +255,8 @@ public class CacheStoreTest extends NivaTestSupport {
 			resp += next;
 			next = reader.readLine();
 		}
+		reader.close();
 		is.close();
-		
 		
 		System.out.println(resp);
 		
