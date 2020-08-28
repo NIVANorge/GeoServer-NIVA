@@ -277,7 +277,7 @@ class JsonStreamIterator implements Iterator<Object>, ContentHandler {
 			}
 		}
 		else if (hasMessage) {
-			throw new IOException((String)value);
+			throw new IOException(String.format("Call for %s got the error response:\n%s",  this.url, value));
 		}
 		else
 			return true;
