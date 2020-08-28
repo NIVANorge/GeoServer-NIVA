@@ -30,7 +30,19 @@ import javax.imageio.ImageIO;
 import static niva.geoserver.renderer.ResourceImageTester.assertImage;
 
 /**
- * Test for a problem with geoServer handling of external symbols within the Legend part of a SLD.
+ * Test for a problem with GeoServer handling of external symbols within the Legend part of a SLD.
+ * 
+ * The solution is to implement a function within org.geotools.renderer.style.SLDStyleFactory
+ * 
+ * createGraphicLegend()
+ * 
+ * That is called from org.geoserver.wms.legendgraphic.BufferedImageLegendGraphicBuilder
+ * 
+ * renderRules()
+ * 
+ * Another problem is that this class suppose that all symbols within legend should be equal sized.
+ * We wan't them to be the size specified.
+ * 
  * @author Roar Brænden, NIVA
  *
  */
@@ -41,6 +53,11 @@ public class LegendWithExternalSymbolTest extends WMSTestSupport {
 	private static FilterFactory filterFact = CommonFactoryFinder.getFilterFactory();
 	
 
+	/**
+	 * Represents the legends we are creating at NIVA.
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testgetLegendGraphic() throws Exception {
 		final WMS wms = getWMS();
@@ -77,6 +94,7 @@ public class LegendWithExternalSymbolTest extends WMSTestSupport {
 		request.setFormat("image/png");
 		request.setLayer(pointsLayer.getFeatureType());
 		request.setStyle(symbolStyle);
+		request.setScale(0.0);
 		
 		final DefaultWebMapService reflector = new DefaultWebMapService(wms);
 		reflector.setGetLegendGraphic(new GetLegendGraphic(wms));
