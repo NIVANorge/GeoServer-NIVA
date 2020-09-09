@@ -1,12 +1,26 @@
 package niva.aquamonitor.data.ws;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.logging.Logger;
 
 
 import org.geotools.util.logging.Logging;
 
 /**
+ * 
+ * Calling the web service in AquaMonitor to support geographical elements.
+ * 
+ * We're using a secret token that connects as a System user within AquaMonitor.
+ * It could be configured by:
+ * <li>Java system property (-D)</li>
+ * <li>System environment variable</li>
+ * <br>
+ * The name for the variable should be: <b>AQUAMONITOR_SECRET_TOKEN</b>
+ * <br>
+ * Default is set to system, which implies that your IP should be specified within AquaMonitor installation.
+ * To get a token call /login with the appropriate user credentials for a system user.
  * 
  * @author Roar Brænden, NIVA
  *
@@ -15,10 +29,17 @@ public class GeographyWebService extends AquaWebService {
 	
 	private static final String SERVICE_ADDRESS = "/WebServices/GeographyService.asmx";
 	
-	
+	private static final String TOKEN_PROPERTY = "AQUAMONITOR_SECRET_TOKEN";
+
 	/** Logger. */
 	private final static Logger LOGGER = Logging.getLogger(GeographyWebService.class);
-
+	
+	private static String defaultToken = "system";
+	static {
+		lookupSecretToken();
+	}
+	
+	
 	public static GeographyWebService createService(String host, String site)    {
 		return new GeographyWebService(host + site + SERVICE_ADDRESS);
 	}
@@ -35,11 +56,48 @@ public class GeographyWebService extends AquaWebService {
 		super(url);
 	}
 	
+    private static void lookupSecretToken() {
+    	LOGGER.fine("Lookup AquaMonitor secret token.");
+    	
+        final String[] typeStrs = {
+            "Java system property ",
+            "System environment variable "
+        };
+
+        // Loop over variable access methods
+        for (int j = 0; j < typeStrs.length; j++) {
+            String value = null;
+             
+            // Lookup section
+            switch (j) {
+                case 0:
+                    value = System.getProperty(TOKEN_PROPERTY);
+                    break;
+                case 1:
+                    value = System.getenv(TOKEN_PROPERTY);
+                    break;
+            }
+
+            if (value == null || value.equalsIgnoreCase("")) {
+                continue;
+            }
+
+            LOGGER.fine(String.format("Found AquaMonitor secret token %s within %s", value, typeStrs[j]));
+
+            try {
+				defaultToken = URLEncoder.encode(value, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				LOGGER.warning("This platform doesn't support UTF-8");
+			}
+            break;
+        }
+    }
+
 
 	public StationPointReader getProjectUserStationReader(String username) throws IOException {
 		LOGGER.fine("GeographyWebService.getProjectUserStationReader. username:" + username);
 		StationPointReader reader = new StationPointReader(this, "GetProjectUserStationPoints");
-		reader.addArgument("token", "system");
+		reader.addArgument("token", defaultToken);
 		reader.addArgument("username", username);
 
 		return reader;
@@ -51,7 +109,7 @@ public class GeographyWebService extends AquaWebService {
 	public StationPointReader getAllStationReader() throws IOException {
 		LOGGER.fine("GeographyWebService.getAllStationReader.");
 		StationPointReader reader = new StationPointReader(this, "GetAllStationPoints");
-		reader.addArgument("token", "system");
+		reader.addArgument("token", defaultToken);
 
 		return reader;
 	}
@@ -61,7 +119,7 @@ public class GeographyWebService extends AquaWebService {
 	public StationPointReader queryAllStationReader(String where) throws IOException {
 		LOGGER.fine("GeographyWebService.queryAllStationReader. where:" + where);
 		StationPointReader reader = new StationPointReader(this, "QueryAllStationPoints");
-		reader.addArgument("token", "system");
+		reader.addArgument("token", defaultToken);
 		reader.addArgument("where", "where");
 
 		return reader;
@@ -74,7 +132,7 @@ public class GeographyWebService extends AquaWebService {
 		
 		LOGGER.fine("GeographyWebService.getCurrentStationReader. userkey:" + userkey);
 		StationPointReader reader = new StationPointReader(this, "GetCurrentStationPoints");
-		reader.addArgument("token", "system");
+		reader.addArgument("token", defaultToken);
 		reader.addArgument("userkey", userkey);
 		
 		return reader;
@@ -86,7 +144,7 @@ public class GeographyWebService extends AquaWebService {
 		
 		LOGGER.fine("GeographyWebService.getAdminStationReader. userkey:" + userkey);
 		StationPointReader reader = new StationPointReader(this, "GetAdminStationPoints");
-		reader.addArgument("token", "system");
+		reader.addArgument("token", defaultToken);
 		reader.addArgument("userkey", userkey);
 		
 		return reader;
@@ -97,7 +155,7 @@ public class GeographyWebService extends AquaWebService {
 	public StringReader getAllDatatypesReader() throws IOException {
 		LOGGER.fine("GeographyWebService.getAllDatatypesReader.");
 		StringReader reader = new StringReader(this, "GetAllDatatypes");
-		reader.addArgument("token", "system");
+		reader.addArgument("token", defaultToken);
 		return reader;
 	}
 	
@@ -106,7 +164,7 @@ public class GeographyWebService extends AquaWebService {
 	public DatatypeReader getAllDatatypePointsReader() throws IOException {
 		LOGGER.fine("GeographyWebService.getAllDatatypePointsReader.");
 		DatatypeReader reader = new DatatypeReader(this, "GetAllDatatypePoints");
-		reader.addArgument("token", "system");
+		reader.addArgument("token", defaultToken);
 		reader.setTimeout(10);
 		return reader;
 	}
@@ -115,12 +173,10 @@ public class GeographyWebService extends AquaWebService {
 	public DatatypeReader getCurrentDatatypePointsReader(String userkey) throws IOException {
 		LOGGER.fine("GeographyWebService.getCurrentDatatypePointsReader. userkey:" + userkey);
 		DatatypeReader reader = new DatatypeReader(this, "GetCurrentDatatypePoints");
-		reader.addArgument("token", "system");
+		reader.addArgument("token", defaultToken);
 		reader.addArgument("userkey", userkey);
 		reader.setTimeout(5);
 		
 		return reader;
 	}
-
-
 }
