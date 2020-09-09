@@ -24,7 +24,7 @@ import org.geotools.util.logging.Logging;
  * @author Roar Brænden, NIVA
  *
  */
-public abstract class AquaWebService {
+abstract class AquaWebService {
 
 
 	private static final String NAMESPACE = "http://www.aquamonitor.no/";

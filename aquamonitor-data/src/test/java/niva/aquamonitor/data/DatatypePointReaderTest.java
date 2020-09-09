@@ -20,7 +20,7 @@ public class DatatypePointReaderTest {
 	
 	@Test
 	public void datatypePointReaderConstructorTest() throws Exception {
-		GeographyWebService service = GeographyWebService.createService("http://www.aquamonitor.no/", "Vannplanter");
+		GeographyWebService service = GeographyWebService.createService("https://test-aquamonitor.niva.no/", "Vannplanter");
 		
 		SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
 		builder.setName("STATION_DATA_TYPE");
@@ -39,23 +39,15 @@ public class DatatypePointReaderTest {
 		builder.add("Plankton", Integer.class);
 
 		SimpleFeatureType schema = builder.buildFeatureType();
-		
-		try {
-		    DatatypePointReader reader = new DatatypePointReader(schema, service.getAllDatatypePointsReader());
-		    assertNotNull(reader);
-		}
-		catch (Exception ex) {
-		    if (ex.getMessage().startsWith("Tried to use system from illegal host")) {
-                return;
-            }
-            throw ex;
-		}
+
+	    DatatypePointReader reader = new DatatypePointReader(schema, service.getAllDatatypePointsReader());
+	    assertNotNull(reader);
 		
 	}
 	
 	@Test
 	public void datatypePointReaderReadTest() throws Exception {
-		GeographyWebService service = GeographyWebService.createService("http://www.aquamonitor.no/", "Vannplanter");
+		GeographyWebService service = GeographyWebService.createService("https://test-aquamonitor.niva.no/", "Vannplanter");
 		
 		SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
 		builder.setName("STATION_DATA_TYPE");
@@ -79,12 +71,6 @@ public class DatatypePointReaderTest {
 			SimpleFeature feature = reader.next();
 			assertNotNull(feature);
 			assertEquals(1, feature.getAttribute("Vannplanter"));
-		}
-		catch (Exception ex) {
-		    if (ex.getMessage().startsWith("Tried to use system from illegal host")) {
-		        return;
-		    }
-		    throw ex;
 		}
 		finally {
 		    if (reader != null) {

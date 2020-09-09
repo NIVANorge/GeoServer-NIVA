@@ -14,13 +14,13 @@ import org.junit.Test;
 public class GeographyWebServiceTest {
 	
 	
-	private String host = "https://test-aquamonitor.niva.no/";
-	private String site = "Intern";
+	private String HOST = "https://test-aquamonitor.niva.no/";
+	private String SITE = "Intern";
 	
 
 	@Test
 	public void getAllStationsEasy() throws Exception {
-		GeographyWebService ws = GeographyWebService.createService(host, site);
+		GeographyWebService ws = GeographyWebService.createService(HOST, SITE);
 		StationPointReader reader = ws.getProjectUserStationReader("Mjøsa");
 		Iterator<StationPointCargo> iter = reader.iterator();
 		
@@ -33,7 +33,7 @@ public class GeographyWebServiceTest {
 	
 	@Test
 	public void getAllStationsWrong() throws Exception {
-		GeographyWebService ws = GeographyWebService.createService(host, site);
+		GeographyWebService ws = GeographyWebService.createService(HOST, SITE);
 		
 		try {
 			StationPointReader reader = ws.getProjectUserStationReader("RBR");
@@ -41,13 +41,13 @@ public class GeographyWebServiceTest {
 			Assert.fail();
 		}
 		catch (IOException ie) {
-			assertEquals("java.io.IOException: Kun gyldig for brukere av typen Project.", ie.toString());
+			assertTrue("Feilmelding er endret.", ie.toString().contains("Kun gyldig for brukere av typen Project."));
 		}
 	}
 	
 	@Test
 	public void getAllStationsBig() throws Exception {
-		GeographyWebService ws = GeographyWebService.createService(host, site);
+		GeographyWebService ws = GeographyWebService.createService(HOST, SITE);
 		StationPointReader reader = ws.getProjectUserStationReader("Østfold");
 		int c = reader.getCount();
 		
@@ -56,7 +56,7 @@ public class GeographyWebServiceTest {
 	
 	@Test
 	public void getCurrentStationsWrongKey() throws Exception  {
-		GeographyWebService ws = GeographyWebService.createService(host, site);
+		GeographyWebService ws = GeographyWebService.createService(HOST, SITE);
 		try  {
 			StationPointReader reader = ws.getCurrentStationReader("tull");
 			reader.getEnvelope();
@@ -69,13 +69,13 @@ public class GeographyWebServiceTest {
 	@Test
 	public void getCurrentStationsEmptyKey() throws Exception  {
 		
-		LoginWebService lws = LoginWebService.createService(host, site);
-		UserCargo user = lws.authenticateUser("RBR", "RBR");
+		LoginController lws = LoginController.createService(HOST, SITE);
+		UserCargo user = lws.authenticateUser("RBR", "10. august 2020"); // Change to appropriate password
 		
 		assertNotNull(user);
 		assertFalse(user.key == null || user.key == "");
 		
-		GeographyWebService ws = GeographyWebService.createService(host, site);
+		GeographyWebService ws = GeographyWebService.createService(HOST, SITE);
 		StationPointReader reader = ws.getCurrentStationReader(user.key);
 		assertEquals(0, reader.getCount());
 		
@@ -84,7 +84,7 @@ public class GeographyWebServiceTest {
 	@Test
 	public void getAllDatatypesFindWater() throws Exception {
 
-		GeographyWebService ws = GeographyWebService.createService(host, site);
+		GeographyWebService ws = GeographyWebService.createService(HOST, SITE);
 		StringReader reader = ws.getAllDatatypesReader();
 		Iterator<String> iter = reader.iterator();
 		boolean foundWater = false;
@@ -102,7 +102,7 @@ public class GeographyWebServiceTest {
 
 	@Test
 	public void getAllDatatypePoints() throws Exception  {
-		GeographyWebService ws = GeographyWebService.createService(host, site);
+		GeographyWebService ws = GeographyWebService.createService(HOST, SITE);
 
 		DatatypeReader reader = ws.getAllDatatypePointsReader();		
 		int l = reader.getCount();

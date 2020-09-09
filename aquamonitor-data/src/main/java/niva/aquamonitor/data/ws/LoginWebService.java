@@ -28,10 +28,12 @@ import org.geotools.util.logging.Logging;
 
 /**
  * Uses the WebService LoginService.asmx with POST method and JSON format.
+ * Deprecated - we use a Login controller instead
  * 
  * @author Roar Brænden, NIVA
  *
  */
+@Deprecated
 public class LoginWebService extends AquaWebService {
 	
 

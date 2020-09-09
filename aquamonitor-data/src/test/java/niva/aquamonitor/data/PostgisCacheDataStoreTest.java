@@ -60,6 +60,7 @@ public class PostgisCacheDataStoreTest {
 		}
 		finally {
 			iterator.close();
+			store.dispose();
 		}
 	}
 }

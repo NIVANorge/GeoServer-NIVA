@@ -18,9 +18,10 @@ import org.geoserver.security.GeoServerAuthenticationProvider;
 import org.geoserver.security.impl.GeoServerRole;
 import org.geoserver.security.impl.GeoServerUser;
 import org.geoserver.security.impl.RoleCalculator;
+
 import org.geotools.util.logging.Logging;
 
-import niva.aquamonitor.data.ws.LoginWebService;
+import niva.aquamonitor.data.ws.LoginController;
 import niva.aquamonitor.data.ws.UserCargo;
 
 
@@ -33,7 +34,7 @@ public class AquamonitorAuthenticationProvider extends GeoServerAuthenticationPr
 	
 	private static final Logger LOGGER = Logging.getLogger(AquamonitorAuthenticationProvider.class);
 	
-	private final LoginWebService loginService = LoginWebService.createService();
+	private final LoginController loginService = LoginController.createService();
 
 	/**
 	 * Supports either a Basic Username / Password or a Cookie aqua_key
@@ -77,7 +78,7 @@ public class AquamonitorAuthenticationProvider extends GeoServerAuthenticationPr
 					user = loginService.authenticateToken(token);
 				}
 				catch (IOException ie) {
-					LOGGER.severe("Exception calling Aquamonitor LoginWebService");
+					LOGGER.severe("Exception calling Aquamonitor Login.");
 					throw new AuthenticationServiceException(ie.getMessage(), ie);
 				}
 			}
@@ -96,7 +97,7 @@ public class AquamonitorAuthenticationProvider extends GeoServerAuthenticationPr
 				user = loginService.authenticateUser(username, password);
 			}
 			catch (IOException ie) {
-				LOGGER.severe("Exception calling Aquamonitor LoginWebService.");
+				LOGGER.severe("Exception calling Aquamonitor Login.");
 				throw new AuthenticationServiceException(ie.getMessage(),ie);
 	
 			}

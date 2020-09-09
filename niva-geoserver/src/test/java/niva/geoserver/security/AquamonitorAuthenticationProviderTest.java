@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import javax.servlet.http.Cookie;
 
-import niva.aquamonitor.data.ws.LoginWebService;
+import niva.aquamonitor.data.ws.LoginController;
 import niva.aquamonitor.data.ws.UserCargo;
 
 import org.geoserver.test.GeoServerTestSupport;
@@ -43,7 +43,7 @@ public class AquamonitorAuthenticationProviderTest extends GeoServerTestSupport 
 	
 	public void testCookieAuthentication() throws IOException {
 		
-		LoginWebService loginServ = LoginWebService.createService();
+		LoginController loginServ = LoginController.createService();
 		UserCargo uc = loginServ.authenticateUser(TEST_USERNAME, TEST_PASSWORD);
 		
 		MockHttpServletRequest request = new MockHttpServletRequest();
