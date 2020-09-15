@@ -7,6 +7,7 @@ import java.util.Set;
 
 
 import org.geoserver.wps.WPSTestSupport;
+
 import org.geotools.data.memory.MemoryFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -101,10 +102,10 @@ public class PointAggregateGridProcessTest extends WPSTestSupport{
 			MemoryFeatureCollection points = new MemoryFeatureCollection(featureType);
 			GeometryFactory fact = new GeometryFactory();
 			
-			builder.addAll(new Object[]{fact.createPoint(new Coordinate(10.2, 60.3)), "Innsjø", new Integer(1), new Integer(0), new Integer(0)});
+			builder.addAll(new Object[]{fact.createPoint(new Coordinate(10.2, 60.3)), "Innsjø", Integer.valueOf(1), Integer.valueOf(0), Integer.valueOf(0)});
 			points.add(builder.buildFeature("1"));
 			
-			builder.addAll(new Object[]{fact.createPoint(new Coordinate(10.3, 60.4)), "Elv", new Integer(0), new Integer(0), new Integer(1)});
+			builder.addAll(new Object[]{fact.createPoint(new Coordinate(10.3, 60.4)), "Elv", Integer.valueOf(0), Integer.valueOf(0), Integer.valueOf(1)});
 			points.add(builder.buildFeature("2"));
 			
 			return points;
