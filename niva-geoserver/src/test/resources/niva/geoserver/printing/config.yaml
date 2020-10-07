@@ -39,8 +39,8 @@ hosts:
 
 security:
   - !basicAuth
-       matcher: !localMatch
-          dummy: true
+       matcher: !dnsMatch
+          host: test-aquamonitor.niva.no
        username: aquamonitor
        password: trommer
        preemptive: true
