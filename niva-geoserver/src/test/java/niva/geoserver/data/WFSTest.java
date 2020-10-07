@@ -38,6 +38,8 @@ import static org.junit.Assert.fail;
 
 public class WFSTest extends NivaTestSupport {
 	
+	private final static String TEST_HOST = "https://test-aquamonitor.niva.no/";
+	
 	
 	@Test
 	public void testQueryStationOrList() throws Exception {
@@ -50,7 +52,7 @@ public class WFSTest extends NivaTestSupport {
 		Map<String, Serializable> params = store.getConnectionParameters();
 		params.put("namespace", new URI("http://www.aquamonitor.no/"));
 		params.put("dbtype", "aquamonitor-site");
-		params.put("host", "http://www.aquamonitor.no/");
+		params.put("host", TEST_HOST);
 		params.put("site", "Intern");
 		
 		addAquaMonitorStore("Intern_query", params);
@@ -78,20 +80,21 @@ public class WFSTest extends NivaTestSupport {
 		
 		InputStream is = this.post("wfs", xml);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		
-		String resp = "";
-		String next = reader.readLine();
-		while (next != null) {
-			resp += next;
-			next = reader.readLine();
+		try {
+			String resp = "";
+			String next = reader.readLine();
+			while (next != null) {
+				resp += next;
+				next = reader.readLine();
+			}
+			
+			assertTrue("Result didn't contain station id:3570", resp.contains("<no.niva.aquamonitor:STATION_ID>3570</no.niva.aquamonitor:STATION_ID>"));
+			assertTrue("Result doesn't contain project id.", !resp.contains("PROJECT_ID"));
 		}
-		is.close();
-		
-		//System.out.println(resp);
-		
-		assertTrue(resp.contains("<no.niva.aquamonitor:STATION_ID>3570</no.niva.aquamonitor:STATION_ID>"));
-		assertTrue( !resp.contains("PROJECT_ID") );
-	
+		finally {
+			reader.close();
+			is.close();
+		}
 	}
 	
 	@Test
@@ -120,18 +123,23 @@ public class WFSTest extends NivaTestSupport {
 		
 		InputStream is = this.post("wfs", xml);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		
-		String resp = "";
-		String next = reader.readLine();
-		while (next != null) {
-			resp += next;
-			next = reader.readLine();
+		try {
+			String resp = "";
+			String next = reader.readLine();
+			while (next != null) {
+				resp += next;
+				next = reader.readLine();
+			}
+	
+			
+			System.out.println(resp);
+			
+			assertTrue(resp.contains("<no.niva.aquamonitor:PROJECT_ID>1098</no.niva.aquamonitor:PROJECT_ID>"));
 		}
-		is.close();
-		
-		System.out.println(resp);
-		
-		assertTrue(resp.contains("<no.niva.aquamonitor:PROJECT_ID>1098</no.niva.aquamonitor:PROJECT_ID>"));
+		finally {
+			reader.close();
+			is.close();
+		}
 	}
 	
 
@@ -146,7 +154,7 @@ public class WFSTest extends NivaTestSupport {
 		Map<String, Serializable> params = store.getConnectionParameters();
 		params.put("namespace", new URI("http://www.aquamonitor.no/"));
 		params.put("dbtype", "aquamonitor-site");
-		params.put("host", "http://www.aquamonitor.no/");
+		params.put("host", TEST_HOST);
 		params.put("site", "Intern");
 		
 		addAquaMonitorStore("Intern_download", params);
