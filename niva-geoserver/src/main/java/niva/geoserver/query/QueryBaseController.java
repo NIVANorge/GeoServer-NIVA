@@ -135,31 +135,30 @@ public abstract class QueryBaseController extends RestBaseController {
 
 	
 	protected HashMap<String, Object> createResultMap(SimpleFeatureCollection coll) {
-		HashMap<String, Object> features = new HashMap<String, Object>();
+		final HashMap<String, Object> features = new HashMap<String, Object>();
+		final ArrayList<HashMap<String, Object>> arr = new ArrayList<HashMap<String, Object>>();
+		final Collection<PropertyDescriptor> descs = coll.getSchema().getDescriptors();
+		final String geometry = coll.getSchema().getGeometryDescriptor().getLocalName();
 		
-		SimpleFeatureIterator iter = coll.features();
-		ArrayList<HashMap<String, Object>> arr = new ArrayList<HashMap<String, Object>>();
-		Collection<PropertyDescriptor> descs = coll.getSchema().getDescriptors();
-		String geometry = coll.getSchema().getGeometryDescriptor().getLocalName();
 		
-		while (iter.hasNext()) {
-			SimpleFeature feat = iter.next();
-			
-			HashMap<String, Object> map = new HashMap<String, Object>();
-			
-			for (PropertyDescriptor desc: descs) {
-				String name = desc.getName().getLocalPart();
-				if (!name.equals(geometry)) {
-					Object value;
-					value = feat.getAttribute(desc.getName());
-					map.put(name, value);
-				}
+		final SimpleFeatureIterator iter = coll.features();
+		try {
+
+			while (iter.hasNext()) {
+				final SimpleFeature feat = iter.next();
+				
+				final HashMap<String, Object> map = new HashMap<String, Object>();
+				
+				descs.stream()
+				.filter((desc) -> !geometry.equals(desc.getName().getLocalPart()))
+				.forEach((desc) -> map.put(desc.getName().getLocalPart(), feat.getAttribute(desc.getName())));
+
+				arr.add(map);
 			}
-			arr.add(map);
 		}
-		
-		iter.close();
-		
+		finally {
+			iter.close();
+		}
 		features.put("features", arr);
 		
 		return features;

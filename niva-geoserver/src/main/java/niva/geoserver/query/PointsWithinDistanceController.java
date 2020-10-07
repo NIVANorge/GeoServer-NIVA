@@ -49,6 +49,7 @@ public class PointsWithinDistanceController extends QueryBaseController {
 	}
 
 	
+	@SuppressWarnings("rawtypes")
 	@GetMapping
 	public HashMap get(@PathVariable String workspace,
 									@PathVariable String layer,

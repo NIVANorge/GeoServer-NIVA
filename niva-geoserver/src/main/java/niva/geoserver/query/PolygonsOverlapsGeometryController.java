@@ -86,6 +86,7 @@ public class PolygonsOverlapsGeometryController extends QueryBaseController {
 			return createResultMapWithArea(result);
 		}
 		catch (ParseException | FactoryException | SchemaException | IOException ex) {
+			LOGGER.severe(ex.getMessage());
 			throw new RestException(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
