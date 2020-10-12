@@ -1,7 +1,6 @@
 package niva.geoserver.data;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -22,13 +21,11 @@ import org.geoserver.catalog.impl.DataStoreInfoImpl;
 
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.simple.SimpleFeatureIterator;
-import org.geotools.data.simple.SimpleFeatureSource;
 
 import org.opengis.feature.simple.SimpleFeature;
 
 import org.locationtech.jts.geom.Point;
 
-import org.springframework.mock.web.MockHttpServletResponse;
 
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
@@ -175,34 +172,28 @@ public class WFSTest extends NivaTestSupport {
 		String path;
 		path = "wfs?typeName=no.niva.aquamonitor:Intern_download_stations&format_options=SHAPEFILE:download.shp;PRJFILEFORMAT:ESRI";
 		
-		MockHttpServletResponse response = postAsServletResponse(path, xml);
-		ByteArrayInputStream bis = getBinaryInputStream(response);
-		
-		File temp = saveUnwrapZip("downloaded", bis);
+		File temp = saveUnwrapZip("downloaded", getBinaryInputStream(postAsServletResponse(path, xml)));
 		
 		try {
 			checkFileExists("download.shp", temp);
 			
-			File prj = new File(temp, "download.prj");
-			byte[] bytes = Files.readAllBytes(prj.toPath());
+			byte[] bytes = Files.readAllBytes(new File(temp, "download.prj").toPath());
 			String prjC = new String(bytes, Charset.defaultCharset());
 			assertEquals(getArcMapProjection(), prjC);
-			
-			File shapeFile = new File(temp, "download.shp");
-			
-	        ShapefileDataStore ds = new ShapefileDataStore(shapeFile.toURI().toURL());
-	        SimpleFeatureSource fs = ds.getFeatureSource();
-	        SimpleFeatureIterator iter = fs.getFeatures().features();
+
+			SimpleFeatureIterator iter = new ShapefileDataStore(new File(temp, "download.shp").toURI().toURL())
+	        									.getFeatureSource()
+	        									.getFeatures().features();
 	        try {
 	            // check that every field has a not null or "empty" value
 	            if (iter.hasNext()) {
-	                SimpleFeature f = iter.next();
-	                Object geomObj = f.getDefaultGeometry();
+	                final SimpleFeature f = iter.next();
+	                final Object geomObj = f.getDefaultGeometry();
 	                assertNotNull(geomObj);
 	                
 	                assertTrue(Point.class.isAssignableFrom(geomObj.getClass()));
 	                
-	                Point pnt = (Point)geomObj;
+	                final Point pnt = (Point)geomObj;
 	                assertTrue("x-coordinate wasn't in wanted interval: " + pnt.getX(), pnt.getX() > 10.0 && pnt.getX() < 20.0);
 	                assertTrue("y-coordinate wasn't in wanted interval: " + pnt.getY(), pnt.getY() > 50.0 && pnt.getY() < 70.0);
 	                
