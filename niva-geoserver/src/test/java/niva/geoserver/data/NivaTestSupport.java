@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Map;
 
-import niva.geotools.referencing.CRS;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
@@ -16,11 +15,13 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.catalog.StoreInfo;
+import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.impl.DataStoreInfoImpl;
 import org.geoserver.catalog.impl.FeatureTypeInfoImpl;
 import org.geoserver.catalog.impl.LayerInfoImpl;
 import org.geoserver.data.test.SystemTestData;
 import org.geoserver.test.GeoServerSystemTestSupport;
+import org.opengis.referencing.FactoryException;
 
 /**
  * Base class for NIVA related Geoserver setup.
@@ -66,7 +67,7 @@ public class NivaTestSupport extends GeoServerSystemTestSupport {
     }
 	
 	
-	protected void addAquaMonitorStore(String name, Map<String, Serializable> params) {
+	protected StoreInfo addAquaMonitorStore(String name, Map<String, Serializable> params) {
 		Catalog catalog = getCatalog();
 		
 		StoreInfo store = new DataStoreInfoImpl(catalog);
@@ -76,33 +77,48 @@ public class NivaTestSupport extends GeoServerSystemTestSupport {
 		store.getConnectionParameters().putAll(params);
 
 		catalog.add(store);
-		
+		return store;
 	}
 	
-	protected void addStationLayer(StoreInfo storeCat, String name) {
-		Catalog catalog = getCatalog();
+	protected LayerInfo addStationLayer(StoreInfo store, String name) {
+		try {
+			return addLayer(addFeatureLayer(store, name, "STATION_POINTS", "EPSG:4326"), null);
+		} catch (FactoryException e) {
+			throw new RuntimeException("Something is missing in your setup.");
+		}
+	}
+	
+	protected FeatureTypeInfo addFeatureLayer(StoreInfo store, String name, String nativeName, String srs) throws FactoryException {
+		final Catalog catalog = getCatalog();
 		
-		NamespaceInfo namespace = catalog.getNamespaceByPrefix("no.niva.aquamonitor");
+		final NamespaceInfo namespace = catalog.getNamespaceByPrefix("no.niva.aquamonitor");
 		
 		FeatureTypeInfo resourceCat = new FeatureTypeInfoImpl(catalog);
-		resourceCat.setStore(storeCat);
+		resourceCat.setStore(store);
 		resourceCat.setNamespace(namespace);
 		resourceCat.setName(name);
-		resourceCat.setNativeName("STATION_POINTS");
-		resourceCat.setNativeCRS(CRS.getBreddeLengdegrad());
-		resourceCat.setSRS("EPSG:4326");
+		resourceCat.setNativeName(nativeName);
+		resourceCat.setNativeCRS(org.geotools.referencing.CRS.decode(srs));
+		resourceCat.setSRS(srs);
 		resourceCat.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
 		resourceCat.setEnabled(true);
 		
 		catalog.add(resourceCat);
+		return resourceCat;
+		
+	}
+	
+	protected LayerInfo addLayer(FeatureTypeInfo resource, StyleInfo style) {
+		final Catalog catalog = getCatalog();
 		
 		LayerInfo layerCat = new LayerInfoImpl();
-		layerCat.setResource(resourceCat);
-		layerCat.setName(name);
+		layerCat.setResource(resource);
+		layerCat.setName(resource.getName());
+		layerCat.setDefaultStyle(style);
 		layerCat.setEnabled(true);
 		
 		catalog.add(layerCat);
-		
+		return layerCat;
 	}
 
 }

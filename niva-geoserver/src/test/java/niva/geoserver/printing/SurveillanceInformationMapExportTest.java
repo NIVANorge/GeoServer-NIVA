@@ -1,26 +1,28 @@
 package niva.geoserver.printing;
 
 
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Optional;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
+import org.springframework.mock.web.MockHttpServletResponse;
+
+import com.google.common.io.Files;
+
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.StoreInfo;
+import org.geoserver.catalog.StyleInfo;
 import org.geoserver.data.test.SystemTestData;
 
-import org.springframework.mock.web.MockHttpServletResponse;
+import org.geotools.TestData;
 
 import org.junit.Test;
 
@@ -28,6 +30,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import niva.geoserver.data.NivaTestSupport;
+import niva.geoserver.renderer.AquamonitorFullBlownLegendTest;
+
 
 /**
  * The images exported from AquaMonitor SI have some anomalies within the color tables.
@@ -37,24 +41,35 @@ import niva.geoserver.data.NivaTestSupport;
  */
 public class SurveillanceInformationMapExportTest extends NivaTestSupport {
 	
-	/**
-	 * Call this method before org.geoserver.printing.PrintingServletWrappingController.setInitParameters() is called.
-	 * Otherwise this method will throw an exception that file config.yaml exists.
-	 */
+	
 	@Override
-	protected void setUpTestData(SystemTestData testData) throws Exception {
-		super.setUpTestData(testData);
-		File printDir = new File(testData.getDataDirectoryRoot(), "printing");
-        if (!printDir.exists()) {
-        	printDir.mkdir();
-        }
+	protected void onSetUp(SystemTestData systemData) throws Exception {
+		super.onSetUp(systemData);
+		Catalog catalog = getCatalog();
+		
+        systemData.addStyle("Skjematisk halvmork linje",
+				  "Skjematisk halvmork linje.sld",
+				  this.getClass(), catalog);
         
-        File printConfig = new File(printDir, "config.yaml");
-    	try (InputStream is = getClass().getClassLoader().getResourceAsStream("niva/geoserver/printing/config.yaml")) {
-    		Files.copy(is, Paths.get(printConfig.getAbsolutePath()));
-    	}
-	}
+		File dataDir = new File(systemData.getDataDirectoryRoot(), "data");
+		File testDir = TestData.file(this, null);
+		Arrays.stream(testDir.listFiles()).forEach((file)->{
+			try {
+				Files.copy(file, new File(dataDir, file.getName()));
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}});
+		
+		HashMap<String, Serializable> params = new HashMap<String, Serializable>();
+		params.put("dbtype", "shapefile");
+		params.put("url", new File(dataDir, "provinser.shp").toURI().toURL());
+		StoreInfo store = addAquaMonitorStore("Myanmar_provins", params);
+		
+		StyleInfo style = catalog.getStyleByName("Skjematisk halvmork linje");
 
+		addLayer(addFeatureLayer(store, "myanmar_provins", "provinser", "EPSG:4326"), style);
+	}
+	
 	/**
 	 * Test for an anomalie with the color returned from OpenStreetMap.
 	 * 
@@ -63,7 +78,7 @@ public class SurveillanceInformationMapExportTest extends NivaTestSupport {
 	@Test
 	public void testSurveillanceInformationMapExport() throws Exception {
 		String spec = null;
-		try (InputStream is = getClass().getClassLoader().getResourceAsStream("niva/geoserver/printing/Spec.txt")) {
+		try (InputStream is = getClass().getClassLoader().getResourceAsStream("niva/geoserver/printing/SpecNew.txt")) {
 			StringBuilder builder = new StringBuilder();
 			try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
 				String line;
@@ -71,10 +86,11 @@ public class SurveillanceInformationMapExportTest extends NivaTestSupport {
 					builder.append(line);
 				}
 			}
-			spec = URLEncoder.encode(builder.toString(), StandardCharsets.UTF_8.name());
+			spec = builder.toString();
 		}
 		assertNotNull(spec);
-        MockHttpServletResponse resp = getAsServletResponse("pdf/print.pdf?spec=" + spec);
+        MockHttpServletResponse resp = postAsServletResponse("rest/printing", spec, "application/json");
+        assertEquals("We got a http status code of:" + resp.getStatus(), 200, resp.getStatus());
         
         InputStream is = getBinaryInputStream(resp);
         BufferedImage image = ImageIO.read(is);
@@ -82,93 +98,7 @@ public class SurveillanceInformationMapExportTest extends NivaTestSupport {
 
 		ImageIO.write(image, "png", new File("C:/temp/myanmar.png"));
 
-		CountColor typeColorOcean = computeTypeColor(image.getData(new Rectangle(375, 2000, 10, 10)));
-		CountColor typeColorLowerLeft = computeTypeColor(image.getData(new Rectangle(125, 2000, 10, 10)));
-		CountColor typeColorLowerRight = computeTypeColor(image.getData(new Rectangle(500, 2350, 10, 10)));
-		
-		
-		//assertEquals("Color in lower left corner", typeColorOcean, typeColorLowerLeft);
-		//assertEquals("Color a little bit longer to right", typeColorOcean, typeColorLowerRight);
 	}
 	
-	/**
-	 * We grab a little clip from the image, and finds the most frequent color
-	 * @param clip
-	 * @return
-	 */
-	private CountColor computeTypeColor(Raster clip) {
-		int height = clip.getHeight();
-		int width = clip.getWidth();
-		HashSet<CountColor> colors = new HashSet<CountColor>();
-		
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				int[] color = new int[4];
-				clip.getPixel(clip.getMinX() + x,  clip.getMinY() + y, color);
-				Optional<CountColor> optional = colors.stream()
-												.filter((element) -> element.sameColor(color))
-												.findFirst();
-				if (optional.isPresent()) {
-					optional.get().incrementCount();
-				}
-				else {
-					colors.add(new CountColor(color));
-				}
-			}
-		}
-		
-		return colors.stream().max(new Comparator<CountColor>() {
 
-			@Override
-			public int compare(CountColor arg0, CountColor arg1) {
-				return Integer.compare(arg0.count, arg1.count);
-			}
-		}).get();
-	}
-
-	/**
-	 * Helper class to find the most frequent color.
-	 * 
-	 * @author Roar Brænden
-	 *
-	 */
-	static class CountColor {
-		int count;
-		int[] color;
-		
-		CountColor(int[] color) {
-			this.color = color;
-			this.count = 1;
-		}
-		
-		void incrementCount() {
-			count += 1;
-		}
-
-		boolean sameColor(int[] other) {
-
-			if (other.length == this.color.length) {
-				for (int i = 0; i < this.color.length; i++) {
-					if (other[i] != this.color[i]) {
-						return false;
-					}
-				}
-				return true;
-			}
-			return false;
-		}
-		
-		@Override
-		public boolean equals(Object other) {
-			if (other instanceof CountColor) {
-				return sameColor(((CountColor)other).color);
-			}
-			return false;
-		}
-		
-		@Override
-		public String toString() {
-			return String.format("[%d %d %d]", color[0], color[1], color[2]);
-		}
-	}
 }
