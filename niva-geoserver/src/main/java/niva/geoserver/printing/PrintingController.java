@@ -96,8 +96,8 @@ public class PrintingController extends RestBaseController {
 				}
 				case "OSM" : {
 
-			        GeneralEnvelope envelope = new GeneralEnvelope(crs);
-			        envelope.setEnvelope(spec.bbox);
+			        final GeneralEnvelope envelope = GeneralEnvelope.toGeneralEnvelope(mapContent.getRenderingArea());
+			        envelope.setCoordinateReferenceSystem(mapContent.getCoordinateReferenceSystem());
 			        
 					layer = new OSMGridLayer(envelope);
 					break;

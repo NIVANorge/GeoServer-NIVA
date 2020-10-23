@@ -30,7 +30,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import niva.geoserver.data.NivaTestSupport;
-import niva.geoserver.renderer.AquamonitorFullBlownLegendTest;
 
 
 /**
