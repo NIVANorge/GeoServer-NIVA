@@ -18,8 +18,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import com.google.common.io.Files;
 
 import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.StoreInfo;
-import org.geoserver.catalog.StyleInfo;
 import org.geoserver.data.test.SystemTestData;
 
 import org.geotools.TestData;
@@ -44,10 +42,14 @@ public class SurveillanceInformationMapExportTest extends NivaTestSupport {
 	@Override
 	protected void onSetUp(SystemTestData systemData) throws Exception {
 		super.onSetUp(systemData);
-		Catalog catalog = getCatalog();
+		final Catalog catalog = getCatalog();
 		
         systemData.addStyle("Skjematisk halvmork linje",
 				  "Skjematisk halvmork linje.sld",
+				  this.getClass(), catalog);
+        
+        systemData.addStyle("border",
+				  "border.sld",
 				  this.getClass(), catalog);
         
 		File dataDir = new File(systemData.getDataDirectoryRoot(), "data");
@@ -59,14 +61,22 @@ public class SurveillanceInformationMapExportTest extends NivaTestSupport {
 				ex.printStackTrace();
 			}});
 		
-		HashMap<String, Serializable> params = new HashMap<String, Serializable>();
-		params.put("dbtype", "shapefile");
-		params.put("url", new File(dataDir, "provinser.shp").toURI().toURL());
-		StoreInfo store = addAquaMonitorStore("Myanmar_provins", params);
-		
-		StyleInfo style = catalog.getStyleByName("Skjematisk halvmork linje");
+		final HashMap<String, Serializable> shpParams = new HashMap<String, Serializable>();
+		shpParams.put("dbtype", "shapefile");
+		shpParams.put("url", new File(dataDir, "provinser.shp").toURI().toURL());
 
-		addLayer(addFeatureLayer(store, "myanmar_provins", "provinser", "EPSG:4326"), style);
+		addLayer(addFeatureLayer(addAquaMonitorStore("Myanmar_provins", shpParams),
+								"myanmar_provins", 
+								"provinser", 
+								"EPSG:4326"), 
+				catalog.getStyleByName("Skjematisk halvmork linje"));
+		
+		final HashMap<String, Serializable> propParams = new HashMap<String, Serializable>();
+		propParams.put("directory", new File(dataDir, "extent.properties").getAbsolutePath());
+		
+		addLayer(addFeatureLayer(addAquaMonitorStore("Property files", propParams),
+								"extent", "extent", "EPSG:900913"),
+				catalog.getStyleByName("border"));
 	}
 	
 	/**
@@ -98,6 +108,5 @@ public class SurveillanceInformationMapExportTest extends NivaTestSupport {
 		ImageIO.write(image, "png", new File("C:/temp/myanmar.png"));
 
 	}
-	
 
 }

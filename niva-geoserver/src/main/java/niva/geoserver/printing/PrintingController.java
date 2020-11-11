@@ -3,6 +3,7 @@ package niva.geoserver.printing;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletResponse;
@@ -67,6 +68,7 @@ public class PrintingController extends RestBaseController {
 		this.wms = wms;
 	}
 
+	@SuppressWarnings("unchecked")
 	@PostMapping(path = PrintingController.PRINTING_ROOT_PATH, consumes = MediaType.APPLICATION_JSON)
 	public void postSpec(@RequestBody PrintSpecification spec, HttpServletResponse response) throws IOException {
 		
@@ -76,14 +78,16 @@ public class PrintingController extends RestBaseController {
 		} catch (FactoryException ex) {
 			throw new IllegalArgumentException("Uknown srs:" + spec.srs);
 		}
+
 		final WMSMapContent mapContent = new WMSMapContent(new GetMapRequest());
 		mapContent.getViewport().setBounds(new ReferencedEnvelope(spec.bbox[0], spec.bbox[2], spec.bbox[1], spec.bbox[3], crs));
 		mapContent.setMapHeight(spec.height);
 		mapContent.setMapWidth(spec.width);
 		mapContent.getRequest().setFormat("image/png");
+		mapContent.getRequest().getFormatOptions().put("dpi", spec.dpi);
 		
-		for(LayerSpecification layerSpec: spec.layers) {
-			Layer layer;
+		Arrays.stream(spec.layers).map((LayerSpecification layerSpec) -> {
+			Layer layer = null;
 			switch (layerSpec.type) {
 				case "WMS" : {
 					final LayerInfo i = this.wms.getLayerByName(layerSpec.layer);
@@ -91,30 +95,39 @@ public class PrintingController extends RestBaseController {
 						throw new IllegalArgumentException("Unknown layer:" + layerSpec.layer);
 					}
 					final MapLayerInfo info = new MapLayerInfo(i);
-					layer = new FeatureLayer(info.getFeatureSource(true, crs), info.getDefaultStyle());
+					try {
+						layer = new FeatureLayer(info.getFeatureSource(true, crs), info.getDefaultStyle());
+					} catch (IOException e) {
+						LOGGER.severe(e.getMessage());
+					}
 					break;
 				}
 				case "OSM" : {
-
+	
 			        final GeneralEnvelope envelope = GeneralEnvelope.toGeneralEnvelope(mapContent.getRenderingArea());
 			        envelope.setCoordinateReferenceSystem(mapContent.getCoordinateReferenceSystem());
-			        
-					layer = new OSMGridLayer(envelope);
+			       
+					layer = (layerSpec.baseURL != null 
+							? new OSMGridLayer(envelope, layerSpec.baseURL) 
+							: new OSMGridLayer(envelope));
 					break;
 				}
 				default:{
-					throw new IllegalArgumentException("Unknown type:" + layerSpec.type);
+					LOGGER.info("Unknown layer specification type:" + layerSpec.type);
 				}
 			}
-			mapContent.addLayer(layer);
-		}
+			return layer;
+		})
+		.filter((Layer layer) -> layer != null)
+		.forEach((Layer layer) -> mapContent.addLayer(layer));
+
 		LOGGER.fine("Ready to produce map.");
 		final RenderedImageMapOutputFormat mapProducer = new RenderedImageMapOutputFormat(this.wms);
 		final RenderedImageMap map = mapProducer.produceMap(mapContent);
 		
 		LOGGER.fine("Map produced - now sending response");
 		Operation operation = null;
-		PNGMapResponse mapResponse = new PNGMapResponse(this.wms);
+		final PNGMapResponse mapResponse = new PNGMapResponse(this.wms);
 		mapResponse.write(map, response.getOutputStream(), operation);
 	}
 	

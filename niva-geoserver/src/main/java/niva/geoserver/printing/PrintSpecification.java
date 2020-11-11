@@ -6,6 +6,12 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
+/**
+ * Content of json coming from web client.
+ * 
+ * @author Roar Brænden, NIVA
+ *
+ */
 @XStreamAlias("PrintSpecification")
 @SuppressWarnings("unused")
 public class PrintSpecification {

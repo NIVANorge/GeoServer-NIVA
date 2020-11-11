@@ -7,11 +7,14 @@
     "height":591,
     "bbox":[9854210.4540103,1681670.9768253,11615319.585456,3124802.0706485],
     "layers":[{
-        "type":"OSM",
-    	"baseURL":"http://tile.openstreetmap.org/"
+        "type":"OSM"
   	  },{
          "type":"WMS",
     	 "layer":"no.niva.aquamonitor:myanmar_provins",
+      	 "transparent":true
+      },{
+         "type":"WMS",
+    	 "layer":"no.niva.aquamonitor:extent",
       	 "transparent":true
       }]
   }
