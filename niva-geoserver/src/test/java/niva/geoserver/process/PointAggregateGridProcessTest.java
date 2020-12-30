@@ -44,7 +44,7 @@ public class PointAggregateGridProcessTest extends WPSTestSupport{
 		Integer cellSize = 50;
 		Integer outputHeight = 100;
 		Integer outputWidth = 100;
-		ReferencedEnvelope outputBbox = ReferencedEnvelope.create(new Envelope(10.0, 11.0, 60.0, 61.0), CRS.getBreddeLengdegrad());
+		ReferencedEnvelope outputBbox = ReferencedEnvelope.create(new Envelope(10.0, 11.0, 60.0, 61.0), CRS.getLengdeBreddegrad());
 		
 		SimpleFeatureCollection result = new PointAggregateGridProcess().execute(points, outputBbox, outputWidth, outputHeight, cellSize, aggregateAttributes);
 		
@@ -147,7 +147,7 @@ public class PointAggregateGridProcessTest extends WPSTestSupport{
 
 		static SimpleFeatureType getFeatureType() {
 			final SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
-			builder.setCRS(CRS.getBreddeLengdegrad());
+			builder.setCRS(CRS.getLengdeBreddegrad());
 			builder.setName("Testdata");
 			builder.add("theGeom", Point.class);
 			builder.add("STATION_TYPE", String.class);

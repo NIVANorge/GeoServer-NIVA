@@ -52,7 +52,7 @@ public class DatatypePointSource extends ContentFeatureSource {
 		SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
 		builder.setName(entry.getName());
 		
-		builder.setCRS(CRS.getBreddeLengdegrad());
+		builder.setCRS(CRS.getLengdeBreddegrad());
 		builder.add("the_geom", Point.class);
 		
 		builder.add("STATION_ID", Integer.class);
@@ -72,7 +72,7 @@ public class DatatypePointSource extends ContentFeatureSource {
 	@Override
 	protected ReferencedEnvelope getBoundsInternal(Query query) throws IOException {
 		if (query.equals(Query.ALL)) {
-			return new ReferencedEnvelope(reader.getEnvelope(), CRS.getBreddeLengdegrad());
+			return new ReferencedEnvelope(reader.getEnvelope(), CRS.getLengdeBreddegrad());
 		}
 		else {
 			FeatureReader<SimpleFeatureType, SimpleFeature> reader = getReaderInternal(query);

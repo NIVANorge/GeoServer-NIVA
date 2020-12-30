@@ -53,7 +53,7 @@ public class StationPointSource extends ContentFeatureSource {
 	protected SimpleFeatureType buildFeatureType() throws IOException {
 		SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
 		builder.setName(entry.getName());
-		CoordinateReferenceSystem crs = CRS.getBreddeLengdegrad();
+		CoordinateReferenceSystem crs = CRS.getLengdeBreddegrad();
 		
 		builder.setCRS(crs);
 		builder.add("the_geom", Point.class);
@@ -78,12 +78,11 @@ public class StationPointSource extends ContentFeatureSource {
 	protected ReferencedEnvelope getBoundsInternal(Query query) throws IOException {		
 		
 		if (query.equals(Query.ALL)) {
-			ReferencedEnvelope env = new ReferencedEnvelope(reader.getEnvelope(), CRS.getBreddeLengdegrad());
-			
-			return env;
+			return new ReferencedEnvelope(reader.getEnvelope(), CRS.getLengdeBreddegrad());
 		}
-		else {
-			FeatureReader<SimpleFeatureType, SimpleFeature> reader = getReaderInternal(query);
+		
+		FeatureReader<SimpleFeatureType, SimpleFeature> reader = getReaderInternal(query);
+		try {
 			ReferencedEnvelope bounds = null;
 			while (reader.hasNext()) {
 				SimpleFeature feature = reader.next();
@@ -95,8 +94,10 @@ public class StationPointSource extends ContentFeatureSource {
 	            		bounds.expandToInclude(ReferencedEnvelope.reference(fb));
 	            }
 			}
-			reader.close();
 			return bounds;
+		}
+		finally {
+			reader.close();
 		}
 	}
 
@@ -106,15 +107,19 @@ public class StationPointSource extends ContentFeatureSource {
 		if (query.equals(Query.ALL)) {
 			return reader.getCount();
 		}
-		else {
-			FeatureReader<SimpleFeatureType, SimpleFeature> reader = getReaderInternal(query);
+		
+		FeatureReader<SimpleFeatureType, SimpleFeature> reader = getReaderInternal(query);
+		try {
 			int i = 0;
 			while (reader.hasNext()) {
 				reader.next();
 				i++;
 			}
-			reader.close();
+			
 			return i;
+		}
+		finally {
+			reader.close();
 		}
 	}
 
@@ -148,49 +153,40 @@ public class StationPointSource extends ContentFeatureSource {
 
 		final private Iterator<StationPointCargo> iter;
 		
-		final private SimpleFeatureBuilder builder;
-		
 		final private GeometryFactory fact = JTSFactoryFinder.getGeometryFactory();
 		
 		private int actual = 0;
 		
 		
 		public StationPointFeatureReader() throws IOException {
-			
 			this.iter = reader.iterator();
-			
-			this.builder = new SimpleFeatureBuilder(StationPointSource.this.getSchema());
 		}
 		
 
 		@Override
 		public SimpleFeatureType getFeatureType() {
-			return this.builder.getFeatureType();
+			return StationPointSource.this.getSchema();
 		}
 
 		@Override
 		public SimpleFeature next() throws IOException, NoSuchElementException {
 			
-			StationPointCargo spc = iter.next();
+			final StationPointCargo spc = iter.next();
+			final SimpleFeatureBuilder builder = new SimpleFeatureBuilder(getFeatureType());
 
-			synchronized (builder) {
-				builder.add(this.fact.createPoint(new Coordinate(spc.longitude, spc.latitude)));
-				builder.add(spc.samplePointId);
-				builder.add(spc.latitude);
-				builder.add(spc.longitude);
-				builder.add(spc.projectId);
-				builder.add(spc.projectName);
-				builder.add(spc.stationId);
-				builder.add(spc.stationTypeId);
-				builder.add(spc.stationType);
-				builder.add(spc.stationCode);
-				builder.add(spc.stationName);
-				builder.add(spc.fullStationName);
-		
-				final SimpleFeature feature =  builder.buildFeature(String.valueOf(++actual));
-				builder.notify();
-				return feature;
-			}
+			builder.add(this.fact.createPoint(new Coordinate(spc.longitude, spc.latitude)));
+			builder.add(spc.samplePointId);
+			builder.add(spc.latitude);
+			builder.add(spc.longitude);
+			builder.add(spc.projectId);
+			builder.add(spc.projectName);
+			builder.add(spc.stationId);
+			builder.add(spc.stationTypeId);
+			builder.add(spc.stationType);
+			builder.add(spc.stationCode);
+			builder.add(spc.stationName);
+			builder.add(spc.fullStationName);
+			return builder.buildFeature(String.valueOf(++actual));
 		}
 
 		@Override
