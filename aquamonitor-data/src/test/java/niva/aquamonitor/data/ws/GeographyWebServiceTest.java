@@ -70,8 +70,8 @@ public class GeographyWebServiceTest {
 	public void getCurrentStationsEmptyKey() throws Exception  {
 		
 		LoginController lws = LoginController.createService(HOST, SITE);
-		UserCargo user = lws.authenticateUser("RBR", "10. august 2020"); // Change to appropriate password
-		
+		UserCargo user = lws.authenticateUser("RBR", "xxxxxxxxxxxxxxxx"); // Change to appropriate password
+																		  // Don't commit
 		assertNotNull(user);
 		assertFalse(user.key == null || user.key == "");
 		
