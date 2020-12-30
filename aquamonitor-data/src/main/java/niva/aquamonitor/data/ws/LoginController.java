@@ -108,7 +108,7 @@ public class LoginController extends AquaWebService {
 		UserCargo user = new UserCargo();
 		user.key = (String)json.get("Key");
 		user.token = (String)json.get("Token");
-		user.userid = (int)(long)json.get("Userid");
+		user.userid = (json.get("Userid") == null ? 0 : ((Long)json.get("Userid")).intValue());
 		user.username = (String)json.get("Username");
 		user.usertype = (String)json.get("Usertype");
 		
