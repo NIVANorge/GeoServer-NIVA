@@ -182,19 +182,22 @@ public class CacheStoreTest extends NivaTestSupport {
 		
 		InputStream is = this.post("wfs", xml);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		
 		String resp = "";
-		String next = reader.readLine();
-		while (next != null) {
-			resp += next;
-			next = reader.readLine();
+		try {
+			String next = reader.readLine();
+			while (next != null) {
+				resp += next;
+				next = reader.readLine();
+			}
 		}
-		is.close();
+		finally {
+			reader.close();
+			is.close();
+		}
 		
 		System.out.println(resp);
 		
 		assertTrue(resp.contains("SUCCESS"));
-		
 		assertTrue(resp.contains("<wfs:InsertResult><ogc:FeatureId fid=\"none\"/></wfs:InsertResult>"));
 		
 		SimpleFeatureCollection coll3 = cacheSource.getFeatures(stFilt);

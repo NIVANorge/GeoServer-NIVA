@@ -10,7 +10,8 @@ public class LoginControllerTest {
 	@Test
 	public void checkLogin() throws Exception {
 		final LoginController serv = LoginController.createService();
-		UserCargo ret = serv.authenticateUser("RBR", "10. august 2020"); // Change this to the appropriate one when failing.
+		UserCargo ret = serv.authenticateUser("RBR", "xxxxxxxxxxxxxx"); // Change this to the appropriate one when failing.
+																  // Don't commit
 		
 		assertEquals(168, ret.userid);
 		

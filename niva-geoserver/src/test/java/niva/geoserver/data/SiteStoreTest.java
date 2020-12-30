@@ -53,10 +53,6 @@ public class SiteStoreTest extends NivaTestSupport {
 		}
 		else {
 			fail("Ikke SiteDataStore");
-		}
-		
+		}	
 	}
-	
-	
-
 }
