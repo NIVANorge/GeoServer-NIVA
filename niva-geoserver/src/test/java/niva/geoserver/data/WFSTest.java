@@ -55,9 +55,7 @@ public class WFSTest extends NivaTestSupport {
 		addAquaMonitorStore("Intern_query", params);
 		addStationLayer(catalog.getDataStoreByName("no.niva.aquamonitor", "Intern_query"), "Intern_query_stations");
 		
-		String xml;
-		
-		xml =  "<wfs:GetFeature service=\"WFS\" version=\"1.1.0\" "
+		String xml =  "<wfs:GetFeature service=\"WFS\" version=\"1.1.0\" "
 				+ "xmlns:ogc=\"http://www.opengis.net/ogc\" "
 				+ "xmlns:wfs=\"http://www.opengis.net/wfs\">"
 				+ "<wfs:Query typeName=\"no.niva.aquamonitor:Intern_query_stations\">"
@@ -127,10 +125,6 @@ public class WFSTest extends NivaTestSupport {
 				resp += next;
 				next = reader.readLine();
 			}
-	
-			
-			System.out.println(resp);
-			
 			assertTrue(resp.contains("<no.niva.aquamonitor:PROJECT_ID>1098</no.niva.aquamonitor:PROJECT_ID>"));
 		}
 		finally {
@@ -157,9 +151,7 @@ public class WFSTest extends NivaTestSupport {
 		addAquaMonitorStore("Intern_download", params);
 		addStationLayer(catalog.getDataStoreByName("no.niva.aquamonitor", "Intern_download"), "Intern_download_stations");
 		
-		String xml;
-		
-		xml =  "<wfs:GetFeature service=\"WFS\" version=\"1.1.0\" "
+		String xml =  "<wfs:GetFeature service=\"WFS\" version=\"1.1.0\" "
 				+ "xmlns:ogc=\"http://www.opengis.net/ogc\" "
 				+ "xmlns:wfs=\"http://www.opengis.net/wfs\" "
 				+ "outputFormat=\"shape-zip\">"
@@ -169,8 +161,7 @@ public class WFSTest extends NivaTestSupport {
 				+ "<ogc:Literal>3570</ogc:Literal></ogc:PropertyIsEqualTo>"
 				+ "</ogc:Filter></wfs:Query></wfs:GetFeature>";
 		
-		String path;
-		path = "wfs?typeName=no.niva.aquamonitor:Intern_download_stations&format_options=SHAPEFILE:download.shp;PRJFILEFORMAT:ESRI";
+		String path = "wfs?typeName=no.niva.aquamonitor:Intern_download_stations&format_options=SHAPEFILE:download.shp;PRJFILEFORMAT:ESRI";
 		
 		File temp = saveUnwrapZip("downloaded", getBinaryInputStream(postAsServletResponse(path, xml)));
 		
