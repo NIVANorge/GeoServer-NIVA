@@ -72,7 +72,7 @@ public class PrintingController extends RestBaseController {
 	@PostMapping(path = PrintingController.PRINTING_ROOT_PATH, consumes = MediaType.APPLICATION_JSON)
 	public void postSpec(@RequestBody PrintSpecification spec, HttpServletResponse response) throws IOException {
 		
-		CoordinateReferenceSystem crs;
+		final CoordinateReferenceSystem crs;
 		try {
 			crs = CRS.decode(spec.srs);
 		} catch (FactoryException ex) {
@@ -86,40 +86,9 @@ public class PrintingController extends RestBaseController {
 		mapContent.getRequest().setFormat("image/png");
 		mapContent.getRequest().getFormatOptions().put("dpi", spec.dpi);
 		
-		Arrays.stream(spec.layers).map((LayerSpecification layerSpec) -> {
-			Layer layer = null;
-			switch (layerSpec.type) {
-				case "WMS" : {
-					final LayerInfo i = this.wms.getLayerByName(layerSpec.layer);
-					if (i == null) {
-						throw new IllegalArgumentException("Unknown layer:" + layerSpec.layer);
-					}
-					final MapLayerInfo info = new MapLayerInfo(i);
-					try {
-						layer = new FeatureLayer(info.getFeatureSource(true, crs), info.getDefaultStyle());
-					} catch (IOException e) {
-						LOGGER.severe(e.getMessage());
-					}
-					break;
-				}
-				case "OSM" : {
-	
-			        final GeneralEnvelope envelope = GeneralEnvelope.toGeneralEnvelope(mapContent.getRenderingArea());
-			        envelope.setCoordinateReferenceSystem(mapContent.getCoordinateReferenceSystem());
-			       
-					layer = (layerSpec.baseURL != null 
-							? new OSMGridLayer(envelope, layerSpec.baseURL) 
-							: new OSMGridLayer(envelope));
-					break;
-				}
-				default:{
-					LOGGER.info("Unknown layer specification type:" + layerSpec.type);
-				}
-			}
-			return layer;
-		})
-		.filter((Layer layer) -> layer != null)
-		.forEach((Layer layer) -> mapContent.addLayer(layer));
+		Arrays.stream(spec.layers).map((LayerSpecification layerSpec) -> mapLayer(layerSpec, mapContent.getRenderingArea()))
+									.filter((Layer layer) -> layer != null)
+									.forEach((Layer layer) -> mapContent.addLayer(layer));
 
 		LOGGER.fine("Ready to produce map.");
 		final RenderedImageMapOutputFormat mapProducer = new RenderedImageMapOutputFormat(this.wms);
@@ -129,6 +98,35 @@ public class PrintingController extends RestBaseController {
 		Operation operation = null;
 		final PNGMapResponse mapResponse = new PNGMapResponse(this.wms);
 		mapResponse.write(map, response.getOutputStream(), operation);
+	}
+	
+	private Layer mapLayer(LayerSpecification spec, final ReferencedEnvelope envelope) {
+		Layer layer = null;
+		switch (spec.type) {
+			case "WMS" : {
+				final LayerInfo i = this.wms.getLayerByName(spec.layer);
+				if (i == null) {
+					throw new IllegalArgumentException("Unknown layer:" + spec.layer);
+				}
+				final MapLayerInfo info = new MapLayerInfo(i);
+				try {
+					layer = new FeatureLayer(info.getFeatureSource(true, envelope.getCoordinateReferenceSystem()), info.getDefaultStyle());
+				} catch (IOException e) {
+					LOGGER.severe(e.getMessage());
+				}
+				break;
+			}
+			case "OSM" : {
+				layer = (spec.baseURL != null 
+						? new OSMGridLayer(GeneralEnvelope.toGeneralEnvelope(envelope), spec.baseURL) 
+						: new OSMGridLayer(GeneralEnvelope.toGeneralEnvelope(envelope)));
+				break;
+			}
+			default:{
+				LOGGER.info("Unknown layer specification type:" + spec.type);
+			}
+		}
+		return layer;
 	}
 	
 	@Override
