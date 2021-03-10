@@ -3,7 +3,7 @@ package niva.geoserver.printing;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.Arrays;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletResponse;
@@ -86,9 +86,10 @@ public class PrintingController extends RestBaseController {
 		mapContent.getRequest().setFormat("image/png");
 		mapContent.getRequest().getFormatOptions().put("dpi", spec.dpi);
 		
-		Arrays.stream(spec.layers).map((LayerSpecification layerSpec) -> mapLayer(layerSpec, mapContent.getRenderingArea()))
-									.filter((Layer layer) -> layer != null)
-									.forEach((Layer layer) -> mapContent.addLayer(layer));
+		for (LayerSpecification layerSpec : spec.layers) {
+		    mapLayer(layerSpec, mapContent.getRenderingArea())
+		            .ifPresent(mapContent::addLayer);
+		}
 
 		LOGGER.fine("Ready to produce map.");
 		final RenderedImageMapOutputFormat mapProducer = new RenderedImageMapOutputFormat(this.wms);
@@ -100,8 +101,7 @@ public class PrintingController extends RestBaseController {
 		mapResponse.write(map, response.getOutputStream(), operation);
 	}
 	
-	private Layer mapLayer(LayerSpecification spec, final ReferencedEnvelope envelope) {
-		Layer layer = null;
+	private Optional<Layer> mapLayer(LayerSpecification spec, final ReferencedEnvelope envelope) {
 		switch (spec.type) {
 			case "WMS" : {
 				final LayerInfo i = this.wms.getLayerByName(spec.layer);
@@ -110,23 +110,23 @@ public class PrintingController extends RestBaseController {
 				}
 				final MapLayerInfo info = new MapLayerInfo(i);
 				try {
-					layer = new FeatureLayer(info.getFeatureSource(true, envelope.getCoordinateReferenceSystem()), info.getDefaultStyle());
+					return Optional.of(new FeatureLayer(info.getFeatureSource(true, envelope.getCoordinateReferenceSystem()),
+					                                    info.getDefaultStyle()));
 				} catch (IOException e) {
 					LOGGER.severe(e.getMessage());
+					return Optional.empty();
 				}
-				break;
 			}
 			case "OSM" : {
-				layer = (spec.baseURL != null 
+				return Optional.of((spec.baseURL != null 
 						? new OSMGridLayer(GeneralEnvelope.toGeneralEnvelope(envelope), spec.baseURL) 
-						: new OSMGridLayer(GeneralEnvelope.toGeneralEnvelope(envelope)));
-				break;
+						: new OSMGridLayer(GeneralEnvelope.toGeneralEnvelope(envelope))));
 			}
 			default:{
 				LOGGER.info("Unknown layer specification type:" + spec.type);
+				return Optional.empty();
 			}
 		}
-		return layer;
 	}
 	
 	@Override
