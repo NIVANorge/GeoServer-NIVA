@@ -30,7 +30,7 @@ public class ProjectUserDataStoreFactory implements DataStoreFactorySpi {
 	
 	/**
 	 */
-	public DataStore createDataStore(Map<String, Serializable> params) throws IOException {
+	public DataStore createDataStore(Map<String, ?> params) throws IOException {
         String dbtype = (String) params.get(DBTYPE_PARAM.key);
         if (dbtype.equals(DBTYPE_PARAM.sample)) {
 
@@ -74,7 +74,7 @@ public class ProjectUserDataStoreFactory implements DataStoreFactorySpi {
 
 
 	@Override
-	public DataStore createNewDataStore(Map<String, Serializable> params)
+	public DataStore createNewDataStore(Map<String, ?> params)
 			throws IOException {
 		throw new UnsupportedOperationException("This isn't supported.");
 	}

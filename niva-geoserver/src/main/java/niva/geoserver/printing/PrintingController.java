@@ -68,7 +68,6 @@ public class PrintingController extends RestBaseController {
 		this.wms = wms;
 	}
 
-	@SuppressWarnings("unchecked")
 	@PostMapping(path = PrintingController.PRINTING_ROOT_PATH, consumes = MediaType.APPLICATION_JSON)
 	public void postSpec(@RequestBody PrintSpecification spec, HttpServletResponse response) throws IOException {
 		

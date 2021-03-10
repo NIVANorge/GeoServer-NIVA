@@ -8,7 +8,7 @@ import niva.aquamonitor.data.ws.LoginController;
 import niva.aquamonitor.data.ws.UserCargo;
 
 import org.geoserver.test.GeoServerTestSupport;
-
+import org.junit.Assert;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
@@ -37,8 +37,8 @@ public class AquamonitorAuthenticationProviderTest extends GeoServerTestSupport 
 		TestingAuthenticationToken token = new TestingAuthenticationToken(TEST_USERNAME, TEST_PASSWORD);
 		Authentication res = authProvider.authenticate(token);
 		
-		assertNotNull(res);
-		assertTrue(res.getAuthorities().contains(AquamonitorAuthenticationProvider.AQUAMONITOR_USER));
+		Assert.assertNotNull(res);
+		Assert.assertTrue(res.getAuthorities().contains(AquamonitorAuthenticationProvider.AQUAMONITOR_USER));
 	}
 	
 	public void testCookieAuthentication() throws IOException {
@@ -51,8 +51,8 @@ public class AquamonitorAuthenticationProviderTest extends GeoServerTestSupport 
 		
 		Authentication res = authProvider.authenticate(new TestingAuthenticationToken("dummy", "yyy"), request);
 		
-		assertNotNull(res);
-		assertTrue(TEST_USERNAME.equals(res.getName()));
+		Assert.assertNotNull(res);
+		Assert.assertTrue(TEST_USERNAME.equals(res.getName()));
 	}
 
 }

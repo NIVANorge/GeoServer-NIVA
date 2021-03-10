@@ -2,7 +2,6 @@ package niva.aquamonitor.data;
 
 import java.awt.RenderingHints.Key;
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
@@ -31,7 +30,7 @@ public class SiteDataStoreFactory implements DataStoreFactorySpi {
 	
 	/**
 	 */
-	public DataStore createDataStore(Map<String, Serializable> params) throws IOException {
+	public DataStore createDataStore(Map<String, ?> params) throws IOException {
         String dbtype = (String) params.get(DBTYPE_PARAM.key);
         if (dbtype.equals(DBTYPE_PARAM.sample)) {
         	
@@ -58,7 +57,7 @@ public class SiteDataStoreFactory implements DataStoreFactorySpi {
 	/**
 	 * Dette skal vi vel ikke gjøre. Jo definitivt!!
 	 */
-	public DataStore createNewDataStore(Map<String, Serializable> params) throws IOException {
+	public DataStore createNewDataStore(Map<String, ?> params) throws IOException {
 		throw new UnsupportedOperationException("Dette finnes det ikke støtte for.");
 	}
 	

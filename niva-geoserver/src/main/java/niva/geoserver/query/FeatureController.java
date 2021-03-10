@@ -5,9 +5,9 @@ import java.util.HashMap;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.factory.BasicFactories;
 import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
-import org.geotools.geometry.jts.spatialschema.geometry.primitive.PrimitiveFactoryImpl;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.rest.RestException;
@@ -61,7 +61,7 @@ public class FeatureController extends QueryBaseController {
 		SimpleFeatureSource source = this.extractSourceFromPathVariable(workspace, layer);
 		CoordinateReferenceSystem crs = this.extractCRSFromPathVariable(epsg);
 		
-		PrimitiveFactory gFact = new PrimitiveFactoryImpl( crs );
+		PrimitiveFactory gFact = BasicFactories.getDefault().getPrimitiveFactory(crs);
 		Point pnt = gFact.createPoint( new double[] {east, north} );
 		try {
 			if ( !crs.equals(source.getSchema().getCoordinateReferenceSystem()) ) {

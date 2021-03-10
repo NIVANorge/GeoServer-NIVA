@@ -7,9 +7,9 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.rest.RestException;
 
 import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.factory.BasicFactories;
 import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
-import org.geotools.geometry.jts.spatialschema.geometry.primitive.PrimitiveFactoryImpl;
 
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
@@ -60,7 +60,7 @@ public class PointsWithinDistanceController extends QueryBaseController {
 
 		final SimpleFeatureSource source = this.extractSourceFromPathVariable(workspace, layer);
 		final CoordinateReferenceSystem crs = this.extractCRSFromPathVariable(epsg);
-		final PrimitiveFactory gFact = new PrimitiveFactoryImpl( crs );
+		final PrimitiveFactory gFact = BasicFactories.getDefault().getPrimitiveFactory(crs);
 		
 		Point pnt = gFact.createPoint( new double[] {east, north} );
 		try {
