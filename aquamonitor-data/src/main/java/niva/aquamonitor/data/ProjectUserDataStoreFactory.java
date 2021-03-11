@@ -2,7 +2,6 @@ package niva.aquamonitor.data;
 
 import java.awt.RenderingHints.Key;
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Map;

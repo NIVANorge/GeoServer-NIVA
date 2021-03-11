@@ -40,13 +40,6 @@
       <artifactId>gs-restconfig</artifactId>
       <version>${gs.version}</version>
     </dependency>
-    <!-- 
-    <dependency>
-      <groupId>org.geotools</groupId>
-      <artifactId>gt-jts-wrapper</artifactId>
-      <version>${gt.version}</version>
-    </dependency>
-     -->
     <dependency>
   	  <groupId>org.geoserver.web</groupId>
   	  <artifactId>gs-web-sec-core</artifactId>
@@ -187,14 +180,4 @@
       </plugin>
     </plugins>
   </build>
-  <repositories>
-    <repository>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>osgeo</id>
-      <name>Open Source Geospatial Foundation Repository</name>
-      <url>https://repo.osgeo.org/repository/release/</url>
-    </repository>
-  </repositories>
 </project>

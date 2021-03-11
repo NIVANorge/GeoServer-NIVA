@@ -2,6 +2,7 @@ package niva.aquamonitor.data;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.HashMap;
@@ -22,7 +23,6 @@ import org.geotools.data.store.ContentFeatureStore;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.filter.text.cql2.CQL;
-import org.geotools.geometry.jts.ReferencedEnvelope;
 
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -35,42 +35,33 @@ import niva.geotools.data.CacheFeatureStore;
 
 
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.junit.Assert;
 
 public class ShapefileCacheDataStoreTest {
 
 	@Test
 	public void stationPointToShapeTest() throws Exception {
-		CacheDataStoreFactory factory = new CacheDataStoreFactory();
-		HashMap<String, Serializable> params = new HashMap<String, Serializable>();
-		
-		File cacheFolder = TestData.file(this, "cache");
+	    File cacheFolder = recreateCacheFolder();
+		final HashMap<String, Serializable> params = new HashMap<String, Serializable>();
 		params.put(CacheDataStoreFactory.NAMESPACE_PARAM.key, "http://www.aquamonitor.no/");
 		params.put(CacheDataStoreFactory.DBTYPE_PARAM.key, (Serializable) CacheDataStoreFactory.DBTYPE_PARAM.sample);
 		params.put(CacheDataStoreFactory.BACKEND_PARAM.key, "dbtype=aquamonitor;user=Ostfold");
 		params.put(CacheDataStoreFactory.CACHE_PARAM.key, "dbtype=shapefile;url=file:" + cacheFolder.getAbsolutePath());
 		params.put(CacheDataStoreFactory.INTERVAL_PARAM.key, (Serializable) CacheDataStoreFactory.INTERVAL_PARAM.sample);
 		
-		
-		CacheDataStore store = factory.createDataStore(params);
-		List<Name> names = store.getNames();
-		
+		final CacheDataStore store = new CacheDataStoreFactory().createDataStore(params);
+		final List<Name> names = store.getNames();
 		CacheFeatureStore source = store.getFeatureSource(names.get(0));
 		
-		int i = source.getCount(Query.ALL);
-		assertTrue(i > 0);
+		int i = source.getFeatures(Query.ALL).size();
+		Assert.assertTrue("Cache is empty.", i > 0);
 	}
 	
 	@Test
 	public void datatypePointToShapeTest() throws Exception {
-		CacheDataStoreFactory factory = new CacheDataStoreFactory();
 		HashMap<String, Serializable> params = new HashMap<String, Serializable>();
 		
-		File cacheFolder = TestData.file(this, "cache");
+		File cacheFolder = recreateCacheFolder();
 		params.put(CacheDataStoreFactory.NAMESPACE_PARAM.key, "http://www.aquamonitor.no/");	
 		params.put(CacheDataStoreFactory.DBTYPE_PARAM.key, (Serializable) CacheDataStoreFactory.DBTYPE_PARAM.sample);
 		params.put(CacheDataStoreFactory.BACKEND_PARAM.key, "dbtype=aquamonitor-site;site=Intern;host=https://test-aquamonitor.niva.no/");
@@ -78,7 +69,7 @@ public class ShapefileCacheDataStoreTest {
 		params.put(CacheDataStoreFactory.INTERVAL_PARAM.key, (Serializable) CacheDataStoreFactory.INTERVAL_PARAM.sample);
 		params.put(CacheDataStoreFactory.CACHE_TYPE_NAME_PARAM.key, "INTERN_%1s");
 		
-		CacheDataStore store = factory.createDataStore(params);
+		CacheDataStore store = new CacheDataStoreFactory().createDataStore(params);
 		List<Name> names = store.getNames();
 		
 		Name pointsName = null;
@@ -88,16 +79,10 @@ public class ShapefileCacheDataStoreTest {
 				break;
 			}		
 		}
-		
-		assertNotNull(pointsName);
+		Assert.assertNotNull(pointsName);
 		
 		CacheFeatureStore source = store.getFeatureSource(pointsName);
-		ReferencedEnvelope env = source.getBounds();
-
-
-		assertNotNull(env);
-		
-		System.out.println(env);
+		Assert.assertNotNull(source.getBounds());
 	}
 	
 	
@@ -117,19 +102,14 @@ public class ShapefileCacheDataStoreTest {
         CacheFeatureStore source = store.getFeatureSource(names.get(0));
         int i = source.getCount(Query.ALL);
         
-        assertTrue(i > 0);
+        Assert.assertTrue(i > 0);
 
 	}
 	
 	@Test
 	public void refreshShapefileCacheTest() throws Exception {
 		
-		File cacheFolder = new File(TestData.file(this, null), "cache");
-		if (cacheFolder.exists()) {
-			FileUtils.deleteDirectory(cacheFolder);
-			while (cacheFolder.exists());
-		}
-		cacheFolder.mkdir();
+		File cacheFolder = recreateCacheFolder();
 		
 		HashMap<String, Serializable> params = new HashMap<String, Serializable>();
 		params.put(CacheDataStoreFactory.NAMESPACE_PARAM.key, "http://www.aquamonitor.no/");	
@@ -146,12 +126,13 @@ public class ShapefileCacheDataStoreTest {
     		int origCnt = stationSource.getCount(Query.ALL);
     		
     		SimpleFeatureCollection origColl = stationSource.getFeatures();
-    		SimpleFeatureIterator iter = origColl.features();
-    		SimpleFeature firstFeature = (iter.hasNext() ? iter.next() : null);
-    		SimpleFeature secondFeature = (iter.hasNext() ? iter.next() : null);
-    		iter.close();
+    		SimpleFeature firstFeature, secondFeature;
+    		try (SimpleFeatureIterator iter = origColl.features()) {
+        		firstFeature = (iter.hasNext() ? iter.next() : null);
+        		secondFeature = (iter.hasNext() ? iter.next() : null);
+    		}
     		
-    		assertTrue(firstFeature != null && secondFeature != null);
+    		Assert.assertTrue(firstFeature != null && secondFeature != null);
     		
     		Filter firstFilter = CQL.toFilter("STATION_ID=" + firstFeature.getAttribute("STATION_ID") + " AND PROJECT_ID=" + firstFeature.getAttribute("PROJECT_ID"));
     		String firstName = (String)firstFeature.getAttribute("STATION_NAME");
@@ -170,7 +151,7 @@ public class ShapefileCacheDataStoreTest {
     		ContentFeatureStore shpStore = (ContentFeatureStore) shpDataStore.getFeatureSource();
     		int shpCnt = shpStore.getCount(Query.ALL);
     		
-    		assertEquals(origCnt, shpCnt);
+    		Assert.assertEquals(origCnt, shpCnt);
     		
     		
 			shpStore.modifyFeatures("STATION_NA", "TEST1", firstFilter);
@@ -186,28 +167,26 @@ public class ShapefileCacheDataStoreTest {
 			
 			shpStore.addFeatures((FeatureCollection<SimpleFeatureType,SimpleFeature>)added);
 
-    		SimpleFeatureIterator firstIter = stationSource.getFeatures(firstFilter).features();
-    		assertTrue(firstIter.hasNext());
-    		assertEquals("TEST1", firstIter.next().getAttribute("STATION_NAME"));
-    		firstIter.close();
+    		try (SimpleFeatureIterator firstIter = stationSource.getFeatures(firstFilter).features()) {
+        		Assert.assertTrue(firstIter.hasNext());
+        		Assert.assertEquals("TEST1", firstIter.next().getAttribute("STATION_NAME"));
+    		}
     		
-    		assertTrue(stationSource.getFeatures(secondFilter).isEmpty());
+    		Assert.assertTrue(stationSource.getFeatures(secondFilter).isEmpty());
     		
     		SimpleFeatureIterator thirdIter = stationSource.getFeatures(thirdFilter).features();
-    		assertTrue(thirdIter.hasNext());
-    		assertEquals("TEST2", thirdIter.next().getAttribute("STATION_NAME"));
+    		Assert.assertTrue(thirdIter.hasNext());
+    		Assert.assertEquals("TEST2", thirdIter.next().getAttribute("STATION_NAME"));
     		thirdIter.close();
     		
     		((CacheFeatureStore)stationSource).refresh();
     		
-    		firstIter = stationSource.getFeatures(firstFilter).features();
-    		assertTrue(firstIter.hasNext());
-    		assertEquals(firstName, firstIter.next().getAttribute("STATION_NAME"));
-    		firstIter.close();
-    		
-    		assertFalse(stationSource.getFeatures(secondFilter).isEmpty());
-    		
-    		assertTrue(stationSource.getFeatures(thirdFilter).isEmpty());
+    		try (SimpleFeatureIterator firstIter = stationSource.getFeatures(firstFilter).features()) {
+        		Assert.assertTrue(firstIter.hasNext());
+        		Assert.assertEquals(firstName, firstIter.next().getAttribute("STATION_NAME"));
+    		}
+    		Assert.assertFalse(stationSource.getFeatures(secondFilter).isEmpty());
+    		Assert.assertTrue(stationSource.getFeatures(thirdFilter).isEmpty());
         }
         finally {
             if (shpDataStore != null) {
@@ -215,5 +194,15 @@ public class ShapefileCacheDataStoreTest {
             }
         }
         
+	}
+	
+	private File recreateCacheFolder() throws IOException {
+	       File cacheFolder = new File(TestData.file(this, null), "cache");
+	        if (cacheFolder.exists()) {
+	            FileUtils.deleteDirectory(cacheFolder);
+	            while (cacheFolder.exists());
+	        }
+	        cacheFolder.mkdir();
+	        return cacheFolder;
 	}
 }
