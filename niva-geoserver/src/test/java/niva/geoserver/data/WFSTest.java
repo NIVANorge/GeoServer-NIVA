@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.URI;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.Map;
@@ -21,7 +22,7 @@ import org.geoserver.catalog.impl.DataStoreInfoImpl;
 
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.simple.SimpleFeatureIterator;
-
+import org.geotools.util.URLs;
 import org.opengis.feature.simple.SimpleFeature;
 
 import org.locationtech.jts.geom.Point;
@@ -36,6 +37,10 @@ import static org.junit.Assert.fail;
 public class WFSTest extends NivaTestSupport {
 	
 	private final static String TEST_HOST = "https://test-aquamonitor.niva.no/";
+	
+	private final static String EXPECTED_ARCMAP_PROJ = "GEOGCS[\"GCS_WGS_1984\",DATUM[\"D_WGS_1984\","
+            + "SPHEROID[\"WGS_1984\",6378137.0,298.257223563]]," + "PRIMEM[\"Greenwich\",0.0],"
+            + "UNIT[\"Degree\",0.0174532925199433]]";
 	
 	
 	@Test
@@ -73,9 +78,9 @@ public class WFSTest extends NivaTestSupport {
 				+ "<ogc:Literal>3573</ogc:Literal></ogc:PropertyIsEqualTo></ogc:Or></ogc:Or>"
 				+ "</ogc:Filter></wfs:Query></wfs:GetFeature>";
 		
-		InputStream is = this.post("wfs", xml);
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		try {
+
+		try (InputStream is = this.post("wfs", xml);
+		     BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
 			String resp = "";
 			String next = reader.readLine();
 			while (next != null) {
@@ -85,10 +90,6 @@ public class WFSTest extends NivaTestSupport {
 			
 			assertTrue("Result didn't contain station id:3570", resp.contains("<no.niva.aquamonitor:STATION_ID>3570</no.niva.aquamonitor:STATION_ID>"));
 			assertTrue("Result doesn't contain project id.", !resp.contains("PROJECT_ID"));
-		}
-		finally {
-			reader.close();
-			is.close();
 		}
 	}
 	
@@ -116,9 +117,9 @@ public class WFSTest extends NivaTestSupport {
 				+ " xsi:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd\" service=\"WFS\""
 				+ " version=\"1.1.0\"><wfs:Query srsName=\"EPSG:32632\" typeName=\"feature:Mjosovervak_stations\" /></wfs:GetFeature>";
 		
-		InputStream is = this.post("wfs", xml);
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		try {
+
+		try (InputStream is = this.post("wfs", xml);
+		     BufferedReader reader = new BufferedReader(new InputStreamReader(is))){
 			String resp = "";
 			String next = reader.readLine();
 			while (next != null) {
@@ -126,10 +127,6 @@ public class WFSTest extends NivaTestSupport {
 				next = reader.readLine();
 			}
 			assertTrue(resp.contains("<no.niva.aquamonitor:PROJECT_ID>1098</no.niva.aquamonitor:PROJECT_ID>"));
-		}
-		finally {
-			reader.close();
-			is.close();
 		}
 	}
 	
@@ -155,7 +152,7 @@ public class WFSTest extends NivaTestSupport {
 				+ "xmlns:ogc=\"http://www.opengis.net/ogc\" "
 				+ "xmlns:wfs=\"http://www.opengis.net/wfs\" "
 				+ "outputFormat=\"shape-zip\">"
-				+ "<wfs:Query typeName=\"no.niva.aquamonitor:Intern_download_stations\">"
+				+ "<wfs:Query typeName=\"no.niva.aquamonitor:Intern_download_stations\" srsName=\"EPSG:4326\">"
 				+ "<ogc:Filter>"
 				+ "<ogc:PropertyIsEqualTo><ogc:PropertyName>no.niva.aquamonitor:STATION_ID</ogc:PropertyName>"
 				+ "<ogc:Literal>3570</ogc:Literal></ogc:PropertyIsEqualTo>"
@@ -163,19 +160,21 @@ public class WFSTest extends NivaTestSupport {
 		
 		String path = "wfs?typeName=no.niva.aquamonitor:Intern_download_stations&format_options=SHAPEFILE:download.shp;PRJFILEFORMAT:ESRI";
 		
-		File temp = saveUnwrapZip("downloaded", getBinaryInputStream(postAsServletResponse(path, xml)));
-		
-		try {
+		File temp = null;
+		try (InputStream is = getBinaryInputStream(postAsServletResponse(path, xml))){
+
+		    temp = saveUnwrapZip("downloaded", is);
 			checkFileExists("download.shp", temp);
 			
 			byte[] bytes = Files.readAllBytes(new File(temp, "download.prj").toPath());
 			String prjC = new String(bytes, Charset.defaultCharset());
-			assertEquals(getArcMapProjection(), prjC);
+			assertEquals("download.prj wasn't as expected.", EXPECTED_ARCMAP_PROJ, prjC);
 
-			SimpleFeatureIterator iter = new ShapefileDataStore(new File(temp, "download.shp").toURI().toURL())
-	        									.getFeatureSource()
-	        									.getFeatures().features();
-	        try {
+			final URL downloadFileURL = URLs.extendUrl(URLs.fileToUrl(temp), "download.shp");
+
+	        try (SimpleFeatureIterator iter = new ShapefileDataStore(downloadFileURL)
+                                                .getFeatureSource()
+                                                .getFeatures().features()){
 	            // check that every field has a not null or "empty" value
 	            if (iter.hasNext()) {
 	                final SimpleFeature f = iter.next();
@@ -185,16 +184,16 @@ public class WFSTest extends NivaTestSupport {
 	                assertTrue(Point.class.isAssignableFrom(geomObj.getClass()));
 	                
 	                final Point pnt = (Point)geomObj;
-	                assertTrue("x-coordinate wasn't in wanted interval: " + pnt.getX(), pnt.getX() > 10.0 && pnt.getX() < 20.0);
-	                assertTrue("y-coordinate wasn't in wanted interval: " + pnt.getY(), pnt.getY() > 50.0 && pnt.getY() < 70.0);
+	                assertTrue("x-coordinate wasn't in expected interval: " + pnt.getX(), pnt.getX() > 10.0 && pnt.getX() < 20.0);
+	                assertTrue("y-coordinate wasn't in expected interval: " + pnt.getY(), pnt.getY() > 50.0 && pnt.getY() < 70.0);
 	                
 	            }
-	        } finally {
-	            iter.close();
 	        }
 		}
 		finally {
-			temp.delete();
+			if (temp != null) {
+			    temp.delete();
+			}
 		}
 	}
 	
@@ -244,11 +243,5 @@ public class WFSTest extends NivaTestSupport {
             }
         }
         fail(fileName + " was not found in the zip-file.");
-    }
-
-    private String getArcMapProjection() {
-        return "GEOGCS[\"GCS_WGS_1984\",DATUM[\"D_WGS_1984\","
-                + "SPHEROID[\"WGS_1984\",6378137.0,298.257223563]]," + "PRIMEM[\"Greenwich\",0.0],"
-                + "UNIT[\"Degree\",0.0174532925199433]]";
     }
 }
