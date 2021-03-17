@@ -30,6 +30,11 @@
      <artifactId>gs-wms</artifactId>
      <version>${gs.version}</version>
    </dependency>
+   <dependency>
+     <groupId>org.geoserver</groupId>
+     <artifactId>gs-wfs</artifactId>
+     <version>${gs.version}</version>
+   </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>gs-rest</artifactId>
@@ -178,6 +183,18 @@
 			<encoding>UTF-8</encoding>
   		</configuration>
       </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.22.2</version>
+        <configuration>
+            <systemProperties>
+	         <property> 
+	           <name>java.util.logging.config.file</name>
+	           <value>log4j.properties</value>
+	         </property>
+	       </systemProperties>
+	    </configuration>
+	  </plugin>
     </plugins>
   </build>
 </project>
