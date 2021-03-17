@@ -8,13 +8,11 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
+import org.opengis.feature.type.AttributeDescriptor;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.store.ContentFeatureSource;
 import org.junit.Before;
 import org.junit.Test;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.type.AttributeDescriptor;
 
 public class InternalSiteDataStoreTest {
 	
@@ -44,11 +42,9 @@ public class InternalSiteDataStoreTest {
 	public void getAllDatatypePoints() throws Exception {
 		ContentFeatureSource source = this.dataStore.getFeatureSource("STATION_DATATYPE_POINTS");
 		
-		SimpleFeatureIterator features = source.getFeatures().features();
-		
-		assertTrue(features.hasNext());
-		SimpleFeature feature = features.next();
-		System.out.println(feature.toString());
-		
+		try (SimpleFeatureIterator features = source.getFeatures().features()) {    
+	        assertTrue(features.hasNext());
+	        features.next();
+		};
 	}
 }

@@ -1,10 +1,7 @@
 package niva.aquamonitor.data.ws;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Map;
-
-
 
 public class DatatypeReader extends AquaReader<DatatypeCargo>{
 
@@ -13,13 +10,13 @@ public class DatatypeReader extends AquaReader<DatatypeCargo>{
 	}
 	
 	@Override
-	public Iterator<DatatypeCargo> iterator() throws IOException {
+	public CloseableIterator<DatatypeCargo> iterator() throws IOException {
 		return new DatatypeIterator(callJsonService());
 	}
 	
 	class DatatypeIterator extends JsonMapper<DatatypeCargo>{
 
-		DatatypeIterator(Iterator<Object> iter) {
+		DatatypeIterator(JsonStreamIterator iter) {
 			super(iter);
 		}
 		

@@ -1,9 +1,9 @@
 package niva.aquamonitor.data.ws;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -36,11 +36,13 @@ import org.json.simple.parser.ParseException;
  * @author Roar Brænden, NIVA
  *
  */
-class JsonStreamIterator implements Iterator<Object>, ContentHandler {
+class JsonStreamIterator implements Iterator<Object>, ContentHandler, AutoCloseable {
 	
 	private final static Logger LOGGER = Logging.getLogger(JsonStreamIterator.class);
-	
-	private CloseableHttpClient client;
+
+    private final String url;
+	private final CloseableHttpClient client;
+	private CloseableHttpResponse response;
 	private InputStreamReader reader;
 	private JSONParser parser;
 	
@@ -54,25 +56,30 @@ class JsonStreamIterator implements Iterator<Object>, ContentHandler {
 	
 	private Integer timeoutMins = null;
 	
-	
-	private String url;
-	
-	JsonStreamIterator(String url) {
+	JsonStreamIterator(String url) throws IOException {
 		this.url = url;
+		this.client = initHttp();
+		read();
 	}
 	
-	void setTimeoutMins(int timeoutmins) {
-		this.timeoutMins = timeoutmins;
+	JsonStreamIterator(String url, Integer timeoutMins) throws IOException {
+	    this.url = url;
+        this.client = initHttp();
+        this.timeoutMins = timeoutMins;
+        read();
 	}
 	
-	void read() throws IOException {
-
-		Header accept = new BasicHeader(HttpHeaders.ACCEPT, "application/json");
-		
-		List<Header> headers = new ArrayList<Header>(1);
-		headers.add(accept);
-		
-		client = HttpClients.custom().setDefaultHeaders(headers).build();
+	private CloseableHttpClient initHttp() {
+	    final Header accept = new BasicHeader(HttpHeaders.ACCEPT, "application/json");
+        return HttpClients.custom().setDefaultHeaders(Collections.singletonList(accept)).build();
+	}
+	
+	/**
+	 * Resources are closed within endJson.
+	 * 
+	 * @throws IOException
+	 */
+	private void read() throws IOException {
 		LOGGER.fine("Calling webservice: " + url);
 			
 		HttpGet get = new HttpGet(url);
@@ -86,21 +93,19 @@ class JsonStreamIterator implements Iterator<Object>, ContentHandler {
 		}
 
 		try {
-			CloseableHttpResponse resp = client.execute(get);
-			
-			int respStatusCode = resp.getStatusLine().getStatusCode();
+		    response = client.execute(get);
+			int respStatusCode = response.getStatusLine().getStatusCode();
 			
 			if (respStatusCode == HttpStatus.SC_NOT_FOUND) {
 				throw new IOException("Url: " + this.url + " responds with http status code 404.");
 			}
 			
-			HttpEntity entity = resp.getEntity();
+			HttpEntity entity = response.getEntity();
 	
 			if (entity != null) {
-				InputStream stream = entity.getContent();
 				parser = new JSONParser();
-				reader = new InputStreamReader(stream, "utf-8");
-				try {
+				reader = new InputStreamReader(entity.getContent(), "utf-8");
+				try  {
 					parser.parse(reader, this);
 					hasReadHeader = true;
 				}
@@ -130,34 +135,35 @@ class JsonStreamIterator implements Iterator<Object>, ContentHandler {
 
 	@Override
 	public boolean hasNext() {
-		if (nextObject == null) {
-			try {
-				parser.parse(reader, this, true);
-			} catch (IOException ie) {
-				LOGGER.warning(ie.toString());
-			} catch (ParseException pe) {
-				LOGGER.warning(pe.toString());
-			}
-			
-			return (nextObject != null);
+	    if (nextObject != null) {
+	        return true;
+	    }
+
+		try {
+			parser.parse(reader, this, true);
+		} catch (IOException ie) {
+			LOGGER.warning(ie.toString());
+		} catch (ParseException pe) {
+			LOGGER.warning(pe.toString());
 		}
-		else
-			return true;
+		
+		return (nextObject != null);
 	}
 
 	@Override
 	public Object next() {
-		if (hasNext()) {
-			Object ret = nextObject;
-			nextObject = null;
-			return ret;
-		}
-		else
-			throw new NoSuchElementException();
+	    if (!hasNext()) {
+	        throw new NoSuchElementException();
+	    }
+    
+		Object ret = nextObject;
+		nextObject = null;
+		return ret;	
 	}
 
 	@Override
 	public void remove() {
+	    throw new UnsupportedOperationException("We don't support this.");
 	}
 
 	@Override
@@ -171,29 +177,15 @@ class JsonStreamIterator implements Iterator<Object>, ContentHandler {
 	 */
 	@Override
 	public void endJSON() throws ParseException, IOException {
-		if (reader != null) {
-			try {
-				reader.close();
-			} catch (IOException ex) {
-				LOGGER.warning("Exception while closing reader: " + ex.getMessage());
-			}
-		}
-		
-		if (client != null) {
-			try {
-				client.close();
-			} catch (IOException ex) {
-				LOGGER.warning("Exception while closing client: " + ex.getMessage());
-			}
-		}
+
 	}
 
 
 	@Override
 	public boolean startObject() throws ParseException, IOException {
-		if (hasReadHeader)
+		if (hasReadHeader) {
 			nextObject = new HashMap<String, Object>();
-		
+		}
 		return true;
 	}
 
@@ -224,8 +216,9 @@ class JsonStreamIterator implements Iterator<Object>, ContentHandler {
 
 	@Override
 	public boolean endObjectEntry() throws ParseException, IOException {
-		if (hasReadHeader)
+		if (hasReadHeader) {
 			actKey = null;
+		}
 		
 		return true;
 	}
@@ -233,7 +226,6 @@ class JsonStreamIterator implements Iterator<Object>, ContentHandler {
 
 	@Override
 	public boolean startArray() throws ParseException, IOException {
-		
 		if (hasReadHeader) {
 			actArray = new ArrayList<Object>();
 			return true;
@@ -279,8 +271,36 @@ class JsonStreamIterator implements Iterator<Object>, ContentHandler {
 		else if (hasMessage) {
 			throw new IOException(String.format("Call for %s got the error response:\n%s",  this.url, value));
 		}
-		else
+		else {
 			return true;
+		}
 	}
 
+    @Override
+    public void close() {
+        if (reader != null) {
+            try {
+                reader.close();
+            } catch (IOException ex) {
+                LOGGER.warning("Exception while closing reader: " + ex.getMessage());
+            }
+        }
+        
+        if (response != null) {
+            try {
+                response.close();
+            }
+            catch (IOException e) {
+                LOGGER.warning("Exception while closing response: " + e.getMessage());
+            }
+        }
+        
+        if (client != null) {
+            try {
+                client.close();
+            } catch (IOException ex) {
+                LOGGER.warning("Exception while closing client: " + ex.getMessage());
+            }
+        }
+    }
 }

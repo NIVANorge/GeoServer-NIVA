@@ -1,6 +1,5 @@
 package niva.aquamonitor.data.ws;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -10,12 +9,10 @@ import java.util.Map;
  * @author Roar Brænden
  *
  */
-public abstract class JsonMapper<T> implements Iterator<T>  {
-	
-	Iterator<Object> iter;
-	
-	JsonMapper(Iterator<Object> iter) {
-		this.iter = iter;
+public abstract class JsonMapper<T> extends CloseableIterator<T>  {
+
+	JsonMapper(JsonStreamIterator iter) {
+		super(iter);
 	}
 	
 	@Override

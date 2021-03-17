@@ -36,7 +36,7 @@ abstract class AquaWebService {
 	private static String defaultHostAddress = null;
 	private static Map<ServletContext, String> hostAddresses = new HashMap<ServletContext, String>();
 	
-	private String url;
+	private final String url;
 	
 
 	/** Logger. */

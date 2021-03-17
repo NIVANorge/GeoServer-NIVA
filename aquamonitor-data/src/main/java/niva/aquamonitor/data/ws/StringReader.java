@@ -1,7 +1,6 @@
 package niva.aquamonitor.data.ws;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 public class StringReader extends AquaReader<String> {
 
@@ -10,16 +9,14 @@ public class StringReader extends AquaReader<String> {
 	}
 
 	@Override
-	public Iterator<String> iterator() throws IOException {
+	public CloseableIterator<String> iterator() throws IOException {
 		return new StringIterator(callJsonService());
 	}
 	
-	class StringIterator implements Iterator<String> {
+	class StringIterator extends CloseableIterator<String> {
 		
-		Iterator<Object> iter;
-		
-		StringIterator(Iterator<Object> iter) {
-			this.iter = iter;
+		StringIterator(JsonStreamIterator iter) {
+			super(iter);
 		}
 		
 		@Override

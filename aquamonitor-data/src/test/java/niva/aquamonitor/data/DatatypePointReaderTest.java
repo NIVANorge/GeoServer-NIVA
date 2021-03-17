@@ -20,7 +20,8 @@ public class DatatypePointReaderTest {
 	
 	@Test
 	public void datatypePointReaderConstructorTest() throws Exception {
-		GeographyWebService service = GeographyWebService.createService("https://test-aquamonitor.niva.no/", "Vannplanter");
+		GeographyWebService service = GeographyWebService.createService("https://test-aquamonitor.niva.no/", 
+		                                                                "Vannplanter");
 		
 		SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
 		builder.setName("STATION_DATA_TYPE");
@@ -40,7 +41,8 @@ public class DatatypePointReaderTest {
 
 		SimpleFeatureType schema = builder.buildFeatureType();
 
-	    DatatypePointReader reader = new DatatypePointReader(schema, service.getAllDatatypePointsReader());
+	    DatatypePointReader reader = new DatatypePointReader(schema, 
+	            service.getAllDatatypePointsReader().iterator());
 	    assertNotNull(reader);
 		
 	}
@@ -62,20 +64,14 @@ public class DatatypePointReaderTest {
 		builder.add("Vannplanter", Integer.class);
 
 		SimpleFeatureType schema = builder.buildFeatureType();
-		DatatypePointReader reader = null;
-	    try {
-	        reader = new DatatypePointReader(schema, service.getAllDatatypePointsReader());
-
+	    try (DatatypePointReader reader = new DatatypePointReader(schema, 
+	                                            service.getAllDatatypePointsReader()
+	                                                   .iterator())) {
 			assertTrue(reader.hasNext());
 			
 			SimpleFeature feature = reader.next();
 			assertNotNull(feature);
 			assertEquals(1, feature.getAttribute("Vannplanter"));
-		}
-		finally {
-		    if (reader != null) {
-		        reader.close();
-		    }
 		}
 	}
 

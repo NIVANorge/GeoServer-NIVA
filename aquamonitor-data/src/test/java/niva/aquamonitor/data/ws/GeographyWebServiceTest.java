@@ -17,6 +17,8 @@ public class GeographyWebServiceTest {
 	private String HOST = "https://test-aquamonitor.niva.no/";
 	private String SITE = "Intern";
 	
+	
+	
 
 	@Test
 	public void getAllStationsEasy() throws Exception {
@@ -70,44 +72,32 @@ public class GeographyWebServiceTest {
 	public void getCurrentStationsEmptyKey() throws Exception  {
 		
 		LoginController lws = LoginController.createService(HOST, SITE);
-		UserCargo user = lws.authenticateUser("RBR", "5. februar 2021"); // Change to appropriate password
-																		  // Don't commit
+		UserCargo user = lws.authenticateUser(TestAuthentication.getUsername(),
+		                                        TestAuthentication.getPassword());
+
 		assertNotNull(user);
 		assertFalse(user.key == null || user.key == "");
 		
 		GeographyWebService ws = GeographyWebService.createService(HOST, SITE);
 		StationPointReader reader = ws.getCurrentStationReader(user.key);
 		assertEquals(0, reader.getCount());
-		
 	}
 	
 	@Test
 	public void getAllDatatypesFindWater() throws Exception {
-
-		GeographyWebService ws = GeographyWebService.createService(HOST, SITE);
-		StringReader reader = ws.getAllDatatypesReader();
-		Iterator<String> iter = reader.iterator();
-		boolean foundWater = false;
-		
-		while (iter.hasNext()) {
-			if (iter.next().equals("Water")) {
-				foundWater = true;
-				break;
-			}
-		}
-		
+		boolean foundWater = GeographyWebService.createService(HOST, SITE)
+		                                        .getAllDatatypesReader()
+		                                        .stream()
+		                                        .anyMatch("Water"::equals);
 		assertTrue(foundWater);
 	}
 	
 
 	@Test
 	public void getAllDatatypePoints() throws Exception  {
-		GeographyWebService ws = GeographyWebService.createService(HOST, SITE);
-
-		DatatypeReader reader = ws.getAllDatatypePointsReader();		
-		int l = reader.getCount();
-		System.out.println("Antall stasjoner:" + l);
+		int l =  GeographyWebService.createService(HOST, SITE)
+		                            .getAllDatatypePointsReader()
+		                            .getCount();
 		assertTrue(l > 0);
-			
 	}
 }

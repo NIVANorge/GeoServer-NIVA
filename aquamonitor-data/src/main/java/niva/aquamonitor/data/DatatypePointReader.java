@@ -2,11 +2,9 @@ package niva.aquamonitor.data;
 
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
-
+import niva.aquamonitor.data.ws.CloseableIterator;
 import niva.aquamonitor.data.ws.DatatypeCargo;
-import niva.aquamonitor.data.ws.DatatypeReader;
 
 import org.geotools.data.FeatureReader;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -25,15 +23,13 @@ import org.locationtech.jts.geom.GeometryFactory;
  */
 public class DatatypePointReader implements FeatureReader<SimpleFeatureType, SimpleFeature> {
 	
-	private SimpleFeatureType schema;
+	private final SimpleFeatureType schema;
 	
-	private Iterator<DatatypeCargo> iter;
-	
-	private SimpleFeatureBuilder builder;
+	private final CloseableIterator<DatatypeCargo> iter;
 	
 	private int actual = 0;
 	
-	private GeometryFactory fact;
+	private final GeometryFactory fact = JTSFactoryFinder.getGeometryFactory();
 	
 	private String[] datatypes;
 
@@ -44,19 +40,14 @@ public class DatatypePointReader implements FeatureReader<SimpleFeatureType, Sim
 	 * @param reader
 	 * @throws IOException
 	 */
-	public DatatypePointReader(SimpleFeatureType schema, DatatypeReader reader) throws IOException {
+	public DatatypePointReader(SimpleFeatureType schema, CloseableIterator<DatatypeCargo> iter) {
 		this.schema = schema;
-		this.iter = reader.iterator();
-		this.fact = JTSFactoryFinder.getGeometryFactory();
-		
-		this.builder = new SimpleFeatureBuilder(schema);
-		
+		this.iter = iter;
 		this.datatypes = new String[schema.getAttributeCount() - 4];
 		for (int i = 4; i < schema.getAttributeCount(); i++) {
 			this.datatypes[i - 4] = schema.getDescriptor(i).getLocalName();
 		}
 	}
-	
 
 	/**
 	 * Returns the schema for the features of this reader.
@@ -74,28 +65,23 @@ public class DatatypePointReader implements FeatureReader<SimpleFeatureType, Sim
 
 		DatatypeCargo dpc = iter.next();
 
-		synchronized (builder) {
-			builder.add(this.fact.createPoint(new Coordinate(dpc.longitude, dpc.latitude)));
-	
-			builder.add(dpc.stationId);
-			builder.add(dpc.stationTypeId);
-			builder.add(dpc.stationType);
-			
-			for (int i = 0; i < this.datatypes.length; i++) {
-				builder.add(hasDatatype(dpc, this.datatypes[i]));
-			}
-			final SimpleFeature feature = builder.buildFeature(String.valueOf(++actual));
-			builder.notify();
-			
-			return feature;
+		final SimpleFeatureBuilder builder = new SimpleFeatureBuilder(this.schema);
+		builder.add(this.fact.createPoint(new Coordinate(dpc.longitude, dpc.latitude)));
+		builder.add(dpc.stationId);
+		builder.add(dpc.stationTypeId);
+		builder.add(dpc.stationType);
+		for (int i = 0; i < this.datatypes.length; i++) {
+			builder.add(hasDatatype(dpc, this.datatypes[i]));
 		}
+		return builder.buildFeature(String.valueOf(++actual));
 	}
 	
-	private int hasDatatype(DatatypeCargo d, String datatype)  {
+	private static int hasDatatype(DatatypeCargo d, String datatype)  {
 		int i = 0;
 		while (i < d.datatypes.length) {
-			if (d.datatypes[i++].equals(datatype))
+			if (d.datatypes[i++].equals(datatype)) {
 				return 1;
+			}
 		}
 		return 0;
 	}
@@ -110,11 +96,10 @@ public class DatatypePointReader implements FeatureReader<SimpleFeatureType, Sim
 
 
 	/**
-	 * Must be implemented, but no need for it here.
+	 * Closes the underlying CloseableIterator
 	 */
 	@Override
-	public void close() throws IOException {
-
+	public void close() {
+	    this.iter.close();
 	}
-
 }

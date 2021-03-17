@@ -1,7 +1,7 @@
 package niva.aquamonitor.data.ws;
 
 import static org.junit.Assert.assertEquals;
-
+import org.junit.Assume;
 import org.junit.Test;
 
 public class LoginControllerTest {
@@ -9,9 +9,13 @@ public class LoginControllerTest {
 	
 	@Test
 	public void checkLogin() throws Exception {
+	    Assume.assumeTrue("Test is based on RBR as test user.", 
+	            "RBR".equalsIgnoreCase(TestAuthentication.getUsername()));
+	    
 		final LoginController serv = LoginController.createService();
-		UserCargo ret = serv.authenticateUser("RBR", "5. februar 2021"); // Change this to the appropriate one when failing.
-																  // Don't commit
+		UserCargo ret = serv.authenticateUser("RBR",
+		                                        TestAuthentication.getPassword());
+																  
 		
 		assertEquals(168, ret.userid);
 		

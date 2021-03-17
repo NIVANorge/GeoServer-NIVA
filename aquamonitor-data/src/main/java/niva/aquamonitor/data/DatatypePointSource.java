@@ -28,8 +28,8 @@ import org.locationtech.jts.geom.Point;
 public class DatatypePointSource extends ContentFeatureSource {
 
 	
-	private DatatypeReader reader;
-	private String[] datatypes;
+	private final DatatypeReader reader;
+	private final String[] datatypes;
 	
 	/**
 	 * The constructor takes a ContentEntry, a reader and the name of all datatypes.
@@ -40,7 +40,6 @@ public class DatatypePointSource extends ContentFeatureSource {
 	public DatatypePointSource(ContentEntry entry, DatatypeReader reader, String[] datatypes) {
 		super(entry, Query.ALL);
 		this.reader = reader;
-		
 		this.datatypes = datatypes;
 	}
 
@@ -49,19 +48,16 @@ public class DatatypePointSource extends ContentFeatureSource {
 	 */
 	@Override
 	protected SimpleFeatureType buildFeatureType() throws IOException {
-		SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
+		final SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
 		builder.setName(entry.getName());
-		
 		builder.setCRS(CRS.getLengdeBreddegrad());
 		builder.add("the_geom", Point.class);
-		
 		builder.add("STATION_ID", Integer.class);
 		builder.add("STATION_TYPE_ID", Integer.class);
 		builder.add("STATION_TYPE", String.class);
-		
-		for (int i = 0; i < this.datatypes.length; i++)
-			builder.add(this.datatypes[i], Integer.class);
-		
+		for (String datatyp : this.datatypes) {
+			builder.add(datatyp, Integer.class);
+		}
 		return builder.buildFeatureType();
 	}
 	
@@ -74,21 +70,20 @@ public class DatatypePointSource extends ContentFeatureSource {
 		if (query.equals(Query.ALL)) {
 			return new ReferencedEnvelope(reader.getEnvelope(), CRS.getLengdeBreddegrad());
 		}
-		else {
-			FeatureReader<SimpleFeatureType, SimpleFeature> reader = getReaderInternal(query);
-			ReferencedEnvelope bounds = null;
-			while (reader.hasNext()) {
-				SimpleFeature feature = reader.next();
-	            BoundingBox fb = feature.getBounds();
-	            if(fb != null) {
-	            	if (bounds == null)
-	            		bounds = ReferencedEnvelope.reference(fb);
-	            	else 
-	            		bounds.expandToInclude(ReferencedEnvelope.reference(fb));
-	            }
-			}
-			reader.close();
-			return (bounds == null ? ReferencedEnvelope.EVERYTHING : bounds);
+		try (FeatureReader<SimpleFeatureType, SimpleFeature> reader = getReaderInternal(query)) {
+    		ReferencedEnvelope bounds = null;
+    		while (reader.hasNext()) {
+                BoundingBox featBox = reader.next().getBounds();
+                if(featBox != null) {
+                	if (bounds == null) {
+                		bounds = ReferencedEnvelope.reference(featBox);
+                	}
+                	else { 
+                		bounds.expandToInclude(ReferencedEnvelope.reference(featBox));
+                	}
+                }
+    		}
+    		return (bounds == null ? ReferencedEnvelope.EVERYTHING : bounds);
 		}
 	}
 
@@ -98,20 +93,19 @@ public class DatatypePointSource extends ContentFeatureSource {
 			return reader.getCount();
 		}
 		else {
-			FeatureReader<SimpleFeatureType, SimpleFeature> reader = getReaderInternal(query);
-			int i = 0;
-			while (reader.hasNext()) {
-				reader.next();
-				i++;
+			try (FeatureReader<SimpleFeatureType, SimpleFeature> reader = getReaderInternal(query)) {
+		        int i = 0;
+	            while (reader.hasNext()) {
+	                reader.next();
+	                i++;
+	            }
+	            return i;
 			}
-			reader.close();
-			return i;
 		}
 	}
 
 	@Override
 	protected FeatureReader<SimpleFeatureType, SimpleFeature> getReaderInternal(Query query) throws IOException {
-		return  new DatatypePointReader(buildFeatureType(), reader);
+		return new DatatypePointReader(buildFeatureType(), reader.iterator());
 	}
-	
 }

@@ -2,16 +2,13 @@ package niva.aquamonitor.data;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
-
+import java.util.stream.Collectors;
 import niva.aquamonitor.data.ws.DatatypeReader;
 import niva.aquamonitor.data.ws.GeographyWebService;
 import niva.aquamonitor.data.ws.StationPointReader;
 import niva.aquamonitor.data.ws.StringReader;
-
-
 import org.geotools.data.DefaultServiceInfo;
 import org.geotools.data.ServiceInfo;
 import org.geotools.data.store.ContentDataStore;
@@ -20,7 +17,6 @@ import org.geotools.data.store.ContentFeatureSource;
 import org.geotools.feature.FeatureTypes;
 import org.geotools.feature.NameImpl;
 import org.geotools.util.logging.Logging;
-
 import org.opengis.feature.type.Name;
 
 
@@ -43,18 +39,18 @@ public class SiteDataStore extends ContentDataStore {
 	
 	private static final Logger LOGGER = Logging.getLogger(SiteDataStore.class);
 
-	private String host;
-	private String site;
-	private String key = null;
+	private final String host;
+	private final String site;
+	private final String key;
 
 
 	public SiteDataStore(String host, String site) {
-    	this.host = host;
-    	this.site = site;
+	    this(host, site, null);
 	}
 	
 	public SiteDataStore(String host, String site, String key) {
-		this(host, site);
+	    this.host = host;
+	    this.site = site;	
 		this.key = key;
 	}
 
@@ -110,8 +106,8 @@ public class SiteDataStore extends ContentDataStore {
 	@Override
 	protected ContentFeatureSource createFeatureSource(ContentEntry entry) throws IOException {
 		
-		GeographyWebService ws = GeographyWebService.createService(getHost(), getSite());
-		String typeName = entry.getTypeName();
+		final GeographyWebService ws = GeographyWebService.createService(getHost(), getSite());
+		final String typeName = entry.getTypeName();
 		
 		final String key = getKey();
 		
@@ -136,24 +132,12 @@ public class SiteDataStore extends ContentDataStore {
 			return new StationPointSource(entry, reader);
 		}
 		else if (entry.getTypeName().equals(DEFAULT_LAYERS[2])) {
-			DatatypeReader reader;
-			
-			if (key == null)
-				reader = ws.getAllDatatypePointsReader();
-			else
-				reader =  ws.getCurrentDatatypePointsReader(key);
-			
-			StringReader datatypesReader = ws.getAllDatatypesReader();
-			
-			ArrayList<String> list = new ArrayList<String>();
-			Iterator<String> iter = datatypesReader.iterator();
-			while(iter.hasNext())
-				list.add(iter.next());
-		
-			String[] datatypes = new String[list.size()];
-			list.toArray(datatypes);
-			
-			return new DatatypePointSource(entry, reader, datatypes);
+			DatatypeReader reader = (key == null ? ws.getAllDatatypePointsReader()
+			                                     : ws.getCurrentDatatypePointsReader(key));
+			StringReader datatypesReader = ws.getAllDatatypesReader(); 
+            List<String> list = datatypesReader.stream().collect(Collectors.toList());
+            String[] datatypes = list.toArray(new String[list.size()]);
+            return new DatatypePointSource(entry, reader, datatypes);
 		}
 		else {
 			throw new IllegalArgumentException("Unknown typeName");

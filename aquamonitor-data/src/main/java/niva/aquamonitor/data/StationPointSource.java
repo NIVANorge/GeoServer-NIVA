@@ -1,7 +1,6 @@
 package niva.aquamonitor.data;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.geotools.data.FeatureReader;
@@ -21,7 +20,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
-
+import niva.aquamonitor.data.ws.CloseableIterator;
 import niva.aquamonitor.data.ws.StationPointCargo;
 import niva.aquamonitor.data.ws.StationPointReader;
 import niva.geotools.referencing.CRS;
@@ -151,9 +150,9 @@ public class StationPointSource extends ContentFeatureSource {
 	 */
 	private class StationPointFeatureReader implements FeatureReader<SimpleFeatureType, SimpleFeature> {
 
-		final private Iterator<StationPointCargo> iter;
+		private final CloseableIterator<StationPointCargo> iter;
 		
-		final private GeometryFactory fact = JTSFactoryFinder.getGeometryFactory();
+		private final GeometryFactory fact = JTSFactoryFinder.getGeometryFactory();
 		
 		private int actual = 0;
 		
@@ -196,6 +195,7 @@ public class StationPointSource extends ContentFeatureSource {
 
 		@Override
 		public void close() throws IOException {
+		    this.iter.close();
 		}
 	}
 }
