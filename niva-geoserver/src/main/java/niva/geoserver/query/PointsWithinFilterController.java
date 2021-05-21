@@ -23,7 +23,6 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,43 +74,36 @@ public class PointsWithinFilterController extends QueryBaseController {
 									@PathVariable String layer2,
 									@PathVariable String filter) {
 		
-		SimpleFeatureSource source = this.extractSourceFromPathVariable(workspace, layer);
-		SimpleFeatureSource polySource = this.extractSourceFromPathVariable(workspace2, layer2);
+		final SimpleFeatureSource pointSource = this.extractSourceFromPathVariable(workspace, layer);
+		final SimpleFeatureSource polySource = this.extractSourceFromPathVariable(workspace2, layer2);
 		try {
 			Filter filt = CQL.toFilter(filter);
 			SimpleFeatureCollection coll = polySource.getFeatures(filt);
-			
-			SimpleFeatureIterator iter = coll.features();
 			Geometry uni = null;
-			
-			while (iter.hasNext()) {
-				SimpleFeature feat = iter.next();
-				LOGGER.fine("Record:" + feat.toString());
-				Geometry geom = (Geometry)feat.getDefaultGeometry();
-				
-				uni = (uni != null && geom != null ? uni.union(geom) : geom);
+            
+			try (SimpleFeatureIterator iter = coll.features()) {
+
+	            while (iter.hasNext()) {
+	                final SimpleFeature feat = iter.next();
+	                LOGGER.fine("Record:" + feat.toString());
+	                final Geometry geom = (Geometry)feat.getDefaultGeometry();
+	                
+	                uni = (uni != null && geom != null ? uni.union(geom) : geom);
+	            }
 			}
 			
-			iter.close();
+			final CoordinateReferenceSystem pointCrs = pointSource.getSchema().getCoordinateReferenceSystem();
+			final CoordinateReferenceSystem polyCrs = polySource.getSchema().getCoordinateReferenceSystem();
 			
-			
-			CoordinateReferenceSystem crs = source.getSchema().getCoordinateReferenceSystem();
-			CoordinateReferenceSystem crs2 = polySource.getSchema().getCoordinateReferenceSystem();
-			
-			if ( !crs.equals(crs2) ) {
-				LOGGER.fine("Transforming from:"+ crs2.toWKT() + " to:"+ crs.toWKT());
-				
-				MathTransform transform = CRS.findMathTransform(crs2, crs, true);
-				uni = JTS.transform(uni, transform);
+			if (!CRS.equalsIgnoreMetadata(pointCrs,  polyCrs)) {
+				LOGGER.fine("Transforming from:"+ polyCrs.toWKT() + " to:"+ pointCrs.toWKT());
+				uni = JTS.transform(uni, CRS.findMathTransform(polyCrs, pointCrs, true));
 			}
-			
-			String geomField = source.getSchema().getGeometryDescriptor().getLocalName();
-			
-			Filter within = ff.within(ff.property(geomField),ff.literal(uni));
-			
-			SimpleFeatureCollection result = source.getFeatures(within);
-		
-			return createResultMap(result);
+
+			final Filter within = ff.within(ff.property(pointSource.getSchema().getGeometryDescriptor().getLocalName()),
+			                                ff.literal(uni));
+
+			return createResultMap(pointSource.getFeatures(within));
 		}
 		catch (TransformException | FactoryException | CQLException | IOException ex) {
 			throw new RestException(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

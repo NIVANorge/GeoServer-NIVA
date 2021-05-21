@@ -4,23 +4,19 @@ package niva.geoserver.query;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Logger;
-
 import org.geoserver.catalog.Catalog;
 import org.geoserver.feature.ReprojectingFeatureCollection;
 import org.geoserver.rest.RestException;
-
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
+import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Logging;
-
-
 import org.opengis.filter.Filter;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,32 +62,23 @@ public class PointsWithinGeometryController extends QueryBaseController {
 		LOGGER.fine("Query a geometry.");
 		
 		SimpleFeatureSource source = this.extractSourceFromPathVariable(workspace, layer);
-		
 		String geomField = source.getSchema().getGeometryDescriptor().getLocalName();
-		
-		CoordinateReferenceSystem crs = this.extractCRSFromPathVariable(epsg);
-		
-		geometry = this.extractGeometryFromPathVariable(geometry);
+		final CoordinateReferenceSystem targetCrs = this.extractCRSFromPathVariable(epsg);
+		final CoordinateReferenceSystem sourceCrs = source.getSchema().getCoordinateReferenceSystem();
+		final String decodedGeometry = this.extractGeometryFromPathVariable(geometry);
 
 		try {
 			
-			Filter within = CQL.toFilter("WITHIN( " + geomField	+ ", " + geometry + ")");
+			final Filter within = CQL.toFilter("WITHIN( " + geomField	+ ", " + decodedGeometry + ")");
 	
-			SimpleFeatureCollection result;
-			
-			if (crs.equals(source.getSchema().getCoordinateReferenceSystem())) {
-				result = source.getFeatures(within);
-			}
-			else {
-				result = new ReprojectingFeatureCollection(source.getFeatures(), crs).subCollection(within);
-			}
+			SimpleFeatureCollection result = (CRS.equalsIgnoreMetadata(sourceCrs, targetCrs) ?
+			        source.getFeatures(within) :
+				    new ReprojectingFeatureCollection(source.getFeatures(), targetCrs).subCollection(within));
 		
 			return createResultMap(result);
 		}
 		catch (FactoryException | CQLException | SchemaException | IOException ex) {
 			throw new RestException(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-			
 		}
 	}
-
 }

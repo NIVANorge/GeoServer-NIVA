@@ -12,6 +12,7 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.feature.SchemaException;
 import org.geotools.process.vector.ClipProcess;
+import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Logging;
 
 import org.opengis.referencing.FactoryException;
@@ -61,34 +62,23 @@ public class PolygonsOverlapsGeometryController extends QueryBaseController {
 									 @PathVariable String epsg,
 									 @PathVariable String geometry) {
 		
-		SimpleFeatureSource source = this.extractSourceFromPathVariable(workspace, layer);
-		CoordinateReferenceSystem crs = this.extractCRSFromPathVariable(epsg);
-		geometry = extractGeometryFromPathVariable(geometry);
+		final SimpleFeatureSource source = this.extractSourceFromPathVariable(workspace, layer);
+		final CoordinateReferenceSystem targetCrs = this.extractCRSFromPathVariable(epsg);
+		final CoordinateReferenceSystem sourceCrs = source.getSchema().getCoordinateReferenceSystem();
+		final String decodedGeometry = extractGeometryFromPathVariable(geometry);
 		try {
 		
-			WKTReader reader = new WKTReader();
-			Geometry geom = reader.read(geometry);
+			Geometry geom = new WKTReader().read(decodedGeometry);
 			
-			SimpleFeatureCollection features;
+			SimpleFeatureCollection features = (CRS.equalsIgnoreMetadata(sourceCrs, targetCrs) 
+			        ? source.getFeatures()
+			        : new ReprojectingFeatureCollection(source.getFeatures(), targetCrs));
 			
-			if (crs.equals(source.getSchema().getCoordinateReferenceSystem())) {
-				features = source.getFeatures();
-			}
-			else {
-				features = new ReprojectingFeatureCollection(source.getFeatures(), crs);
-			}
-			
-			ClipProcess cp = new ClipProcess();
-			SimpleFeatureCollection result;
-			
-			result = cp.execute(features, geom, true);
-			
-			return createResultMapWithArea(result);
+			return createResultMapWithArea(new ClipProcess().execute(features, geom, true));
 		}
 		catch (ParseException | FactoryException | SchemaException | IOException ex) {
 			LOGGER.severe(ex.getMessage());
 			throw new RestException(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
 }

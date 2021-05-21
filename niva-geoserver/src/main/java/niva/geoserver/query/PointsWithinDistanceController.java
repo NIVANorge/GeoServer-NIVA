@@ -2,23 +2,22 @@ package niva.geoserver.query;
 
 import java.io.IOException;
 import java.util.HashMap;
-
 import org.geoserver.catalog.Catalog;
 import org.geoserver.rest.RestException;
-
 import org.geotools.data.simple.SimpleFeatureSource;
-import org.geotools.factory.BasicFactories;
 import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
-
+import org.geotools.geometry.jts.JTS;
+import org.geotools.geometry.jts.JTSFactoryFinder;
+import org.geotools.referencing.CRS;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
-import org.opengis.geometry.DirectPosition;
-import org.opengis.geometry.primitive.Point;
-import org.opengis.geometry.primitive.PrimitiveFactory;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,6 +41,8 @@ import org.springframework.http.MediaType;
 @RequestMapping(path = QueryBaseController.QUERY_ROOT_PATH + "/distance/{epsg}_{north}_{east}_{dist}/features.json",
 				produces = {MediaType.APPLICATION_JSON_VALUE})
 public class PointsWithinDistanceController extends QueryBaseController {
+    
+    private static final GeometryFactory gFact = JTSFactoryFinder.getGeometryFactory();
 
 	@Autowired
 	public PointsWithinDistanceController(@Qualifier("catalog") Catalog catalog) {
@@ -59,27 +60,25 @@ public class PointsWithinDistanceController extends QueryBaseController {
 									@PathVariable Double dist) {
 
 		final SimpleFeatureSource source = this.extractSourceFromPathVariable(workspace, layer);
-		final CoordinateReferenceSystem crs = this.extractCRSFromPathVariable(epsg);
-		final PrimitiveFactory gFact = BasicFactories.getDefault().getPrimitiveFactory(crs);
+		final CoordinateReferenceSystem targetCrs = this.extractCRSFromPathVariable(epsg);
 		
-		Point pnt = gFact.createPoint( new double[] {east, north} );
+		
 		try {
-			if ( !crs.equals(source.getSchema().getCoordinateReferenceSystem()) ) {
-				pnt = (Point)pnt.transform( source.getSchema().getCoordinateReferenceSystem() ); 
+		    Point pnt = gFact.createPoint(new Coordinate(east, north));
+		    final CoordinateReferenceSystem sourceCrs = source.getSchema().getCoordinateReferenceSystem();
+		    
+			if (!CRS.equalsIgnoreMetadata(sourceCrs, targetCrs)) {
+				pnt = (Point)JTS.transform(pnt, CRS.findMathTransform(sourceCrs, targetCrs)); 
 			}
-			
-			final DirectPosition dp = pnt.getDirectPosition();
-
 			final GeometryDescriptor geometry = source.getSchema().getGeometryDescriptor();
-			
-
+	
 			final Filter withinFilt = CQL.toFilter("DWITHIN( " + geometry.getLocalName() 
-					+ ", POINT(" + Double.toString(dp.getOrdinate(0)) + " " + Double.toString(dp.getOrdinate(1)) + ")"
+					+ ", POINT(" + Double.toString(pnt.getX()) + " " + Double.toString(pnt.getY()) + ")"
 					+ "," + Double.toString(dist) + ",meters)");
 			
 			return createResultMap(source.getFeatures(withinFilt));
 		}
-		catch (TransformException | CQLException | IOException ex) {
+		catch (FactoryException | TransformException | CQLException | IOException ex) {
 			throw new RestException(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
