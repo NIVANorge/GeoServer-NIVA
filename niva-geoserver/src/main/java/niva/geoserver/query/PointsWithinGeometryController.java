@@ -19,6 +19,8 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,17 +32,20 @@ import org.springframework.http.MediaType;
 
 /**
  * Returns a collection of points that is within a given geometry.
- * Spesifikasjonen er som følger:
+ * Spesifikasjonen for GET er som følger:
  * 
  * /query/{workspace}/{layer}/geometry/{epsg}_{geometry}/features.json
+ * 
+ * Specification for POST is:
+ * 
+ * /query/{workspace}/{layer}/geometry/{epsg}/features.json
  * 
  * Resultatet returneres som et array med de resulterende features.
  * @author Roar Brænden
  *
  */
 @RestController
-@RequestMapping(path = QueryBaseController.QUERY_ROOT_PATH + "/geometry/{epsg}_{geometry}/features.json",
-				produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
 public class PointsWithinGeometryController extends QueryBaseController {
 	
 	private static final Logger LOGGER = Logging.getLogger(PointsWithinGeometryController.class);
@@ -51,10 +56,8 @@ public class PointsWithinGeometryController extends QueryBaseController {
 		super(catalog);
 	}
 
-	
-
 	@SuppressWarnings("rawtypes")
-	@GetMapping
+	@GetMapping(path = QueryBaseController.QUERY_ROOT_PATH + "/geometry/{epsg}_{geometry}/features.json")
 	public HashMap get(@PathVariable String workspace,
 									@PathVariable String layer,
 									@PathVariable String epsg,
@@ -81,4 +84,32 @@ public class PointsWithinGeometryController extends QueryBaseController {
 			throw new RestException(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+
+    @SuppressWarnings("rawtypes")
+    @PostMapping(path = QueryBaseController.QUERY_ROOT_PATH + "/geometry/{epsg}/features.json")
+    public HashMap post(@PathVariable String workspace,
+                                    @PathVariable String layer,
+                                    @PathVariable String epsg,                                   
+                                    @RequestBody String geometry) {
+        LOGGER.fine("Query a geometry.");
+        
+        SimpleFeatureSource source = this.extractSourceFromPathVariable(workspace, layer);
+        String geomField = source.getSchema().getGeometryDescriptor().getLocalName();
+        final CoordinateReferenceSystem targetCrs = this.extractCRSFromPathVariable(epsg);
+        final CoordinateReferenceSystem sourceCrs = source.getSchema().getCoordinateReferenceSystem();
+        
+        try {
+            final Filter within = CQL.toFilter("WITHIN( " + geomField   + ", " + geometry + ")");
+            
+            SimpleFeatureCollection result = (CRS.equalsIgnoreMetadata(sourceCrs, targetCrs) ?
+                    source.getFeatures(within) :
+                    new ReprojectingFeatureCollection(source.getFeatures(), targetCrs).subCollection(within));
+        
+            return createResultMap(result);
+        }
+        catch (FactoryException | CQLException | SchemaException | IOException ex) {
+            throw new RestException(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
