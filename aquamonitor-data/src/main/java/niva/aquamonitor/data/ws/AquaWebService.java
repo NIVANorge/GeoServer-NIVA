@@ -28,7 +28,7 @@ abstract class AquaWebService {
 
 
 	private static final String NAMESPACE = "http://www.aquamonitor.no/";
-	private static final String HOST_ADDRESS = "http://www.aquamonitor.no/";
+	private static final String HOST_ADDRESS = "https://aquamonitor.niva.no/";
 	protected static final String DEFAULT_SITE = "AquaServices";
 
     private static final String HOST_ADDRESS_VARIABLE = "AQUAMONITOR_HOST_ADDRESS";
