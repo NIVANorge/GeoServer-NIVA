@@ -3,6 +3,7 @@ package niva.aquamonitor.data.ws;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 
@@ -19,8 +20,7 @@ import org.geotools.util.logging.Logging;
  * <br>
  * The name for the variable should be: <b>AQUAMONITOR_SECRET_TOKEN</b>
  * <br>
- * Default is set to system, which implies that your IP should be specified within AquaMonitor installation.
- * To get a token call /login with the appropriate user credentials for a system user.
+ * This must be set prior to any call.
  * 
  * @author Roar Brænden, NIVA
  *
@@ -34,7 +34,7 @@ public class GeographyWebService extends AquaWebService {
 	/** Logger. */
 	private final static Logger LOGGER = Logging.getLogger(GeographyWebService.class);
 	
-	private static String defaultToken = "system";
+	private static String defaultToken = null;
 	static {
 		lookupSecretToken();
 	}
@@ -79,22 +79,27 @@ public class GeographyWebService extends AquaWebService {
             }
 
             if (value == null || value.equalsIgnoreCase("")) {
-                continue;
+                break;
             }
 
             LOGGER.fine(String.format("Found AquaMonitor secret token %s within %s", value, typeStrs[j]));
 
             try {
 				defaultToken = URLEncoder.encode(value, "UTF-8");
+	            break;
 			} catch (UnsupportedEncodingException e) {
 				LOGGER.warning("This platform doesn't support UTF-8");
 			}
-            break;
+        }
+        
+        if (Objects.isNull(defaultToken)) {
+            LOGGER.warning("No AquaMonitor secret token found.");
         }
     }
 
 
 	public StationPointReader getProjectUserStationReader(String username) throws IOException {
+	    checkToken();
 		LOGGER.fine("GeographyWebService.getProjectUserStationReader. username:" + username);
 		StationPointReader reader = new StationPointReader(this, "GetProjectUserStationPoints");
 		reader.addArgument("token", defaultToken);
@@ -107,6 +112,7 @@ public class GeographyWebService extends AquaWebService {
 
 	
 	public StationPointReader getAllStationReader() throws IOException {
+	    checkToken();
 		LOGGER.fine("GeographyWebService.getAllStationReader.");
 		StationPointReader reader = new StationPointReader(this, "GetAllStationPoints");
 		reader.addArgument("token", defaultToken);
@@ -117,10 +123,11 @@ public class GeographyWebService extends AquaWebService {
 
 	
 	public StationPointReader queryAllStationReader(String where) throws IOException {
+	    checkToken();
 		LOGGER.fine("GeographyWebService.queryAllStationReader. where:" + where);
 		StationPointReader reader = new StationPointReader(this, "QueryAllStationPoints");
 		reader.addArgument("token", defaultToken);
-		reader.addArgument("where", "where");
+		reader.addArgument("where", where);
 
 		return reader;
 	}
@@ -129,7 +136,7 @@ public class GeographyWebService extends AquaWebService {
 
 	
 	public StationPointReader getCurrentStationReader(String userkey) throws IOException {
-		
+	    checkToken();
 		LOGGER.fine("GeographyWebService.getCurrentStationReader. userkey:" + userkey);
 		StationPointReader reader = new StationPointReader(this, "GetCurrentStationPoints");
 		reader.addArgument("token", defaultToken);
@@ -141,7 +148,7 @@ public class GeographyWebService extends AquaWebService {
 
 	
 	public StationPointReader getAdminStationReader(String userkey) throws IOException {
-		
+	    checkToken();
 		LOGGER.fine("GeographyWebService.getAdminStationReader. userkey:" + userkey);
 		StationPointReader reader = new StationPointReader(this, "GetAdminStationPoints");
 		reader.addArgument("token", defaultToken);
@@ -153,6 +160,7 @@ public class GeographyWebService extends AquaWebService {
 
 	
 	public StringReader getAllDatatypesReader() throws IOException {
+	    checkToken();
 		LOGGER.fine("GeographyWebService.getAllDatatypesReader.");
 		StringReader reader = new StringReader(this, "GetAllDatatypes");
 		reader.addArgument("token", defaultToken);
@@ -162,6 +170,7 @@ public class GeographyWebService extends AquaWebService {
 	
 	
 	public DatatypeReader getAllDatatypePointsReader() throws IOException {
+	    checkToken();
 		LOGGER.fine("GeographyWebService.getAllDatatypePointsReader.");
 		DatatypeReader reader = new DatatypeReader(this, "GetAllDatatypePoints");
 		reader.addArgument("token", defaultToken);
@@ -171,6 +180,7 @@ public class GeographyWebService extends AquaWebService {
 	
 	
 	public DatatypeReader getCurrentDatatypePointsReader(String userkey) throws IOException {
+	    checkToken();
 		LOGGER.fine("GeographyWebService.getCurrentDatatypePointsReader. userkey:" + userkey);
 		DatatypeReader reader = new DatatypeReader(this, "GetCurrentDatatypePoints");
 		reader.addArgument("token", defaultToken);
@@ -178,5 +188,11 @@ public class GeographyWebService extends AquaWebService {
 		reader.setTimeout(5);
 		
 		return reader;
+	}
+	
+	private void checkToken() throws IOException {
+	    if (defaultToken == null) {
+	        throw new IOException("AQUAMONITOR_SECRET_TOKEN is not set.");
+	    }
 	}
 }

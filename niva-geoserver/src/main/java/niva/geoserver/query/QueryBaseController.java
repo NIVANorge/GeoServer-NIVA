@@ -65,14 +65,15 @@ public abstract class QueryBaseController extends RestBaseController {
 			SimpleFeatureSource source = getFeatureSource(workspace, layer);
 
 			if (source == null) {
-				throw new RestException("Missing layer: " + workspace + ":" + layer, HttpStatus.NOT_FOUND);
+				throw new RestException(String.format("Missing layer: %s:%s", workspace, layer), HttpStatus.NOT_FOUND);
 			}
 
 			return source;
 		}
 		catch (IOException ie) {
 			LOGGER.severe(ie.getMessage());
-			throw new RestException("Exception when reading layer.", HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new RestException(String.format("Exception when reading layer: %s:%s (%s)", workspace, layer, ie.getMessage()), 
+			        HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 		
