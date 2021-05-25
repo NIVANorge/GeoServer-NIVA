@@ -62,41 +62,28 @@ public class LoginController extends AquaWebService {
 		List<Header> headers = new ArrayList<Header>(1);
 		headers.add(new BasicHeader(HttpHeaders.ACCEPT, "application/json"));
 		
-		CloseableHttpClient client = HttpClients.custom().setDefaultHeaders(headers).build();
-		HttpPost post = new HttpPost(url);
-		post.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
+		try (CloseableHttpClient client = HttpClients.custom().setDefaultHeaders(headers).build()) {
+		    HttpPost post = new HttpPost(url);
+	        post.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
 
-		try {
-		
-			CloseableHttpResponse resp = client.execute(post);
-			JSONParser parser = new JSONParser();
-			
-			try {
-				HttpEntity entity = resp.getEntity();
-				if (entity != null) {
-					InputStream inp = entity.getContent();
-					try {
-						Object res = parser.parse(new InputStreamReader(inp));
-						return readUserJson((JSONObject)res);
-					}
-					catch (ParseException pe) {
-						throw new IOException("AquaMonitor server responded with an illegal JSON.", pe);
-					}
-					finally {
-						inp.close();
-					}
-				}
-				else {
-					throw new IOException("AquaMonitor server didn't provide any response.");
-				}
-			}
-			finally {
-				resp.close();
-			}
-		}
-		finally {
-			post.releaseConnection();
-			client.close();
+	        try (CloseableHttpResponse resp = client.execute(post)) {
+	            HttpEntity entity = resp.getEntity();
+	            if (entity != null) {
+	                try (InputStream inp = entity.getContent()) {
+	                    Object res = new JSONParser().parse(new InputStreamReader(inp));
+	                    return readUserJson((JSONObject)res);
+	                }
+	                catch (ParseException pe) {
+	                    throw new IOException("AquaMonitor server responded with an illegal JSON.", pe);
+	                }
+	            }
+	            else {
+	                throw new IOException("AquaMonitor server didn't provide any response.");
+	            }
+	        }
+	        finally {
+	            post.releaseConnection();
+	        } 
 		}
 	}
 	
