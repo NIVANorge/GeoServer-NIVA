@@ -15,13 +15,15 @@ import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.feature.NameImpl;
 import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Logging;
-
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.rest.RestBaseController;
 import org.geoserver.rest.RestException;
 
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
@@ -138,27 +140,29 @@ public abstract class QueryBaseController extends RestBaseController {
 	protected HashMap<String, Object> createResultMap(SimpleFeatureCollection coll) {
 		final HashMap<String, Object> features = new HashMap<String, Object>();
 		final ArrayList<HashMap<String, Object>> arr = new ArrayList<HashMap<String, Object>>();
-		final Collection<PropertyDescriptor> descs = coll.getSchema().getDescriptors();
-		final String geometry = coll.getSchema().getGeometryDescriptor().getLocalName();
 		
+		final SimpleFeatureType schema = coll.getSchema();
 		
-		final SimpleFeatureIterator iter = coll.features();
-		try {
+		final String geometry = schema.getGeometryDescriptor().getLocalName();
+		final ArrayList<Pair<Integer, String>> descs = new ArrayList<>(schema.getAttributeCount());
+		
+		for (int i = 0; i < schema.getAttributeDescriptors().size(); i++) {
+		    final String name = schema.getDescriptor(i).getLocalName();
+		    if (!geometry.equals(name)) {
+		        descs.add(new ImmutablePair<Integer, String>(i, name));
+		    }
+		}
+		
+		try (final SimpleFeatureIterator iter = coll.features()) {
 
 			while (iter.hasNext()) {
 				final SimpleFeature feat = iter.next();
-				
 				final HashMap<String, Object> map = new HashMap<String, Object>();
-				
-				descs.stream()
-				.filter((desc) -> !geometry.equals(desc.getName().getLocalPart()))
-				.forEach((desc) -> map.put(desc.getName().getLocalPart(), feat.getAttribute(desc.getName())));
-
+				for(Pair<Integer, String> desc : descs) {
+				    map.put(desc.getRight(), feat.getAttribute(desc.getLeft()));
+				}
 				arr.add(map);
 			}
-		}
-		finally {
-			iter.close();
 		}
 		features.put("features", arr);
 		
