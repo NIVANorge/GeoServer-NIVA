@@ -38,15 +38,20 @@ public class PointAggregateGridProcessTest extends WPSTestSupport{
 	
 	@Test
 	public void testPlain() throws Exception {
-		SimpleFeatureCollection points = TestData.getPlain();
+		final SimpleFeatureCollection points = TestData.getPlain();
 		
-		Set<String> aggregateAttributes = TestData.getAttributes();
-		Integer cellSize = 50;
-		Integer outputHeight = 100;
-		Integer outputWidth = 100;
-		ReferencedEnvelope outputBbox = ReferencedEnvelope.create(new Envelope(10.0, 11.0, 60.0, 61.0), CRS.getLengdeBreddegrad());
+		final Set<String> aggregateAttributes = TestData.getAttributes();
+		final Integer cellSize = 50;
+		final Integer outputHeight = 100;
+		final Integer outputWidth = 100;
+		final ReferencedEnvelope outputBbox = ReferencedEnvelope.create(new Envelope(10.0, 11.0, 60.0, 61.0), CRS.getLengdeBreddegrad());
 		
-		SimpleFeatureCollection result = new PointAggregateGridProcess().execute(points, outputBbox, outputWidth, outputHeight, cellSize, aggregateAttributes);
+		final SimpleFeatureCollection result = new PointAggregateGridProcess().execute(points, 
+		                                        outputBbox, 
+		                                        outputWidth, 
+		                                        outputHeight, 
+		                                        cellSize, 
+		                                        aggregateAttributes);
 		
 		assertEquals(1, result.size());
 		SimpleFeature feat = (SimpleFeature)result.toArray()[0];
@@ -60,11 +65,16 @@ public class PointAggregateGridProcessTest extends WPSTestSupport{
 		assertEquals(2, feat.getAttribute("COUNT"));
 		assertNull(feat.getAttribute("STATION_TYPE"));
 		
-		cellSize = 5;
+		final Integer cellSize2 = 5;
 		
-		SimpleFeatureCollection result2 = new PointAggregateGridProcess().execute(points, outputBbox, outputWidth, outputHeight, cellSize, aggregateAttributes);
+		final SimpleFeatureCollection result2 = new PointAggregateGridProcess().execute(points, 
+		                    outputBbox, 
+		                    outputWidth, 
+		                    outputHeight, 
+		                    cellSize2, 
+		                    aggregateAttributes);
 		assertEquals(2, result2.size());
-		SimpleFeature first = (SimpleFeature)result2.toArray()[0];
+		final SimpleFeature first = (SimpleFeature)result2.toArray()[0];
 		
 		assertEquals(1, first.getAttribute("COUNT"));
 		assertNotNull(first.getAttribute("STATION_TYPE"));
@@ -147,8 +157,8 @@ public class PointAggregateGridProcessTest extends WPSTestSupport{
 
 		static SimpleFeatureType getFeatureType() {
 			final SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
+	        builder.setName("Testdata");
 			builder.setCRS(CRS.getLengdeBreddegrad());
-			builder.setName("Testdata");
 			builder.add("theGeom", Point.class);
 			builder.add("STATION_TYPE", String.class);
 			builder.add(WATER, Integer.class);

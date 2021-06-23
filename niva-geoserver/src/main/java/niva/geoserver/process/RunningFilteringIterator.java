@@ -19,15 +19,16 @@ import org.opengis.feature.simple.SimpleFeature;
  */
 public class RunningFilteringIterator implements SimpleFeatureIterator {
 
-	private SimpleFeatureIterator delegate;
-	private BinaryComparisonAbstract filter;
+	private final SimpleFeatureIterator delegate;
+	private final BinaryComparisonAbstract filter;
+	private final AggregateFeatures aggregator;
+	   
 	private SimpleFeature nextTop = null;
-	private AggregateFeatures aggregator;
+
 	private SimpleFeature next = null;
 	
 	
 	public RunningFilteringIterator(SimpleFeatureIterator delegate, BinaryComparisonAbstract filter, AggregateFeatures aggregator) {
-		
 		this.delegate = delegate;
 		this.filter = filter;
 		

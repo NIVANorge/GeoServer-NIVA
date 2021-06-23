@@ -83,21 +83,20 @@ public class PointAggregateGridProcess implements NivaProcess {
 		
 		
 		final ClipProcess cp = new ClipProcess();
-		
-		
 		// Create result with same crs as outputBbox, Point as geometry and the given attributes
 		
 		final CoordinateReferenceSystem crs = outputBbox.getCoordinateReferenceSystem();
-		final String[] arr = new String[aggregateAttributes.size()];
-		aggregateAttributes.toArray(arr);
+		final String[] attributeArr = new String[aggregateAttributes.size()];
+		aggregateAttributes.toArray(attributeArr);
 		
 		final SimpleFeatureType schema = points.getSchema();
 		
 		String missingAttributes = null;
 		
-		for (String a: arr) {
-			if (schema.getDescriptor(a) == null)
-				missingAttributes = (missingAttributes == null ? a : ", " + a);
+		for (String attribute: attributeArr) {
+			if (schema.getDescriptor(attribute) == null) {
+				missingAttributes = (missingAttributes == null ? attribute : ", " + attribute);
+			}
 		}
 		
 		if (missingAttributes != null) {
@@ -121,7 +120,7 @@ public class PointAggregateGridProcess implements NivaProcess {
 		my = (int)Math.floor(outputBbox.getMaxY() / dy) - y1;
 		mx = (int)Math.floor(outputBbox.getMaxX() / dx) - x1;
 		
-		result = new AggregatedFeatureCollection(createResultType(schema, arr, crs), arr);
+		result = new AggregatedFeatureCollection(createResultType(schema, attributeArr, crs), attributeArr);
 		
 		// If points and outputBbox doesn't have the same crs, reproject points to crs
 		if ( !CRS.equalsIgnoreMetadata(crs, pcrs) ) {
@@ -135,7 +134,7 @@ public class PointAggregateGridProcess implements NivaProcess {
 				tx.setMathTransform(transform);
 				
 			} catch (FactoryException ex) {
-				LOGGER.severe(ex.getMessage());
+				throw new ProcessException("PointAggregateGridProcess has a failure in setup.", ex);
 			}
 		}
 
@@ -191,8 +190,8 @@ public class PointAggregateGridProcess implements NivaProcess {
 		builder.add("STATION_TYPE", String.class);
 		builder.add("COUNT", Integer.class);
 		
-		for (String s : attributes) {
-			builder.add(s, Integer.class);
+		for (String attr : attributes) {
+			builder.add(attr, Integer.class);
 		}
 		
 		builder.add("EMPTY", Integer.class);
@@ -212,14 +211,13 @@ public class PointAggregateGridProcess implements NivaProcess {
 
 		@Override
 		public void run() {
-
-			
 			try {
+				Point pnt = (Point)(tx == null 
+				                    ? feature.getDefaultGeometry() 
+				                    : tx.transform((Geometry)feature.getDefaultGeometry()));
 				
-				Point pnt = (Point)(tx == null ? feature.getDefaultGeometry() : tx.transform((Geometry)feature.getDefaultGeometry()));
-				
-				int y = (int)Math.floor(pnt.getCoordinate().y / dy) - y1;
-				int x = (int)Math.floor(pnt.getCoordinate().x / dx) - x1;
+				final int y = (int)Math.floor(pnt.getCoordinate().y / dy) - y1;
+				final int x = (int)Math.floor(pnt.getCoordinate().x / dx) - x1;
 				
 				if (x >= 0 && 
 					x <= mx && 
@@ -227,13 +225,11 @@ public class PointAggregateGridProcess implements NivaProcess {
 					y <= my) {
 					
 					final SimpleFeature cell = result.addPoint(x, y, feature);
-					
 					final String pid = cell.getID();
 					
 					LinkedList<Point> list;
-					
 					if (!pointCollections.containsKey( pid )) {
-						list = new LinkedList<Point>();
+						list = new LinkedList<>();
 						pointCollections.put(pid, list);
 					}
 					else {
@@ -243,8 +239,7 @@ public class PointAggregateGridProcess implements NivaProcess {
 					list.add(pnt);
 				}
 			} catch (TransformException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new ProcessException("Error with transformation.", e);
 			}
 		}
 	}
