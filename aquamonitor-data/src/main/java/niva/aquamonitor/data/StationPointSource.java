@@ -29,6 +29,7 @@ import niva.geotools.referencing.CRS;
  * Represents the Stations as a point with attributes: sample_point_id, longitude, latitude, project_id, project_name, station_id,
  * station_type_id, station_type, station_code and station_name.
  * 
+ * It takes a StationPointReader as input, and uses that repeatedly.
  * 
  * @author Roar Brænden, NIVA
  *
@@ -37,16 +38,14 @@ public class StationPointSource extends ContentFeatureSource {
 	
 	private StationPointReader reader;
 	
-	
 	public StationPointSource(ContentEntry entry, StationPointReader reader) {
 		super(entry, Query.ALL);
-		
 		this.reader = reader;
 	}
 	
 
 	/**
-	 * Bygger opp struktur for en enkel SamplePoint
+	 * Builds the structure for a simple station point
 	 */
 	@Override
 	protected SimpleFeatureType buildFeatureType() throws IOException {
@@ -79,9 +78,7 @@ public class StationPointSource extends ContentFeatureSource {
 		if (query.equals(Query.ALL)) {
 			return new ReferencedEnvelope(reader.getEnvelope(), CRS.getLengdeBreddegrad());
 		}
-		
-		FeatureReader<SimpleFeatureType, SimpleFeature> reader = getReaderInternal(query);
-		try {
+		try (FeatureReader<SimpleFeatureType, SimpleFeature> reader = getReaderInternal(query)) {
 			ReferencedEnvelope bounds = null;
 			while (reader.hasNext()) {
 				SimpleFeature feature = reader.next();
@@ -95,9 +92,6 @@ public class StationPointSource extends ContentFeatureSource {
 			}
 			return bounds;
 		}
-		finally {
-			reader.close();
-		}
 	}
 
 
@@ -107,18 +101,13 @@ public class StationPointSource extends ContentFeatureSource {
 			return reader.getCount();
 		}
 		
-		FeatureReader<SimpleFeatureType, SimpleFeature> reader = getReaderInternal(query);
-		try {
+		try (FeatureReader<SimpleFeatureType, SimpleFeature> reader = getReader(query)) {
 			int i = 0;
 			while (reader.hasNext()) {
 				reader.next();
 				i++;
 			}
-			
 			return i;
-		}
-		finally {
-			reader.close();
 		}
 	}
 
@@ -128,7 +117,7 @@ public class StationPointSource extends ContentFeatureSource {
 	@Override
 	protected FeatureReader<SimpleFeatureType, SimpleFeature> getReaderInternal(Query query) throws IOException {
 		try {
-			return new StationPointFeatureReader();
+			return new FeatureReaderWrapper();
 		}
 		catch (IOException ie) {
 			String message = ie.getMessage();
@@ -148,7 +137,7 @@ public class StationPointSource extends ContentFeatureSource {
 	 * @author Roar Brænden, NIVA
 	 *
 	 */
-	private class StationPointFeatureReader implements FeatureReader<SimpleFeatureType, SimpleFeature> {
+	private class FeatureReaderWrapper implements FeatureReader<SimpleFeatureType, SimpleFeature> {
 
 		private final CloseableIterator<StationPointCargo> iter;
 		
@@ -157,7 +146,7 @@ public class StationPointSource extends ContentFeatureSource {
 		private int actual = 0;
 		
 		
-		public StationPointFeatureReader() throws IOException {
+		public FeatureReaderWrapper() throws IOException {
 			this.iter = reader.iterator();
 		}
 		

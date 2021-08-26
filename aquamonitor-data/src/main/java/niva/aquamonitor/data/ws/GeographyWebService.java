@@ -114,7 +114,7 @@ public class GeographyWebService extends AquaWebService {
 	public StationPointReader getAllStationReader() throws IOException {
 	    checkToken();
 		LOGGER.fine("GeographyWebService.getAllStationReader.");
-		StationPointReader reader = new StationPointReader(this, "GetAllStationPoints");
+		final StationPointReader reader = new StationPointReader(this, "GetAllStationPoints");
 		reader.addArgument("token", defaultToken);
 
 		return reader;

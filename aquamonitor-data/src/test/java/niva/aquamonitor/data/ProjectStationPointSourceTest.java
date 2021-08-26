@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.After;
 import org.junit.Assert;
@@ -18,17 +17,22 @@ import org.geotools.filter.text.cql2.CQL;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 
 
-@Ignore
-public class StationPointSourceTest {
+/**
+ * Tests for checking the StationPointSource used at a Project AquaMonitor site.
+ * 
+ * @author Roar Brænden, NIVA
+ *
+ */
+public class ProjectStationPointSourceTest {
 	
-	private final String TEST_USER = "mjosutfylling";
+	private final String TEST_USER = "mjøsa";
 	
 	private ProjectUserDataStore dataStore;
 	
 	@Before
 	public void setUp() throws IOException{
 		ProjectUserDataStoreFactory factory = new ProjectUserDataStoreFactory();
-		Map<String, Serializable> params = new HashMap<String, Serializable>();
+		Map<String, Serializable> params = new HashMap<>();
 		params.put("dbtype", "aquamonitor");
 		params.put("user", TEST_USER);
 		this.dataStore = (ProjectUserDataStore)factory.createDataStore(params);
@@ -48,33 +52,29 @@ public class StationPointSourceTest {
 	
 	@Test
 	public void testReaderWithBBox() throws Exception {
-		Query query = new Query();
-		query.setFilter(CQL.toFilter("BBOX(the_geom, 11.2417, 60.5480, 11.2419, 60.5481)"));
-		
-		StationPointSource source = (StationPointSource)getStationPoints();
-		FeatureReader<SimpleFeatureType, SimpleFeature> reader = source.getReader(query);
-		
-		int i = 0;
-		while (reader.hasNext()) {
-			reader.next();
-			i++;
+		final Query query = new Query();
+		query.setFilter(CQL.toFilter("BBOX(the_geom, 10.980, 60.818, 10.981, 60.819)"));
+
+		try (FeatureReader<SimpleFeatureType, SimpleFeature> reader = getStationPoints().getReader(query)) {
+    		int i = 0;
+    		while (reader.hasNext()) {
+    			reader.next();
+    			i++;
+    		}
+    		Assert.assertEquals(1, i);
 		}
-		Assert.assertEquals(1, i);
-		reader.close();
 		
-		reader = source.getReader(CQL.toFilter("BBOX(the_geom, 10.227497265625, 60.490836875, 10.227902734374998, 60.491243125)"));
-		
-		Assert.assertFalse("Filteret skal ikke finne noen lokaliteter.", reader.hasNext());
-		
-		reader.close();
+		try (FeatureReader<SimpleFeatureType, SimpleFeature> reader = getStationPoints()
+		        .getReader(CQL.toFilter("BBOX(the_geom, 10.227497265625, 60.490836875, 10.227902734374998, 60.491243125)"))) {
+		    Assert.assertFalse("Filteret skal ikke finne noen lokaliteter.", reader.hasNext());
+		}
 	}
 	
 	@Test
 	public void testCountWithFilter() throws Exception  {
-		StationPointSource source = (StationPointSource) getStationPoints();
 		Query query = new Query();
-		query.setFilter(CQL.toFilter("STATION_CODE='FP3-Nord'"));
-		int count = source.getCount(query);
+		query.setFilter(CQL.toFilter("STATION_CODE='M072'"));
+		int count = getStationPoints().getCount(query);
 		
 		Assert.assertEquals(1, count);
 	}
@@ -84,10 +84,9 @@ public class StationPointSourceTest {
 	public void testBoundsWithFilter() throws Exception  {
 		StationPointSource source = (StationPointSource) getStationPoints();
 		Query query = new Query();
-		query.setFilter(CQL.toFilter("STATION_CODE='FP3-Nord' AND BBOX(the_geom, 11.24, 60.54, 11.25, 60.55)"));
+		query.setFilter(CQL.toFilter("STATION_CODE='M072' AND BBOX(the_geom, 10.78, 60.76, 10.79, 60.77)"));
 		ReferencedEnvelope env = source.getBounds(query);
 		Assert.assertNotNull(env);
-		Assert.assertEquals("ReferencedEnvelope[11.2418 : 11.2418, 60.54805 : 60.54805]", env.toString());
 	}
 
 	

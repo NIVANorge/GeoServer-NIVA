@@ -111,7 +111,7 @@ public class NivaTestSupport extends GeoServerSystemTestSupport {
 	protected LayerInfo addLayer(FeatureTypeInfo resource, StyleInfo style) {
 		final Catalog catalog = getCatalog();
 		
-		LayerInfo layerCat = new LayerInfoImpl();
+		final LayerInfo layerCat = new LayerInfoImpl();
 		layerCat.setResource(resource);
 		layerCat.setName(resource.getName());
 		layerCat.setDefaultStyle(style);

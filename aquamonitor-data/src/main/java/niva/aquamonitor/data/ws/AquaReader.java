@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.locationtech.jts.geom.Envelope;
@@ -82,8 +81,8 @@ public abstract class AquaReader<T> {
 	 */
 	public Envelope getEnvelope() throws IOException {
 	    final Envelope env = new Envelope();
-	    stream().map((next -> (PointCargo)next)).forEach(point -> 
-	                            env.expandToInclude(point.longitude, point.latitude));
+	    stream().map((next -> (PointCargo)next))
+	            .forEach(point -> env.expandToInclude(point.longitude, point.latitude));
 		return env;
 	}
 	
@@ -108,19 +107,16 @@ public abstract class AquaReader<T> {
 
 	    final StringBuilder builder = new StringBuilder();
 		builder.append(webservice.getUrl()).append("/").append(this.function);
-		if (this.arguments.size() > 0) {
-		    builder.append("?");
-		    AtomicReference<Boolean> first = new AtomicReference<Boolean>(Boolean.TRUE);
-			this.arguments.stream().forEach(param -> {
-    			                                        if (!first.getAndSet(Boolean.FALSE)) {
-    			                                            builder.append("&");
-    			                                        }
-    			                                        builder.append(param.getParameter())
-    			                                            .append("='")
-    			                                            .append(param.getValue())
-    			                                            .append("'");
-    			                                      });
+		String prefix = "?";
+		for (Argument arg : arguments) {
+		    builder.append(prefix)
+		           .append(arg.getParameter())
+		           .append("='")
+		           .append(arg.getValue())
+		           .append("'");
+		    prefix = "&";
 		}
+		
 		final String url = builder.toString();
 		return (timeoutMins != null ? new JsonStreamIterator(url, timeoutMins) : new JsonStreamIterator(url));
 	}
@@ -135,7 +131,7 @@ public abstract class AquaReader<T> {
 		 * @param parameter
 		 * @param value
 		 */
-		public Argument(final String parameter, final String value) {
+		Argument(final String parameter, final String value) {
 			this.parameter = parameter;
 			this.value = value;
 		}
@@ -144,7 +140,7 @@ public abstract class AquaReader<T> {
 		 * Get the name of the parameter
 		 * @return
 		 */
-		public String getParameter() {
+		String getParameter() {
 			return this.parameter;
 		}
 		
@@ -152,7 +148,7 @@ public abstract class AquaReader<T> {
 		 * Get the value
 		 * @return
 		 */
-		public String getValue() {
+		String getValue() {
 			return this.value;
 		}
 		
@@ -160,7 +156,7 @@ public abstract class AquaReader<T> {
 		 * Change the value from the original
 		 * @param value
 		 */
-		public void setValue(String value) {
+		void setValue(String value) {
 			this.value = value;
 		}
 	}

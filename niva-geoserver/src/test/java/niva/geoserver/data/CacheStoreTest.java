@@ -60,7 +60,7 @@ public class CacheStoreTest extends NivaTestSupport {
         params.put("dbtype", "cache");
         params.put("namespace", "http://www.aquamonitor.no/");
         params.put("backend", "dbtype=aquamonitor;user=Mjøsa");
-        params.put("cache", "dbtype=postgis;host=etna.niva.no;port=5432;database=test_1;schema=public;user=nivakart;passwd=316miljo");
+        params.put("cache", "dbtype=postgis;host=etna.niva.no;port=5432;database=temp_1;schema=public;user=nivakart;passwd=316miljo");
         params.put("cache-name", "MJOSA_%s");
         params.put("update", 0);
         
@@ -87,16 +87,20 @@ public class CacheStoreTest extends NivaTestSupport {
 		Assert.assertTrue(dataStoreObj instanceof CacheDataStore);
 		
 		CacheDataStore cache = (CacheDataStore)dataStoreObj;
+		FileDataStore shpStore = null;
 		try {
 	        int cnt = addStationPointsLayer(catalog, cache, storeCat, "Cache_points_shape").getFeatures().size();
 	         
 			ShapefileDataStoreFactory shpFact = new ShapefileDataStoreFactory();
-			FileDataStore shpStore = shpFact.createDataStore(new URL("file:" + new File(shpDir, "STATION_POINTS.shp").getAbsolutePath()));
+			shpStore = shpFact.createDataStore(new URL("file:" + new File(shpDir, "STATION_POINTS.shp").getAbsolutePath()));
 
 			Assert.assertTrue(cnt == shpStore.getFeatureSource().getCount(Query.ALL));
 		}
 		finally {
-		    cache.dispose();	
+		    cache.dispose();
+		    if (shpStore != null) {
+		        shpStore.dispose();
+		    }
 		}
 	}
 	
@@ -287,14 +291,17 @@ public class CacheStoreTest extends NivaTestSupport {
 	        
 	        ShapefileDataStoreFactory shpFact = new ShapefileDataStoreFactory();
 	        FileDataStore shpStore = shpFact.createDataStore(new URL("file:" + new File(shpDir, "STATION_POINTS.shp").getAbsolutePath()));
-	        
-	    
-	        SimpleFeatureCollection coll2 = shpStore.getFeatureSource().getFeatures(stFilt);
-	        Assert.assertTrue(coll2.size() == 0);
-
-	        
-	        SimpleFeatureCollection coll3 = cacheSource.getFeatures(stFilt);
-	        Assert.assertTrue(coll3.size() == 0);
+	        try {
+    	        SimpleFeatureCollection coll2 = shpStore.getFeatureSource().getFeatures(stFilt);
+    	        Assert.assertTrue(coll2.size() == 0);
+    
+    	        
+    	        SimpleFeatureCollection coll3 = cacheSource.getFeatures(stFilt);
+    	        Assert.assertTrue(coll3.size() == 0);
+	        }
+	        finally {
+	            shpStore.dispose();
+	        }
 		}
 	}
 }

@@ -269,6 +269,9 @@ class JsonStreamIterator implements Iterator<Object>, ContentHandler, AutoClosea
 			}
 		}
 		else if (hasMessage) {
+		    if ("Bruker er ikke satt.".equals(value)) {
+		        throw new IOException("Given token wasn't accepted.");
+		    }
 			throw new IOException(String.format("Call for %s got the error response:\n%s",  this.url, value));
 		}
 		else {

@@ -14,6 +14,12 @@ import org.geotools.data.store.ContentFeatureSource;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Tests the functionality behind the Intern site.
+ * 
+ * @author Roar Brænden, NIVA
+ *
+ */
 public class InternalSiteDataStoreTest {
 	
 	private SiteDataStore dataStore;
@@ -21,9 +27,9 @@ public class InternalSiteDataStoreTest {
 	@Before
 	public void setUp() throws IOException{
 		SiteDataStoreFactory factory = new SiteDataStoreFactory();
-		Map<String, Serializable> params = new HashMap<String, Serializable>();
+		Map<String, Serializable> params = new HashMap<>();
 		params.put("dbtype", "aquamonitor-site");
-		params.put("host", "https://test-aquamonitor.niva.no/");
+		params.put("host", "https://aquamonitor.niva.no/");
 		params.put("site", "Intern");
 		this.dataStore = (SiteDataStore)factory.createDataStore(params);
 	}
@@ -46,5 +52,15 @@ public class InternalSiteDataStoreTest {
 	        assertTrue(features.hasNext());
 	        features.next();
 		};
+	}
+	
+	@Test
+	public void getAllStationPoints() throws Exception {
+	    ContentFeatureSource source = this.dataStore.getFeatureSource("STATION_POINTS");
+	       
+        try (SimpleFeatureIterator features = source.getFeatures().features()) {    
+            assertTrue(features.hasNext());
+            features.next();
+        };
 	}
 }
