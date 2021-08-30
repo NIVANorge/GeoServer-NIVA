@@ -59,24 +59,24 @@ public class PointsWithinDistanceController extends QueryBaseController {
 									@PathVariable Double east,
 									@PathVariable Double dist) {
 
-		final SimpleFeatureSource source = this.extractSourceFromPathVariable(workspace, layer);
-		final CoordinateReferenceSystem targetCrs = this.extractCRSFromPathVariable(epsg);
+		final SimpleFeatureSource featureLayer = this.extractSourceFromPathVariable(workspace, layer);
+		final CoordinateReferenceSystem sourceCrs = this.extractCRSFromPathVariable(epsg);
 		
 		
 		try {
 		    Point pnt = gFact.createPoint(new Coordinate(east, north));
-		    final CoordinateReferenceSystem sourceCrs = source.getSchema().getCoordinateReferenceSystem();
+		    final CoordinateReferenceSystem targetCrs = featureLayer.getSchema().getCoordinateReferenceSystem();
 		    
 			if (!CRS.equalsIgnoreMetadata(sourceCrs, targetCrs)) {
 				pnt = (Point)JTS.transform(pnt, CRS.findMathTransform(sourceCrs, targetCrs)); 
 			}
-			final GeometryDescriptor geometry = source.getSchema().getGeometryDescriptor();
+			final GeometryDescriptor geometry = featureLayer.getSchema().getGeometryDescriptor();
 	
 			final Filter withinFilt = CQL.toFilter("DWITHIN( " + geometry.getLocalName() 
 					+ ", POINT(" + Double.toString(pnt.getX()) + " " + Double.toString(pnt.getY()) + ")"
 					+ "," + Double.toString(dist) + ",meters)");
 			
-			return createResultMap(source.getFeatures(withinFilt));
+			return createResultMap(featureLayer.getFeatures(withinFilt));
 		}
 		catch (FactoryException | TransformException | CQLException | IOException ex) {
 			throw new RestException(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
