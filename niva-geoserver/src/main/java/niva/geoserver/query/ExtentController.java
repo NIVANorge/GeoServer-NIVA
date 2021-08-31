@@ -2,6 +2,7 @@ package niva.geoserver.query;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
@@ -57,8 +58,8 @@ public class ExtentController extends QueryBaseController {
 			
 			return extent;
 		}
-		catch (IOException ie) {
-			LOGGER.severe(ie.getMessage());
+		catch (IOException ex) {
+			LOGGER.log(Level.SEVERE, "Get extent of layer.", ex);
 			throw new RestException("Exception while getting extent of layer:" + layer + ".", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

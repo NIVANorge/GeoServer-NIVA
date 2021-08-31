@@ -2,6 +2,7 @@ package niva.geoserver.query;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.rest.RestException;
@@ -85,6 +86,7 @@ public class PointsWithinFilterController extends QueryBaseController {
 			return createResultMap(pointSource.getFeatures(within));
 		}
 		catch (CQLException | IOException ex) {
+		    LOGGER.log(Level.SEVERE, "Get PointsWithinFilter ended with exception.", ex);
 			throw new RestException(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

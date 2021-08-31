@@ -2,6 +2,8 @@ package niva.geoserver.query;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.rest.RestException;
 import org.geotools.data.simple.SimpleFeatureSource;
@@ -10,6 +12,7 @@ import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.geotools.referencing.CRS;
+import org.geotools.util.logging.Logging;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -42,6 +45,7 @@ import org.springframework.http.MediaType;
 				produces = {MediaType.APPLICATION_JSON_VALUE})
 public class PointsWithinDistanceController extends QueryBaseController {
     
+    private static final Logger LOGGER = Logging.getLogger(PointsWithinDistanceController.class);
     private static final GeometryFactory gFact = JTSFactoryFinder.getGeometryFactory();
 
 	@Autowired
@@ -79,6 +83,7 @@ public class PointsWithinDistanceController extends QueryBaseController {
 			return createResultMap(featureLayer.getFeatures(withinFilt));
 		}
 		catch (FactoryException | TransformException | CQLException | IOException ex) {
+		    LOGGER.log(Level.SEVERE, "Get Points within distance ended with exception.", ex);
 			throw new RestException(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

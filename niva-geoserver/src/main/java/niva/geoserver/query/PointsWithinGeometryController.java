@@ -3,6 +3,7 @@ package niva.geoserver.query;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.feature.ReprojectingFeatureCollection;
@@ -81,6 +82,7 @@ public class PointsWithinGeometryController extends QueryBaseController {
 			return createResultMap(result);
 		}
 		catch (FactoryException | CQLException | SchemaException | IOException ex) {
+		    LOGGER.log(Level.SEVERE, "Get Points within geometry.", ex);
 			throw new RestException(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -109,6 +111,7 @@ public class PointsWithinGeometryController extends QueryBaseController {
             return createResultMap(result);
         }
         catch (FactoryException | CQLException | SchemaException | IOException ex) {
+            LOGGER.log(Level.SEVERE, "Post Points within geometry.", ex);
             throw new RestException(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

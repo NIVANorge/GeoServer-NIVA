@@ -2,13 +2,15 @@ package niva.geoserver.query;
 
 import java.io.IOException;
 import java.util.HashMap;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.geotools.referencing.CRS;
+import org.geotools.util.logging.Logging;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -40,6 +42,8 @@ import org.springframework.http.MediaType;
 @RequestMapping(path = QueryBaseController.QUERY_ROOT_PATH + "/{epsg}_{north}_{east}_{dist}/feature.json",
 				produces = { MediaType.APPLICATION_JSON_VALUE} )
 public class FeatureController extends QueryBaseController {
+    
+    private static final Logger LOGGER = Logging.getLogger(FeatureController.class);
     
     private GeometryFactory gFact = JTSFactoryFinder.getGeometryFactory();
 
@@ -78,6 +82,7 @@ public class FeatureController extends QueryBaseController {
 
 		}
 		catch (FactoryException | TransformException | CQLException | IOException ex) {
+		    LOGGER.log(Level.SEVERE, "Get points within distance of point.", ex);
 			throw new RestException(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
