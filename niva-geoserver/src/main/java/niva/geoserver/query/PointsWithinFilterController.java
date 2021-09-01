@@ -38,7 +38,7 @@ import org.locationtech.jts.geom.Geometry;
  */
 @RestController
 @RequestMapping(path = QueryBaseController.QUERY_ROOT_PATH + "/filter/{workspace2}/{layer2}/{filter}/features.json",
-				produces = { MediaType.APPLICATION_JSON_VALUE })
+				produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
 public class PointsWithinFilterController extends QueryBaseController {
 	
 	private static final Logger LOGGER = Logging.getLogger(PointsWithinFilterController.class);
