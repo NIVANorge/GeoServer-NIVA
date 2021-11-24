@@ -4,6 +4,12 @@ import org.apache.wicket.model.IModel;
 
 import org.geoserver.security.web.auth.AuthenticationProviderPanel;
 
+
+/**
+ * 
+ * @author Roar Brænden, NIVA
+ *
+ */
 public class AquamonitorAuthenticationProviderPanel extends AuthenticationProviderPanel<AquamonitorAuthenticationProviderConfig> {
 
 	/**

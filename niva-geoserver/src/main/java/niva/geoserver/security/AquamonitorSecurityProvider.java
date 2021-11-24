@@ -6,10 +6,11 @@ import org.geoserver.security.GeoServerSecurityProvider;
 import org.geoserver.security.config.SecurityNamedServiceConfig;
 
 /**
- * Vi tilbyr muligheten til å autentisere brukere mot Aquamonitors påloggingsløsning.
- * Dette innebærer at gitt brukernavn/passord testes mot www.aquamonitor.no/portal.
- * Dersom vi får et positivt resultat vil vi registreres med rollene:
- * AUTHENTICATED_ROLE, AQUAMONITOR_USER
+ * The Aquamonitor Security Provider provides authentication using the Aquamonitor API.
+ * 
+ * The roles provides are: AUTHENTICATED_ROLE, AQUAMONITOR_USER
+ * 
+ * 
  * @author Roar Brænden
  *
  */

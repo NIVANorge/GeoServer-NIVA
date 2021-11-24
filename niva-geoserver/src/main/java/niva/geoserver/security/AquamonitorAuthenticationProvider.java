@@ -3,6 +3,7 @@ package niva.geoserver.security;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.logging.Logger;
 
 import javax.servlet.http.Cookie;
@@ -25,11 +26,17 @@ import niva.aquamonitor.data.ws.LoginController;
 import niva.aquamonitor.data.ws.UserCargo;
 
 
-
+/**
+ * Checks a request for either cookie or basic authentication.
+ * Using Aquamonitor API at the default site AquaServices.
+ * 
+ * Host could be altered by setting environment_variable: AQUAMONITOR_HOST_ADDRESS
+ * 
+ * @author Roar Brænden, NIVA
+ *
+ */
 public class AquamonitorAuthenticationProvider extends GeoServerAuthenticationProvider {
-	
-	static final GeoServerRole AQUAMONITOR_USER = new GeoServerRole("AQUAMONITOR_USER");
-	
+
 	static final String NO_USER = "NoUser";
 	
 	private static final Logger LOGGER = Logging.getLogger(AquamonitorAuthenticationProvider.class);
@@ -41,34 +48,33 @@ public class AquamonitorAuthenticationProvider extends GeoServerAuthenticationPr
 	 */
 	@Override
 	public boolean supports(Class<? extends Object> authentication, HttpServletRequest request) {
-		boolean supp;
-		supp = UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
 		
-		Cookie[] cookie = request.getCookies();
-		int i = 0;
-		while (!supp && i < cookie.length) {
-			supp = "aqua_key".equals(cookie[i].getName());
-			i++;
-		}
-		return supp;
+	    if (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication)) {
+	        return true;
+	    }
+		
+	    for (Cookie cookie : request.getCookies()) {
+	        if ("aqua_key".equals(cookie.getName())) {
+	            return true;
+	        }
+	    }
+
+		return false;
 	}
 
 	@Override
 	public Authentication authenticate(Authentication auth, HttpServletRequest request) {
 		
-		UsernamePasswordAuthenticationToken result;
 		UserCargo user = null;
 		
 		if (request != null && request.getCookies() != null) {
 			
-			Cookie[] cookie = request.getCookies();
-			int i = 0;
 			String token = null;
-			
-			while (i < cookie.length) {
-				if( "aqua_key".equals(cookie[i].getName()))
-					token = cookie[i].getValue();
-				i++;
+			for (Cookie cookie : request.getCookies()) {
+			    if("aqua_key".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    break;
+			    }
 			}
 			
 			if (token != null) {
@@ -85,7 +91,9 @@ public class AquamonitorAuthenticationProvider extends GeoServerAuthenticationPr
 		}
 		
 	
-		if ((user == null || NO_USER.equals(user.usertype)) && auth.getPrincipal()!=null && !auth.getPrincipal().toString().isEmpty()) {
+		if ((user == null || NO_USER.equals(user.usertype)) 
+		        && auth.getPrincipal() != null 
+		        && !auth.getPrincipal().toString().isEmpty()) {
 			String username, password;
 			
 			username = auth.getPrincipal().toString();
@@ -103,25 +111,40 @@ public class AquamonitorAuthenticationProvider extends GeoServerAuthenticationPr
 			}
 		}
 		
-		if (user != null && !NO_USER.equals(user.usertype)) {
-			LOGGER.fine("Aquamonitor user found.");
-	        Set<GrantedAuthority> roles = new HashSet<GrantedAuthority>();       
-	        RoleCalculator calc = new RoleCalculator(getSecurityManager().getActiveRoleService());
-	        try {
-	            roles.addAll(calc.calculateRoles(new GeoServerUser(user.username)));
-	        } catch (IOException e) {
-	            throw new AuthenticationServiceException(e.getMessage(),e);
-	        }
-	        roles.add(GeoServerRole.AUTHENTICATED_ROLE);
-	        roles.add(AQUAMONITOR_USER);
-	        
-	        result = new UsernamePasswordAuthenticationToken(user.username, null, roles);
-	        
-	        return result;
+		if (user == null || NO_USER.equals(user.usertype)) {
+		    return null;
 		}
-		else {
-			return null;
-		}        
+		
+		LOGGER.fine("Aquamonitor user found.");
+        try {
+            final Set<GrantedAuthority> roles = new HashSet<GrantedAuthority>();
+            roles.addAll(calculateRoles(user.username));
+            roles.add(GeoServerRole.AUTHENTICATED_ROLE);
+            roles.add(new AquamonitorUserRole(user));
+            
+            return new UsernamePasswordAuthenticationToken(user.username, null, roles);
+
+        } catch (IOException e) {
+            throw new AuthenticationServiceException(e.getMessage(),e);
+        }       
+	}
+	
+	private SortedSet<GeoServerRole> calculateRoles(String username) throws IOException {
+	    return new RoleCalculator(getSecurityManager().getActiveRoleService())
+                .calculateRoles(new GeoServerUser(username));
+	}
+	
+	static class AquamonitorUserRole extends GeoServerRole {
+	    
+	    /** serialVersionUID */
+        private static final long serialVersionUID = 2853237326337565198L;
+
+        AquamonitorUserRole(UserCargo user) {
+	        super("AQUAMONITOR_USER");
+	        this.setUserName(user.username);
+	        this.getProperties().setProperty("AQUA_KEY", user.key);
+	        this.getProperties().setProperty("AQUA_TOKEN", user.token);
+	    }
 	}
 
 }

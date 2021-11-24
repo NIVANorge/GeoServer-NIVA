@@ -38,7 +38,9 @@ public class AquamonitorAuthenticationProviderTest extends GeoServerTestSupport 
 		Authentication res = authProvider.authenticate(token);
 		
 		Assert.assertNotNull(res);
-		Assert.assertTrue(res.getAuthorities().contains(AquamonitorAuthenticationProvider.AQUAMONITOR_USER));
+		Assert.assertTrue(res.getAuthorities()
+		        .stream()
+		        .anyMatch(predicate -> predicate instanceof AquamonitorAuthenticationProvider.AquamonitorUserRole));
 	}
 	
 	public void testCookieAuthentication() throws IOException {
