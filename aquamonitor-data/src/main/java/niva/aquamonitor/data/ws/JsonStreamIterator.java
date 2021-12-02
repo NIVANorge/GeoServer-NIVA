@@ -3,7 +3,6 @@ package niva.aquamonitor.data.ws;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -15,14 +14,14 @@ import javax.net.ssl.SSLHandshakeException;
 
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.config.RequestConfig.Builder;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicHeader;
 
 import org.geotools.util.logging.Logging;
 
@@ -70,8 +69,7 @@ class JsonStreamIterator implements Iterator<Object>, ContentHandler, AutoClosea
 	}
 	
 	private CloseableHttpClient initHttp() {
-	    final Header accept = new BasicHeader(HttpHeaders.ACCEPT, "application/json");
-        return HttpClients.custom().setDefaultHeaders(Collections.singletonList(accept)).build();
+        return HttpClients.createDefault();
 	}
 	
 	/**
@@ -82,15 +80,17 @@ class JsonStreamIterator implements Iterator<Object>, ContentHandler, AutoClosea
 	private void read() throws IOException {
 		LOGGER.fine("Calling webservice: " + url);
 			
-		HttpGet get = new HttpGet(url);
+		final HttpGet get = new HttpGet(url);
+		get.setHeader(HttpHeaders.ACCEPT, "application/json");
+		Builder configBuilder = RequestConfig.custom()
+                .setConnectTimeout(1000)
+                .setCookieSpec(CookieSpecs.STANDARD);
 		
 		if (timeoutMins != null) {
-			RequestConfig config = RequestConfig.custom()
-												.setConnectTimeout(1000)
-												.setSocketTimeout(timeoutMins * 60 * 1000)
-												.build();
-			get.setConfig(config);
+            configBuilder.setSocketTimeout(timeoutMins * 60 * 1000);
+
 		}
+        get.setConfig(configBuilder.build());
 
 		try {
 		    response = client.execute(get);
@@ -99,9 +99,13 @@ class JsonStreamIterator implements Iterator<Object>, ContentHandler, AutoClosea
 			if (respStatusCode == HttpStatus.SC_NOT_FOUND) {
 				throw new IOException("Url: " + this.url + " responds with http status code 404.");
 			}
-			
-			HttpEntity entity = response.getEntity();
-	
+	         
+            HttpEntity entity = response.getEntity();
+    /*
+			if (respStatusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
+			    throw new IOException("Server returned an error.");
+			}
+    */
 			if (entity != null) {
 				parser = new JSONParser();
 				reader = new InputStreamReader(entity.getContent(), "utf-8");
@@ -272,7 +276,7 @@ class JsonStreamIterator implements Iterator<Object>, ContentHandler, AutoClosea
 		    if ("Bruker er ikke satt.".equals(value)) {
 		        throw new IOException("Given token wasn't accepted.");
 		    }
-			throw new IOException(String.format("Call for %s got the error response:\n%s",  this.url, value));
+			throw new IOException((String)value);
 		}
 		else {
 			return true;

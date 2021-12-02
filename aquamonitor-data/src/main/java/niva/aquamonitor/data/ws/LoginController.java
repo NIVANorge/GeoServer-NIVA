@@ -3,23 +3,18 @@ package niva.aquamonitor.data.ws;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
-
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicHeader;
-
 import org.geotools.util.logging.Logging;
-
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -58,13 +53,16 @@ public class LoginController extends AquaWebService {
 	
 	private UserCargo callPost(String url, String json) throws IOException {
 		LOGGER.fine("call login at: " + url);
-		
-		List<Header> headers = new ArrayList<Header>(1);
-		headers.add(new BasicHeader(HttpHeaders.ACCEPT, "application/json"));
-		
-		try (CloseableHttpClient client = HttpClients.custom().setDefaultHeaders(headers).build()) {
+
+		try (CloseableHttpClient client = HttpClients.createDefault()) {
 		    HttpPost post = new HttpPost(url);
+		    post.setHeader(HttpHeaders.ACCEPT, "application/json");
 	        post.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
+
+	        RequestConfig config = RequestConfig.custom()
+                                                .setCookieSpec(CookieSpecs.STANDARD)
+                                                .build();
+	        post.setConfig(config);
 
 	        try (CloseableHttpResponse resp = client.execute(post)) {
 	            HttpEntity entity = resp.getEntity();

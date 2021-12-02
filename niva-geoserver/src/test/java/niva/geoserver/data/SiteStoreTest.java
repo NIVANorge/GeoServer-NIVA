@@ -33,7 +33,7 @@ public class SiteStoreTest extends NivaTestSupport {
 		Map<String, Serializable> params = store.getConnectionParameters();
 		params.put("namespace", new URI("http://www.aquamonitor.no/"));
 		params.put("dbtype", "aquamonitor-site");
-		params.put("host", "http://www.aquamonitor.no/");
+		params.put("host", "https://test-aquamonitor.niva.no/");
 		params.put("site", "Intern");
 		
 		catalog.add(store);

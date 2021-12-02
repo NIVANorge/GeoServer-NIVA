@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Used as an inner class inside a Reader. Each Reader should extend with a mapping to their json-structure.
+ * Used as an inner class inside a Reader.
+ * Each AquaReader should extend this class implementing mapCargo to read their json-structure.
  * 
  * @author Roar Brænden
  *

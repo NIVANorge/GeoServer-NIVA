@@ -12,6 +12,7 @@ public class StationPointReader extends AquaReader<StationPointCargo> {
 
 	@Override
 	public CloseableIterator<StationPointCargo> iterator() throws IOException {
+	    setTimeout(3);
 		return new StationCargoIterator(callJsonService());
 	}
 	

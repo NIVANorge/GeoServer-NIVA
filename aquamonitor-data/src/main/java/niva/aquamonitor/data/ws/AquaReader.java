@@ -11,7 +11,7 @@ import org.locationtech.jts.geom.Envelope;
 
 /**
  * Base functionality for reading content from a webservice in AquaMonitor.
- * Content could be one of the Cargo classes. Which also has a super Reader class.
+ * Content could be one of the cargo classes. hich also has a super Reader class.
  * 
  * @author Roar Brænden, NIVA
  *
@@ -102,7 +102,10 @@ public abstract class AquaReader<T> {
 	            .onClose(() -> iter.close());
 	}
 
-	
+	/**
+	 * Creates the url, and returns a new JsonStreamIterator.
+	 * timeoutMins could be set prior to this call.
+	 */
 	protected JsonStreamIterator callJsonService() throws IOException {
 
 	    final StringBuilder builder = new StringBuilder();
@@ -118,7 +121,8 @@ public abstract class AquaReader<T> {
 		}
 		
 		final String url = builder.toString();
-		return (timeoutMins != null ? new JsonStreamIterator(url, timeoutMins) : new JsonStreamIterator(url));
+		return (timeoutMins != null ? new JsonStreamIterator(url, timeoutMins) 
+		                            : new JsonStreamIterator(url));
 	}
 	
 	class Argument {

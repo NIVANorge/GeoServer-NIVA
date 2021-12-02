@@ -64,7 +64,8 @@ public class GeographyWebServiceTest {
 			reader.getEnvelope();
 			Assert.fail();
 		}
-		catch (IOException ie) {
+		catch (IOException e) {
+		    Assert.assertEquals("Couldn't find UserState with the given key.", e.getMessage());
 		}
 	}
 	

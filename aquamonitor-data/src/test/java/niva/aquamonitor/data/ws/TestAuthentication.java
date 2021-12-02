@@ -10,6 +10,9 @@ public class TestAuthentication {
         sysEnvironment = (env == null || !env.contains(":") ? null : env.split(":"));
     }
     
+    /**
+     * Username set as system environment variable AQUAMONITOR_TEST_USER
+     */
     public static String getUsername() {
         if (sysEnvironment == null || sysEnvironment.length != 2) {
             throw new IllegalStateException(ERROR_MESSAGE);
@@ -17,6 +20,9 @@ public class TestAuthentication {
         return sysEnvironment[0];
     }
     
+    /**
+     * Password set as system environment variable AQUAMONITOR_TEST_USER
+     */
     public static String getPassword() {
         if (sysEnvironment == null || sysEnvironment.length != 2) {
             throw new IllegalStateException(ERROR_MESSAGE);
