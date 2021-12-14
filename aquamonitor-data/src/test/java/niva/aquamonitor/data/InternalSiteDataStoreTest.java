@@ -29,7 +29,7 @@ public class InternalSiteDataStoreTest {
 		SiteDataStoreFactory factory = new SiteDataStoreFactory();
 		Map<String, Serializable> params = new HashMap<>();
 		params.put("dbtype", "aquamonitor-site");
-		params.put("host", "https://aquamonitor.niva.no/");
+		params.put("host", "https://test-aquamonitor.niva.no/");
 		params.put("site", "Intern");
 		this.dataStore = (SiteDataStore)factory.createDataStore(params);
 	}
