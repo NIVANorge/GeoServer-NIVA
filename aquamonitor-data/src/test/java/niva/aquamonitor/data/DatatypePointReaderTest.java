@@ -6,21 +6,16 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
 import org.locationtech.jts.geom.Point;
-
-import niva.aquamonitor.data.ws.GeographyWebService;
+import niva.aquamonitor.data.ws.GeographyController;
 import niva.geotools.referencing.CRS;
-
+import org.junit.Assert;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class DatatypePointReaderTest {
 	
 	@Test
 	public void datatypePointReaderConstructorTest() throws Exception {
-		GeographyWebService service = GeographyWebService.createService("https://test-aquamonitor.niva.no/", 
+		GeographyController service = GeographyController.createService("https://test-aquamonitor.niva.no/", 
 		                                                                "Vannplanter");
 		
 		SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
@@ -43,13 +38,14 @@ public class DatatypePointReaderTest {
 
 	    DatatypePointReader reader = new DatatypePointReader(schema, 
 	            service.getAllDatatypePointsReader().iterator());
-	    assertNotNull(reader);
+	    Assert.assertNotNull(reader);
 		
 	}
 	
 	@Test
 	public void datatypePointReaderReadTest() throws Exception {
-		GeographyWebService service = GeographyWebService.createService("https://test-aquamonitor.niva.no/", "Vannplanter");
+		GeographyController service = GeographyController.
+		        createService("https://test-aquamonitor.niva.no/", "Vannplanter");
 		
 		SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
 		builder.setName("STATION_DATA_TYPE");
@@ -67,12 +63,11 @@ public class DatatypePointReaderTest {
 	    try (DatatypePointReader reader = new DatatypePointReader(schema, 
 	                                            service.getAllDatatypePointsReader()
 	                                                   .iterator())) {
-			assertTrue(reader.hasNext());
+			Assert.assertTrue(reader.hasNext());
 			
 			SimpleFeature feature = reader.next();
-			assertNotNull(feature);
-			assertEquals(1, feature.getAttribute("Vannplanter"));
+			Assert.assertNotNull(feature);
+			Assert.assertEquals(1, feature.getAttribute("Vannplanter"));
 		}
 	}
-
 }

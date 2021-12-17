@@ -3,10 +3,8 @@ package niva.aquamonitor.data;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import niva.aquamonitor.data.ws.GeographyWebService;
+import niva.aquamonitor.data.ws.GeographyController;
 import niva.aquamonitor.data.ws.StationPointReader;
-
 import org.geotools.data.DefaultServiceInfo;
 import org.geotools.data.ServiceInfo;
 import org.geotools.data.store.ContentDataStore;
@@ -36,22 +34,25 @@ public class ProjectUserDataStore extends ContentDataStore {
 	
 	private String username;
 	
-	private GeographyWebService service;
+	private GeographyController controller;
 	
+	@Deprecated
 	public ProjectUserDataStore(String username, String host) {
-		if (username==null)
+		if (username==null) {
 			throw new IllegalArgumentException("Username must be specified.");
+		}
 		
 		this.username = username;
-		this.service = GeographyWebService.createService(host);
+		this.controller = GeographyController.createService(host, "AquaService");
 	}
 
 	public ProjectUserDataStore(String username) {
-		if (username==null)
+		if (username==null) {
 			throw new IllegalArgumentException("Username must be specified.");
+		}
 		
 		this.username = username;
-		this.service = GeographyWebService.createService();
+		this.controller = GeographyController.createService();
 	}
 
 
@@ -87,10 +88,8 @@ public class ProjectUserDataStore extends ContentDataStore {
 	@Override
 	protected ContentFeatureSource createFeatureSource(ContentEntry entry) throws IOException {
 		if (entry.getTypeName().equals(DEFAULT_LAYERS[0])) {
-			
 			String username = getUsername();
-			
-			StationPointReader reader = this.service.getProjectUserStationReader(username);
+			StationPointReader reader = this.controller.getProjectUserStationReader(username);
 			
 			return new StationPointSource(entry, reader);
 		}

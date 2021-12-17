@@ -2,6 +2,7 @@ package niva.aquamonitor.data.ws;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -20,11 +21,9 @@ import org.locationtech.jts.geom.Envelope;
 public abstract class AquaReader<T> {
 	
 	private final AquaWebService webservice;
-	
 	private final String function;
-	
+	private final String token;
 	private final List<Argument> arguments;
-	
 	private Integer timeoutMins  = null;
 	
 	
@@ -32,6 +31,14 @@ public abstract class AquaReader<T> {
 		this.webservice = webservice;
 		this.function = function;
 		this.arguments = new ArrayList<Argument>();
+		this.token = null;
+	}
+	
+	AquaReader(AquaWebService webservice, String path, String token) {
+	    this.webservice = webservice;
+	    this.function  = path;
+	    this.token = token;
+	    this.arguments = Collections.emptyList();
 	}
 
 	void setTimeout(int minutes) {
@@ -49,7 +56,7 @@ public abstract class AquaReader<T> {
 	/**
 	 * Set a new value for parameter. Use addParameter for new parameters.
 	 * 
-	 * @param parameter A exsiting parameter
+	 * @param parameter A existing parameter
 	 * @param value New value for parameter
 	 * @throw IllegalArgumentException If parameter doesn't exist
 	 */
@@ -69,7 +76,9 @@ public abstract class AquaReader<T> {
 	 * @throws IOException
 	 */
 	public int getCount() throws IOException {
-	    return (int) stream().count();
+	    try (Stream<T> stream = stream()) {
+	        return (int) stream.count();   
+	    }
 	}
 
 
@@ -81,19 +90,29 @@ public abstract class AquaReader<T> {
 	 */
 	public Envelope getEnvelope() throws IOException {
 	    final Envelope env = new Envelope();
-	    stream().map((next -> (PointCargo)next))
-	            .forEach(point -> env.expandToInclude(point.longitude, point.latitude));
-		return env;
+	    try (Stream<T> stream = stream()) {
+    	    stream.map((next -> (PointCargo)next))
+    	            .forEach(point -> env.expandToInclude(point.longitude, point.latitude));
+    		return env;
+	    }
 	}
 	
 
 	/**
-	 * Super classes should return an iterator on TCargo. Often by wrapping a call to callJsonService.
+	 * Returning a CloseableIterator over the object returned by this webservice.
+	 * 
+	 * To be used in aa try-with-resource to close the resources.
+	 * 
 	 * @return
 	 * @throws IOException
 	 */
 	public abstract CloseableIterator<T> iterator() throws IOException;
 	
+	/**
+	 * Returns a stream created by the iterator.
+	 * 
+	 * You should close the stream.
+	 */
 	public Stream<T> stream() throws IOException {
 	    final CloseableIterator<T> iter = iterator();
 	    
@@ -121,8 +140,13 @@ public abstract class AquaReader<T> {
 		}
 		
 		final String url = builder.toString();
-		return (timeoutMins != null ? new JsonStreamIterator(url, timeoutMins) 
-		                            : new JsonStreamIterator(url));
+		return (timeoutMins != null ? 
+		            (token != null ? 
+		                    new JsonStreamIterator(url, token, timeoutMins) : 
+		                    new JsonStreamIterator(url, timeoutMins)) : 
+		            (token != null ? 
+		                    new JsonStreamIterator(url, token) : 
+		                    new JsonStreamIterator(url)));
 	}
 	
 	class Argument {

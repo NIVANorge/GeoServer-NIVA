@@ -9,8 +9,11 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Deprecated
+@Ignore
 public class GeographyWebServiceTest {
 	
 	

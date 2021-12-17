@@ -11,6 +11,7 @@ import java.util.Map;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.store.ContentFeatureSource;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,6 +35,13 @@ public class InternalSiteDataStoreTest {
 		this.dataStore = (SiteDataStore)factory.createDataStore(params);
 	}
 	
+	@After
+	public void dispose() {
+	    if (this.dataStore != null) {
+	        this.dataStore.dispose();
+	    }
+	}
+	
 	
 	@Test
 	public void getAllDatatypePointsSchema() throws Exception {
@@ -51,7 +59,7 @@ public class InternalSiteDataStoreTest {
 		try (SimpleFeatureIterator features = source.getFeatures().features()) {    
 	        assertTrue(features.hasNext());
 	        features.next();
-		};
+		}
 	}
 	
 	@Test
@@ -61,6 +69,6 @@ public class InternalSiteDataStoreTest {
         try (SimpleFeatureIterator features = source.getFeatures().features()) {    
             assertTrue(features.hasNext());
             features.next();
-        };
+        }
 	}
 }

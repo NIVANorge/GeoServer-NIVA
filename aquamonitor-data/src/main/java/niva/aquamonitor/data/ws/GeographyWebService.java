@@ -25,6 +25,7 @@ import org.geotools.util.logging.Logging;
  * @author Roar Brænden, NIVA
  *
  */
+@Deprecated
 public class GeographyWebService extends AquaWebService {
 	
 	private static final String SERVICE_ADDRESS = "/WebServices/GeographyService.asmx";
@@ -121,7 +122,7 @@ public class GeographyWebService extends AquaWebService {
 	}
 	
 
-	
+	@Deprecated
 	public StationPointReader queryAllStationReader(String where) throws IOException {
 	    checkToken();
 		LOGGER.fine("GeographyWebService.queryAllStationReader. where:" + where);

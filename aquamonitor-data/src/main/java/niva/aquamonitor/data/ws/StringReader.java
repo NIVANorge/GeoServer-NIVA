@@ -7,6 +7,10 @@ public class StringReader extends AquaReader<String> {
 	StringReader(AquaWebService webservice, String function) {
 		super(webservice, function);
 	}
+	
+	StringReader(AquaWebService webservice, String path, String token) {
+	    super(webservice, path, token);
+	}
 
 	@Override
 	public CloseableIterator<String> iterator() throws IOException {

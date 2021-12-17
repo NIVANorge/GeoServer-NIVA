@@ -4,7 +4,7 @@
   <groupId>niva.geotools</groupId>
   <artifactId>aquamonitor-data</artifactId>
   <packaging>jar</packaging>
-  <version>8.1</version>
+  <version>8.2</version>
   <name>AquaMonitor data</name>
   <properties>
   	<gt.version>25-NIVA</gt.version>
@@ -29,12 +29,12 @@
     <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
-        <version>4.5.1</version>
+        <version>4.5.13</version>
     </dependency>
     <dependency>
     	<groupId>org.apache.httpcomponents</groupId>
     	<artifactId>httpcore</artifactId>
-    	<version>4.4.3</version>
+    	<version>4.4.15</version>
     </dependency>
     <dependency>
         <groupId>com.googlecode.json-simple</groupId>
@@ -84,8 +84,8 @@
   		</plugin>
   		<plugin>
   		    <groupId>org.apache.maven.plugins</groupId>
-  		    <artifactId>maven-surfire-plugin</artifactId>
-  		    <version>2.12.4</version>
+  		    <artifactId>maven-surefire-plugin</artifactId>
+  		    <version>2.22.2</version>
   		    <configuration>
   		        <parallel>methods</parallel>
   		        <threadCount>4</threadCount>

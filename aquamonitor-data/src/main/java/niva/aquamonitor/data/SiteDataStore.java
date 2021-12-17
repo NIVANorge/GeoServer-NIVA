@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import niva.aquamonitor.data.ws.DatatypeReader;
-import niva.aquamonitor.data.ws.GeographyWebService;
+import niva.aquamonitor.data.ws.GeographyController;
 import niva.aquamonitor.data.ws.StationPointReader;
 import niva.aquamonitor.data.ws.StringReader;
 import org.geotools.data.DefaultServiceInfo;
@@ -106,7 +107,7 @@ public class SiteDataStore extends ContentDataStore {
 	@Override
 	protected ContentFeatureSource createFeatureSource(ContentEntry entry) throws IOException {
 		
-		final GeographyWebService ws = GeographyWebService.createService(getHost(), getSite());
+		final GeographyController ws = GeographyController.createService(getHost(), getSite());
 		final String typeName = entry.getTypeName();
 		
 		final String key = getKey();
@@ -134,10 +135,12 @@ public class SiteDataStore extends ContentDataStore {
 		else if (entry.getTypeName().equals(DEFAULT_LAYERS[2])) {
 			DatatypeReader reader = (key == null ? ws.getAllDatatypePointsReader()
 			                                     : ws.getCurrentDatatypePointsReader(key));
-			StringReader datatypesReader = ws.getAllDatatypesReader(); 
-            List<String> list = datatypesReader.stream().collect(Collectors.toList());
-            String[] datatypes = list.toArray(new String[list.size()]);
-            return new DatatypePointSource(entry, reader, datatypes);
+			StringReader datatypesReader = ws.getAllDatatypesReader();
+			try (Stream<String> datatypesStream = datatypesReader.stream()) {
+                List<String> list = datatypesStream.collect(Collectors.toList());
+                String[] datatypes = list.toArray(new String[list.size()]);
+                return new DatatypePointSource(entry, reader, datatypes);
+			}
 		}
 		else {
 			throw new IllegalArgumentException("Unknown typeName");

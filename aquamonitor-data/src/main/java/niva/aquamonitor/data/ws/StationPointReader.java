@@ -3,11 +3,20 @@ package niva.aquamonitor.data.ws;
 import java.io.IOException;
 import java.util.Map;
 
+/**
+ * 
+ * @author Roar Brænden, NIVA
+ *
+ */
 public class StationPointReader extends AquaReader<StationPointCargo> {
 
 	
 	public StationPointReader(AquaWebService webservice, String function) {
 		super(webservice, function);
+	}
+	
+	public StationPointReader(AquaWebService webservice, String path, String token) {
+	    super(webservice, path, token);
 	}
 
 	@Override

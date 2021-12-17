@@ -9,6 +9,10 @@ public class DatatypeReader extends AquaReader<DatatypeCargo>{
 		super(webservice, function);
 	}
 	
+	DatatypeReader(AquaWebService webservice, String path, String token) {
+	    super(webservice, path, token);
+	}
+	
 	@Override
 	public CloseableIterator<DatatypeCargo> iterator() throws IOException {
 		return new DatatypeIterator(callJsonService());
