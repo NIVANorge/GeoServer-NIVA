@@ -13,10 +13,13 @@ import org.geoserver.catalog.impl.LayerInfoImpl;
 import org.geoserver.catalog.impl.WMTSLayerInfoImpl;
 import org.geoserver.catalog.impl.WMTSStoreInfoImpl;
 import org.geoserver.data.test.SystemTestData;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.ows.wms.CRSEnvelope;
 import org.geotools.ows.wmts.WebMapTileServer;
 import org.geotools.ows.wmts.model.WMTSLayer;
 import org.junit.Assert;
 import org.junit.Test;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import niva.geoserver.data.NivaTestSupport;
 import niva.geotools.referencing.CRS;
 
@@ -30,6 +33,7 @@ public class KartverketCacheWMTS extends NivaTestSupport {
     
     private static final String CAPABILITIES_URL = "https://opencache.statkart.no/gatekeeper/gk/gk.open_wmts?Version=1.0.0&service=wmts&request=getcapabilities";
     
+    private static final ReferencedEnvelope UTM33_BOUNDINGBOX = new ReferencedEnvelope(0, 84.01, -11.57, 41.57, null);
     @Override
     protected void onSetUp(SystemTestData testData) throws Exception {
         super.onSetUp(testData);
@@ -52,10 +56,11 @@ public class KartverketCacheWMTS extends NivaTestSupport {
         resourceCat.setStore(store);
         resourceCat.setNamespace(namespace);
         resourceCat.setName("europa");
-        resourceCat.setNativeName("europa");
+        resourceCat.setNativeName("egk");
         resourceCat.setNativeCRS(CRS.getUtm33());
         resourceCat.setSRS("EPSG:32633");
         resourceCat.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
+        resourceCat.setLatLonBoundingBox(UTM33_BOUNDINGBOX);
         resourceCat.setEnabled(true);
         
         catalog.add(resourceCat);
@@ -71,12 +76,15 @@ public class KartverketCacheWMTS extends NivaTestSupport {
     @Test
     public void testConfiguration() throws Exception {
         
-        final String layerName = "europa";
+        final String layerName = "egk";
         
         final WebMapTileServer tileServer = new WebMapTileServer(new URL(CAPABILITIES_URL));
         final WMTSLayer layer = tileServer.getCapabilities().getLayer(layerName);
-
+        layer.setLatLonBoundingBox(new CRSEnvelope(UTM33_BOUNDINGBOX));
         Assert.assertNotNull("Missing europa from capabilities", layer);
+        
+        CRSEnvelope envelope33 = layer.getBoundingBoxes().get("EPSG:32633");
+        Assert.assertNotNull("Missing boundingBox for utm 33", envelope33);
     }
     
     /**

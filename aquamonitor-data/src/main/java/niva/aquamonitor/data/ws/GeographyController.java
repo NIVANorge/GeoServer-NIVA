@@ -93,14 +93,10 @@ public class GeographyController extends AquaWebService {
     }
     
 
-
-    
     public StationPointReader getAllStationReader() throws IOException {
         checkToken();
         return new StationPointReader(this, "stationpoints", defaultToken);
     }
-
-
 
     
     public StationPointReader getCurrentStationReader(String userkey) throws IOException {

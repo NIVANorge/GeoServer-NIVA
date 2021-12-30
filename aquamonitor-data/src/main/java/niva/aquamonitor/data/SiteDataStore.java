@@ -79,7 +79,6 @@ public class SiteDataStore extends ContentDataStore {
         info.setSchema( FeatureTypes.DEFAULT_NAMESPACE );        
         return info;
 	}
-	
 
 	/**
 	 * Which layers do exist for this DataStore.
