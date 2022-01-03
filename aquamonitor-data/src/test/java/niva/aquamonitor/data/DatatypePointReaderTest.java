@@ -4,7 +4,6 @@ package niva.aquamonitor.data;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-
 import org.locationtech.jts.geom.Point;
 import niva.aquamonitor.data.ws.GeographyController;
 import niva.geotools.referencing.CRS;
@@ -20,26 +19,23 @@ public class DatatypePointReaderTest {
 		
 		SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
 		builder.setName("STATION_DATA_TYPE");
-		
 		builder.setCRS(CRS.getBreddeLengdegrad());
 		builder.add("the_geom", Point.class);
-		
 		builder.add("STATION_ID", Integer.class);
 		builder.add("STATION_TYPE_ID", Integer.class);
 		builder.add("STATION_TYPE", String.class);
-		
 		builder.add("Vannplanter", Integer.class);
 		builder.add("Water", Integer.class);
 		builder.add("Begroing", Integer.class);
 		builder.add("Bunndyr", Integer.class);
 		builder.add("Plankton", Integer.class);
 
-		SimpleFeatureType schema = builder.buildFeatureType();
-
-	    DatatypePointReader reader = new DatatypePointReader(schema, 
-	            service.getAllDatatypePointsReader().iterator());
-	    Assert.assertNotNull(reader);
+		final SimpleFeatureType schema = builder.buildFeatureType();
 		
+		try (DatatypePointReader reader = 
+		        new DatatypePointReader(schema, service.getAllDatatypePointsReader().iterator())) {
+	        Assert.assertNotNull(reader);
+		}
 	}
 	
 	@Test
@@ -52,11 +48,9 @@ public class DatatypePointReaderTest {
 		
 		builder.setCRS(CRS.getBreddeLengdegrad());
 		builder.add("the_geom", Point.class);
-		
 		builder.add("STATION_ID", Integer.class);
 		builder.add("STATION_TYPE_ID", Integer.class);
 		builder.add("STATION_TYPE", String.class);
-		
 		builder.add("Vannplanter", Integer.class);
 
 		SimpleFeatureType schema = builder.buildFeatureType();

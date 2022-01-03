@@ -134,7 +134,7 @@ class JsonStreamIterator implements Iterator<Object>, ContentHandler, AutoClosea
 		get.setHeader(HttpHeaders.ACCEPT, "application/json");
 		Builder configBuilder = RequestConfig.custom()
 		        .setCookieSpec(CookieSpecs.STANDARD)
-                .setConnectTimeout(1000);
+                .setConnectTimeout(5 * 1000);
 		if (timeoutMins != null) {
             configBuilder.setSocketTimeout(timeoutMins * 60 * 1000);
             LOGGER.fine(String.format("Timeout set to %d minutes", timeoutMins));
