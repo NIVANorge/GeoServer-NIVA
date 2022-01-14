@@ -15,5 +15,5 @@ At the moment we're running:
 
 | Software      | Version       |
 |---------------|---------------|
-| AdoptOpenJDK  | 8.0.275       |
-| Apache Tomcat | 9.0.37        |
+| OpenJDK       | 11.0.13       |
+| Apache Tomcat | 9.0.56        |
