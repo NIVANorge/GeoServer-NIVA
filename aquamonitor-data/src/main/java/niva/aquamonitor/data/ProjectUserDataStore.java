@@ -36,15 +36,6 @@ public class ProjectUserDataStore extends ContentDataStore {
 	
 	private GeographyController controller;
 	
-	@Deprecated
-	public ProjectUserDataStore(String username, String host) {
-		if (username==null) {
-			throw new IllegalArgumentException("Username must be specified.");
-		}
-		
-		this.username = username;
-		this.controller = GeographyController.createService(host, "AquaService");
-	}
 
 	public ProjectUserDataStore(String username) {
 		if (username==null) {

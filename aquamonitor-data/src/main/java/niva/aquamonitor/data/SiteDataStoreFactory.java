@@ -12,9 +12,6 @@ import org.geotools.data.DataStoreFactorySpi;
 
 /**
  * Oppretter SiteDataStore basert på name.
- * 
- * 
- * 
  * @author Roar Brænden
  *
  */
@@ -25,7 +22,7 @@ public class SiteDataStoreFactory implements DataStoreFactorySpi {
 	public static final Param DBTYPE_PARAM = new Param("dbtype", String.class, "dbtype må være aquamonitor-site", true, "aquamonitor-site");
 	public static final Param SITE_PARAM = new Param("site", String.class, "name of AquaMonitor site", true, null);
     public static final Param KEY_PARAM = new Param("key", String.class, "key for a given user", false, null);
-    public static final Param HOST_PARAM = new Param("host", String.class, "host of AquaMonitor site", false, "http://www.aquamonitor.no/");
+    public static final Param HOST_PARAM = new Param("host", String.class, "host of AquaMonitor site", false, "https://aquamonitor.niva.no/");
     
 	
 	/**

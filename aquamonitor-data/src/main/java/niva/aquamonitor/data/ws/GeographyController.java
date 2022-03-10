@@ -144,4 +144,16 @@ public class GeographyController extends AquaWebService {
         
         return reader;
     }
+    
+    /**
+     * Reader for the end-point user/{key}/valuepoints
+     * 
+     * - Representing all the current parameter values for the user
+     *
+     * At the moment no timeout is specified, but that might change.
+     */
+    public ValuePointReader getCurrentValuePointsReader(String userkey) throws IOException {
+        checkToken();
+        return new ValuePointReader(this, String.format("user/%s/valuepoints", userkey), defaultToken);
+    }
 }

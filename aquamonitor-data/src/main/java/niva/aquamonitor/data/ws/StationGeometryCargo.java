@@ -1,5 +1,6 @@
 package niva.aquamonitor.data.ws;
 
+@Deprecated
 public class StationGeometryCargo {
 	
 	public int geometryId;

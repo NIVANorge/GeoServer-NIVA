@@ -10,6 +10,7 @@ import niva.aquamonitor.data.ws.DatatypeReader;
 import niva.aquamonitor.data.ws.GeographyController;
 import niva.aquamonitor.data.ws.StationPointReader;
 import niva.aquamonitor.data.ws.StringReader;
+import niva.aquamonitor.data.ws.ValuePointReader;
 import org.geotools.data.DefaultServiceInfo;
 import org.geotools.data.ServiceInfo;
 import org.geotools.data.store.ContentDataStore;
@@ -33,10 +34,11 @@ import org.opengis.feature.type.Name;
  */
 public class SiteDataStore extends ContentDataStore {
 	
-	public static final String[] DEFAULT_LAYERS = new String[] { "STATION_POINTS"
-																, "ADMIN_STATION_POINTS"
-																, "STATION_DATATYPE_POINTS" };
-	
+	public static final String[] DEFAULT_LAYERS = new String[] {
+	        "STATION_POINTS",
+	        "ADMIN_STATION_POINTS", 
+	        "STATION_DATATYPE_POINTS", 
+	        "VALUE_POINTS"};
 	
 	private static final Logger LOGGER = Logging.getLogger(SiteDataStore.class);
 
@@ -67,9 +69,6 @@ public class SiteDataStore extends ContentDataStore {
 	private String getKey() {
 		return this.key;
 	}
-	
-
-	
 
 	@Override
 	public ServiceInfo getInfo() {
@@ -81,22 +80,19 @@ public class SiteDataStore extends ContentDataStore {
 	}
 
 	/**
-	 * Which layers do exist for this DataStore.
-	 * 
+	 * Which layers do exist for this DataStore. Taking into account if it got a userKey.
 	 */
 	@Override
 	protected List<Name> createTypeNames() throws IOException {
-		
 		List<Name> list = new ArrayList<Name>();
-		
 		list.add(new NameImpl(getNamespaceURI(), DEFAULT_LAYERS[0]));
-		
 		if (getKey() != null) {
 			list.add(new NameImpl(getNamespaceURI(), DEFAULT_LAYERS[1]));
 		}
-		
 		list.add(new NameImpl(getNamespaceURI(), DEFAULT_LAYERS[2]));
-		
+		if (getKey() != null) {
+		    list.add(new NameImpl(getNamespaceURI(), DEFAULT_LAYERS[3]));
+		}
 		return list;
 	}
 
@@ -110,7 +106,6 @@ public class SiteDataStore extends ContentDataStore {
 		final String typeName = entry.getTypeName();
 		
 		final String key = getKey();
-		
 		
 		if (entry.getTypeName().equals(DEFAULT_LAYERS[0]) || entry.getTypeName().equals(DEFAULT_LAYERS[1])) {
 			StationPointReader reader;
@@ -140,6 +135,10 @@ public class SiteDataStore extends ContentDataStore {
                 String[] datatypes = list.toArray(new String[list.size()]);
                 return new DatatypePointSource(entry, reader, datatypes);
 			}
+		}
+		else if (entry.getTypeName().equals(DEFAULT_LAYERS[3])) {
+		    ValuePointReader reader = ws.getCurrentValuePointsReader(key);
+		    return new ValuePointSource(entry, reader);
 		}
 		else {
 			throw new IllegalArgumentException("Unknown typeName");

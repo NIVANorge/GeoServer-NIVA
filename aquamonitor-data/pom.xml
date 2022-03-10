@@ -4,7 +4,7 @@
   <groupId>niva.geotools</groupId>
   <artifactId>aquamonitor-data</artifactId>
   <packaging>jar</packaging>
-  <version>8.2</version>
+  <version>8.3</version>
   <name>AquaMonitor data</name>
   <properties>
   	<gt.version>25-NIVA</gt.version>
