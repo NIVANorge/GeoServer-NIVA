@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -29,7 +30,7 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.filter.text.cql2.CQL;
-
+import org.geotools.util.logging.Logging;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -42,6 +43,8 @@ import niva.geotools.data.CacheFeatureStore;
 
 
 public class CacheStoreTest extends NivaTestSupport {
+    
+    private static Logger LOGGER = Logging.getLogger(CacheStoreTest.class);
 	
 	private Map<String, Serializable> getTestParametersShapefile(File shpDir) throws Exception {
 		Map<String, Serializable> params = new HashMap<String, Serializable>();
@@ -201,9 +204,7 @@ public class CacheStoreTest extends NivaTestSupport {
             SimpleFeatureCollection coll2 = cacheSource.getFeatures(stFilt);
             Assert.assertTrue(coll2.size() == 0);
             
-            String xml;
-            
-            xml =  "<wfs:Transaction service=\"WFS\" version=\"1.0.0\""
+            String xml =  "<wfs:Transaction service=\"WFS\" version=\"1.0.0\""
                     + " xmlns:ogc=\"http://www.opengis.net/ogc\""
                     + " xmlns:wfs=\"http://www.opengis.net/wfs\""
                     + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
@@ -246,62 +247,52 @@ public class CacheStoreTest extends NivaTestSupport {
         
 		addAquaMonitorStore("ShapeCache3", getTestParametersShapefile(shpDir));
 		DataStoreInfo storeCat = catalog.getDataStoreByName("no.niva.aquamonitor", "ShapeCache3");
-		
 		addStationLayer(storeCat, "Cache_points_3");
-		
 		FeatureTypeInfo layerCat = catalog.getFeatureTypeByName("http://www.aquamonitor.no/", "Cache_points_3");
-		
 		SimpleFeatureStore cacheSource = (SimpleFeatureStore)layerCat.getFeatureSource(null, null);
 
+		String stid;
+		Filter stFilt;
 		try (SimpleFeatureIterator iter = cacheSource.getFeatures().features()) {
 		    Assert.assertTrue(iter.hasNext());
-    		String stid = iter.next().getAttribute("STATION_ID").toString();
+    		stid = iter.next().getAttribute("STATION_ID").toString();
     		
-    	    Filter stFilt = CQL.toFilter("STATION_ID=" + stid);
-    	        
-	        String xml =  "<wfs:Transaction service=\"WFS\" version=\"1.0.0\""
-	                + " xmlns:ogc=\"http://www.opengis.net/ogc\""
-	                + " xmlns:no.niva.aquamonitor=\"http://www.aquamonitor.no/\""
-	                + " xmlns:gml=\"http://www.opengis.net/gml\""
-	                + " xmlns:wfs=\"http://www.opengis.net/wfs\""
-	                + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-	                + " xsi:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-transaction.xsd\">"
-	                + "<wfs:Delete typeName=\"no.niva.aquamonitor:Cache_points_3\">"
-	                + "<ogc:Filter>"
-	                + "<ogc:PropertyIsEqualTo>"
-	                + "<ogc:PropertyName>no.niva.aquamonitor:STATION_ID</ogc:PropertyName>"
-	                + "<ogc:Literal>" + stid + "</ogc:Literal>"
-	                + "</ogc:PropertyIsEqualTo>"
-	                + "</ogc:Filter>"
-	                + "</wfs:Delete>"
-	                + "</wfs:Transaction>";
-	        
-	        try (InputStream is = this.post("wfs", xml);
-	             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
-	            
-	            String resp = "";
-	            String next = reader.readLine();
-	            while (next != null) {
-	                resp += next;
-	                next = reader.readLine();
-	            }
-	            System.out.println(resp);
-	            Assert.assertTrue(resp.contains("SUCCESS"));
-	        }
-	        
-	        ShapefileDataStoreFactory shpFact = new ShapefileDataStoreFactory();
-	        FileDataStore shpStore = shpFact.createDataStore(new URL("file:" + new File(shpDir, "STATION_POINTS.shp").getAbsolutePath()));
-	        try {
-    	        SimpleFeatureCollection coll2 = shpStore.getFeatureSource().getFeatures(stFilt);
-    	        Assert.assertTrue(coll2.size() == 0);
-    
-    	        
-    	        SimpleFeatureCollection coll3 = cacheSource.getFeatures(stFilt);
-    	        Assert.assertTrue(coll3.size() == 0);
-	        }
-	        finally {
-	            shpStore.dispose();
-	        }
+    	    stFilt = CQL.toFilter("STATION_ID=" + stid);
 		}
+		LOGGER.info("Using station id = " + stid + " as target.");
+		
+        String xml =  "<wfs:Transaction service=\"WFS\" version=\"1.0.0\""
+                + " xmlns:ogc=\"http://www.opengis.net/ogc\""
+                + " xmlns:no.niva.aquamonitor=\"http://www.aquamonitor.no/\""
+                + " xmlns:gml=\"http://www.opengis.net/gml\""
+                + " xmlns:wfs=\"http://www.opengis.net/wfs\""
+                + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                + " xsi:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-transaction.xsd\">"
+                + "<wfs:Delete typeName=\"no.niva.aquamonitor:Cache_points_3\">"
+                + "<ogc:Filter>"
+                + "<ogc:PropertyIsEqualTo>"
+                + "<ogc:PropertyName>no.niva.aquamonitor:STATION_ID</ogc:PropertyName>"
+                + "<ogc:Literal>" + stid + "</ogc:Literal>"
+                + "</ogc:PropertyIsEqualTo>"
+                + "</ogc:Filter>"
+                + "</wfs:Delete>"
+                + "</wfs:Transaction>";
+	        
+        try (InputStream is = this.post("wfs", xml);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+            
+            StringBuilder builder = new StringBuilder();
+            String next = reader.readLine();
+            while (next != null) {
+                builder.append(next);
+                next = reader.readLine();
+            }
+            String resp = builder.toString();
+            LOGGER.info(resp);
+            Assert.assertTrue(resp.contains("SUCCESS"));
+        }
+
+        SimpleFeatureCollection coll3 = cacheSource.getFeatures(stFilt);
+        Assert.assertEquals(0, coll3.size());
 	}
 }
