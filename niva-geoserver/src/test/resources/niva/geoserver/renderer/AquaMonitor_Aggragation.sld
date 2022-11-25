@@ -60,8 +60,8 @@
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=D" />
-                <Format>application/chart</Format>
+                <OnlineResource xlink:href="file:/aqm_icons/deponi.png" />
+                <Format>image/png</Format>
               </ExternalGraphic>
               <Size>20</Size>
             </Graphic>
@@ -87,8 +87,8 @@
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=E" />
-                <Format>application/chart</Format>
+                <OnlineResource xlink:href="file:/aqm_icons/elv.png" />
+                <Format>image/png</Format>
               </ExternalGraphic>
               <Size>20</Size>
             </Graphic>
@@ -114,8 +114,8 @@
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=G" />
-                <Format>application/chart</Format>
+                <OnlineResource xlink:href="file:/aqm_icons/grunnvann.png" />
+                <Format>image/png</Format>
               </ExternalGraphic>
               <Size>20</Size>
             </Graphic>
@@ -141,8 +141,8 @@
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=V" />
-                <Format>application/chart</Format>
+                <OnlineResource xlink:href="file:/aqm_icons/gruvevann.png" />
+                <Format>image/png</Format>
               </ExternalGraphic>
               <Size>20</Size>
             </Graphic>
@@ -168,8 +168,8 @@
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=N" />
-                <Format>application/chart</Format>
+                <OnlineResource xlink:href="file:/aqm_icons/industri.png" />
+                <Format>image/png</Format>
               </ExternalGraphic>
               <Size>20</Size>
             </Graphic>
@@ -195,8 +195,8 @@
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=I" />
-                <Format>application/chart</Format>
+                <OnlineResource xlink:href="file:/aqm_icons/innsjo.png" />
+                <Format>image/png</Format>
               </ExternalGraphic>
               <Size>20</Size>
             </Graphic>
@@ -222,8 +222,8 @@
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=L" />
-                <Format>application/chart</Format>
+                <OnlineResource xlink:href="file:/aqm_icons/land.png" />
+                <Format>image/png</Format>
               </ExternalGraphic>
               <Size>20</Size>
             </Graphic>
@@ -234,7 +234,6 @@
               <ogc:Literal>Land</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
-         
           <PointSymbolizer>
             <Graphic>
                <ExternalGraphic>
@@ -250,8 +249,8 @@
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=U" />
-                <Format>application/chart</Format>
+                <OnlineResource xlink:href="file:/aqm_icons/luft.png" />
+                <Format>image/png</Format>
               </ExternalGraphic>
               <Size>20</Size>
             </Graphic>
@@ -277,8 +276,8 @@
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=M" />
-                <Format>application/chart</Format>
+                <OnlineResource xlink:href="file:/aqm_icons/marin.png" />
+                <Format>image/png</Format>
               </ExternalGraphic>
               <Size>20</Size>
             </Graphic>
@@ -289,7 +288,6 @@
               <ogc:Literal>Marin</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
-
           <PointSymbolizer>
             <Graphic>
                <ExternalGraphic>
@@ -305,8 +303,8 @@
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=A" />
-                <Format>application/chart</Format>
+                <OnlineResource xlink:href="file:/aqm_icons/markvann.png" />
+                <Format>image/png</Format>
               </ExternalGraphic>
               <Size>20</Size>
             </Graphic>
@@ -332,8 +330,8 @@
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=Y" />
-                <Format>application/chart</Format>
+                <OnlineResource xlink:href="file:/aqm_icons/myr.png" />
+                <Format>image/png</Format>
               </ExternalGraphic>
               <Size>20</Size>
             </Graphic>
@@ -359,8 +357,8 @@
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=O" />
-                <Format>application/chart</Format>
+                <OnlineResource xlink:href="file:/aqm_icons/overvann.png" />
+                <Format>image/png</Format>
               </ExternalGraphic>
               <Size>20</Size>
             </Graphic>
@@ -386,8 +384,8 @@
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=R" />
-                <Format>application/chart</Format>
+                <OnlineResource xlink:href="file:/aqm_icons/renseanlegg.png" />
+                <Format>image/png</Format>
               </ExternalGraphic>
               <Size>20</Size>
             </Graphic>
@@ -398,7 +396,6 @@
               <ogc:Literal>Renseanlegg</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
-
           <PointSymbolizer>
             <Graphic>
                <ExternalGraphic>
@@ -414,8 +411,8 @@
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=S" />
-                <Format>application/chart</Format>
+                <OnlineResource xlink:href="file:/aqm_icons/sigevann.png" />
+                <Format>image/png</Format>
               </ExternalGraphic>
               <Size>20</Size>
             </Graphic>
@@ -443,8 +440,8 @@
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=B" />
-                <Format>application/chart</Format>
+                <OnlineResource xlink:href="file:/aqm_icons/akvakultur_ravann.png" />
+                <Format>image/png</Format>
               </ExternalGraphic>
               <Size>20</Size>
             </Graphic>
@@ -465,15 +462,13 @@
             </Graphic>
           </PointSymbolizer>
         </Rule>
-            
-
         <Rule>
           <Title>Akvakultur-Driftsvann</Title>
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=C" />
-                <Format>application/chart</Format>
+                <OnlineResource xlink:href="file:/aqm_icons/akvakultur_driftsvann.png" />
+                <Format>image/png</Format>
               </ExternalGraphic>
               <Size>20</Size>
             </Graphic>
@@ -500,8 +495,8 @@
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=F" />
-                <Format>application/chart</Format>
+                <OnlineResource xlink:href="file:/aqm_icons/akvakultur_karvann.png" />
+                <Format>image/png</Format>
               </ExternalGraphic>
               <Size>20</Size>
             </Graphic>
@@ -528,8 +523,8 @@
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=X" />
-                <Format>application/chart</Format>
+                <OnlineResource xlink:href="file:/aqm_icons/ukjent.png" />
+                <Format>image/png</Format>
               </ExternalGraphic>
               <Size>20</Size>
             </Graphic>
@@ -556,8 +551,8 @@
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?cnt=x&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
-                <Format>application/chart</Format>
+                <OnlineResource xlink:href="file:/aqm_icons/all_x.png" />
+                <Format>image/png</Format>
               </ExternalGraphic>
               <Size>20</Size>
             </Graphic>
@@ -591,8 +586,8 @@
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?cnt=xx&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
-                <Format>application/chart</Format>
+                <OnlineResource xlink:href="file:/aqm_icons/all_xx.png" />
+                <Format>image/png</Format>
               </ExternalGraphic>
               <Size>30</Size>
             </Graphic>
@@ -625,8 +620,8 @@
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?cnt=xxx&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
-                <Format>application/chart</Format>
+                <OnlineResource xlink:href="file:/aqm_icons/all_xxx.png" />
+                <Format>image/png</Format>
               </ExternalGraphic>
               <Size>36</Size>
             </Graphic>
@@ -658,8 +653,8 @@
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?cnt=xxxx&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
-                <Format>application/chart</Format>
+                <OnlineResource xlink:href="file:/aqm_icons/all_xxxx.png" />
+                <Format>image/png</Format>
               </ExternalGraphic>
               <Size>46</Size>
             </Graphic>
@@ -684,8 +679,8 @@
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff&amp;keys=Vannkjemi,Sedimentkjemi,Biotakjemi,Sewagekjemi,Blotbunn,Hardbunn,Plankton,Vannplanter,Bunndyr,Begroing,Luft,Ingen" />
-                <Format>application/chart</Format>
+                <OnlineResource xlink:href="file:/aqm_icons/all_keys.png" />
+                <Format>image/png</Format>
               </ExternalGraphic>
               <Size>340</Size>
             </Graphic>

@@ -8,8 +8,6 @@ import org.geoserver.wms.GetLegendGraphicRequest;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSTestSupport;
 import org.geoserver.wms.legendgraphic.BufferedImageLegendGraphic;
-
-
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.styling.ExternalGraphic;
 import org.geotools.styling.FeatureTypeStyle;
@@ -18,16 +16,13 @@ import org.geotools.styling.PointSymbolizer;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
-
 import org.opengis.filter.FilterFactory;
-
 import org.junit.Test;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
-import static niva.geoserver.renderer.ResourceImageTester.assertImage;
 
 /**
  * Test for a problem with GeoServer handling of external symbols within the Legend part of a SLD.
@@ -106,9 +101,6 @@ public class LegendWithExternalSymbolTest extends WMSTestSupport {
 		
 		final BufferedImage legendImage = ((BufferedImageLegendGraphic)legendGraphic).getLegend();
 		ImageIO.write(legendImage, "png", new File("C:\\temp\\legend.png"));
-        
-		// This doesn't work
-		//assertImage("legend.png", ((BufferedImageLegendGraphic)legendGraphic).getLegend());
 	}
 
 }

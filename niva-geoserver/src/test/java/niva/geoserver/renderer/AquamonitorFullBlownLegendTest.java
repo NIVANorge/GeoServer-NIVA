@@ -1,14 +1,15 @@
 package niva.geoserver.renderer;
 
-
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.imageio.ImageIO;
 import javax.xml.namespace.QName;
-
 import org.geoserver.catalog.Catalog;
 import org.geoserver.data.test.SystemTestData;
 import org.geoserver.data.test.SystemTestData.LayerProperty;
@@ -16,11 +17,11 @@ import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.wms.WMSTestSupport;
 import org.geoserver.wms.legendgraphic.BufferedImageLegendGraphicBuilder;
 import org.geoserver.wms.legendgraphic.GetLegendGraphicKvpReader;
-
+import org.geotools.test.TestData;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static niva.geoserver.renderer.ResourceImageTester.assertImage;
 
 /**
  * Tests to check that the legends used within AquaMonitor is correct
@@ -41,6 +42,21 @@ public class AquamonitorFullBlownLegendTest extends WMSTestSupport {
         				  AquamonitorFullBlownLegendTest.class,
         				  catalog);
         
+        String iconsRoot = "styles/aqm_icons/";
+        URL iconsDir = TestData.url(this, "aqm_icons");
+        Files.walk(Paths.get(iconsDir.toURI()))
+            .filter(Files::isRegularFile)
+            .map(f -> f.toFile().getName())
+            .forEach(n -> {
+                try {
+                    testData.copyTo(
+                            TestData.openStream(this, "aqm_icons/" + n),
+                            iconsRoot + n);
+                } catch (IOException e) {
+                    throw new Error("Trouble setting up this test.", e);
+                }
+            });
+        
         final QName layerName = new QName("http://www.aquamonitor.no/",
         								  "Intern_station_datatype",
         								  "no.niva.aquamonitor"
@@ -51,7 +67,7 @@ public class AquamonitorFullBlownLegendTest extends WMSTestSupport {
         				      catalog);
         
         
-        final HashMap<LayerProperty, Object> props = new HashMap<LayerProperty, Object>();
+        final HashMap<LayerProperty, Object> props = new HashMap<>();
         props.put(SystemTestData.LayerProperty.STYLE, "AquaMonitor_aggregation");
         
         testData.addVectorLayer(layerName,
@@ -82,8 +98,7 @@ public class AquamonitorFullBlownLegendTest extends WMSTestSupport {
         
         ImageIO.write(image, "png", new File("C:\\temp\\Internal_legend.png"));
         
-        assertImage("Internal_legend.png", image);
-        
+        ResourceImageTester.assertImage("Internal_legend.png", image);   
 	}
 
 }
