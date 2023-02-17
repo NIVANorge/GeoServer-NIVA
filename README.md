@@ -6,11 +6,11 @@ NIVA is running Geoserver at three servers:
 - aquamonitor.niva.no
 - test-aquamonitor.niva.no
 
-They are running the same version of Geoserver which has it's own adaptions. Partly within a fork at roarbra/geoserver, as plugin's from this repositoy, and also from geotools-niva.
+They are running the same version of Geoserver which has it's own adaptions. Partly within a fork at [roarbra/geoserver](https://github.com/roarbra/geoserver), as plugin's from this repository, and also from [GeoTools-NIVA](https://github.com/NIVANorge/GeoTools-NIVA).
 
 ## Java and Tomcat
 
-Geoserver is a Java servlet, and the preferred platform is Apache Tomcat.
+GeoServer is a Java servlet, and the preferred platform is Apache Tomcat.
 At the moment we're running:
 
 | Software      | Version       |
