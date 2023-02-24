@@ -32,6 +32,16 @@ import org.opengis.referencing.FactoryException;
  *
  */
 public class NivaTestSupport extends GeoServerSystemTestSupport {
+    
+    private static final String HOST_ADDRESS_KEY = "AQUAMONITOR_HOST_ADDRESS";
+    
+    public static String getAquaMonitorHost() {
+        return System.getProperty(HOST_ADDRESS_KEY) != null 
+                ? System.getProperty(HOST_ADDRESS_KEY) 
+                : System.getenv(HOST_ADDRESS_KEY) != null 
+                    ? System.getenv(HOST_ADDRESS_KEY) 
+                            : "https://test-aquamonitor.niva.no/";
+    }
 	
 	@Override
 	protected void onSetUp(SystemTestData testData) throws Exception {
