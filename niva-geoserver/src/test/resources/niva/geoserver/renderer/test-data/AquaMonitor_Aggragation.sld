@@ -71,7 +71,7 @@
           <PointSymbolizer>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=M&amp;vals=${Water},${Sediment},${Biota},${Sewage},${Blotbunn},${Hardbunn},${Plankton},${Vannplanter},${Bunndyr},${Begroing},${Air},${EMPTY}&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
+                <OnlineResource xlink:href="http://aquamonitor?typ=A&amp;vals=${Air},${Begroing},${Biota},${Blotbunn},${Bunndyr},${Fish},${Hardbunn},${Plankton},${Sediment},${Sensor},${Sewage},${Vannplanter},${Water},${EMPTY}&amp;cols=df0174,df01d7,d7df01,01df01,7401df,dfd701,01df74,01dfd7,df7401,df01d7,74df00,0101df,df0101,ffffff" />
                 <Format>application/chart</Format>
               </ExternalGraphic>
               <Size>20</Size>
@@ -79,7 +79,7 @@
           </PointSymbolizer>
         </Rule>
         <Rule>
-          <Title>Innsjø</Title>
+          <Title>Innsj&#248;</Title>
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
@@ -92,13 +92,13 @@
           <ogc:Filter>
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>STATION_TYPE</ogc:PropertyName>
-              <ogc:Literal>Innsjø</ogc:Literal>
+              <ogc:Literal>Innsj&#248;</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <PointSymbolizer>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=I&amp;vals=${Water},${Sediment},${Biota},${Sewage},${Blotbunn},${Hardbunn},${Plankton},${Vannplanter},${Bunndyr},${Begroing},${Air},${EMPTY}&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
+                <OnlineResource xlink:href="http://aquamonitor?typ=I&amp;vals=${Air},${Begroing},${Biota},${Blotbunn},${Bunndyr},${Fish},${Hardbunn},${Plankton},${Sediment},${Sensor},${Sewage},${Vannplanter},${Water},${EMPTY}&amp;cols=df0174,df01d7,d7df01,01df01,7401df,dfd701,01df74,01dfd7,df7401,df01d7,74df00,0101df,df0101,ffffff" />
                 <Format>application/chart</Format>
               </ExternalGraphic>
               <Size>20</Size>
@@ -125,7 +125,7 @@
           <PointSymbolizer>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=E&amp;vals=${Water},${Sediment},${Biota},${Sewage},${Blotbunn},${Hardbunn},${Plankton},${Vannplanter},${Bunndyr},${Begroing},${Air},${EMPTY}&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
+                <OnlineResource xlink:href="http://aquamonitor?typ=E&amp;vals=${Air},${Begroing},${Biota},${Blotbunn},${Bunndyr},${Fish},${Hardbunn},${Plankton},${Sediment},${Sensor},${Sewage},${Vannplanter},${Water},${EMPTY}&amp;cols=df0174,df01d7,d7df01,01df01,7401df,dfd701,01df74,01dfd7,df7401,df01d7,74df00,0101df,df0101,ffffff" />
                 <Format>application/chart</Format>
               </ExternalGraphic>
               <Size>20</Size>
@@ -152,7 +152,7 @@
           <PointSymbolizer>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=M&amp;vals=${Water},${Sediment},${Biota},${Sewage},${Blotbunn},${Hardbunn},${Plankton},${Vannplanter},${Bunndyr},${Begroing},${Air},${EMPTY}&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
+                <OnlineResource xlink:href="http://aquamonitor?typ=M&amp;vals=${Air},${Begroing},${Biota},${Blotbunn},${Bunndyr},${Fish},${Hardbunn},${Plankton},${Sediment},${Sensor},${Sewage},${Vannplanter},${Water},${EMPTY}&amp;cols=df0174,df01d7,d7df01,01df01,7401df,dfd701,01df74,01dfd7,df7401,df01d7,74df00,0101df,df0101,ffffff" />
                 <Format>application/chart</Format>
               </ExternalGraphic>
               <Size>20</Size>
@@ -179,7 +179,7 @@
           <PointSymbolizer>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=G&amp;vals=${Water},${Sediment},${Biota},${Sewage},${Blotbunn},${Hardbunn},${Plankton},${Vannplanter},${Bunndyr},${Begroing},${Air},${EMPTY}&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
+                <OnlineResource xlink:href="http://aquamonitor?typ=G&amp;vals=${Air},${Begroing},${Biota},${Blotbunn},${Bunndyr},${Fish},${Hardbunn},${Plankton},${Sediment},${Sensor},${Sewage},${Vannplanter},${Water},${EMPTY}&amp;cols=df0174,df01d7,d7df01,01df01,7401df,dfd701,01df74,01dfd7,df7401,df01d7,74df00,0101df,df0101,ffffff" />
                 <Format>application/chart</Format>
               </ExternalGraphic>
               <Size>20</Size>
@@ -206,7 +206,7 @@
           <PointSymbolizer>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=U&amp;vals=${Water},${Sediment},${Biota},${Sewage},${Blotbunn},${Hardbunn},${Plankton},${Vannplanter},${Bunndyr},${Begroing},${Air},${EMPTY}&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
+                <OnlineResource xlink:href="http://aquamonitor?typ=X&amp;vals=${Air},${Begroing},${Biota},${Blotbunn},${Bunndyr},${Fish},${Hardbunn},${Plankton},${Sediment},${Sensor},${Sewage},${Vannplanter},${Water},${EMPTY}&amp;cols=df0174,df01d7,d7df01,01df01,7401df,dfd701,01df74,01dfd7,df7401,df01d7,74df00,0101df,df0101,ffffff" />
                 <Format>application/chart</Format>
               </ExternalGraphic>
               <Size>20</Size>
@@ -233,7 +233,7 @@
           <PointSymbolizer>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=R&amp;vals=${Water},${Sediment},${Biota},${Sewage},${Blotbunn},${Hardbunn},${Plankton},${Vannplanter},${Bunndyr},${Begroing},${Air},${EMPTY}&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
+                <OnlineResource xlink:href="http://aquamonitor?typ=R&amp;vals=${Air},${Begroing},${Biota},${Blotbunn},${Bunndyr},${Fish},${Hardbunn},${Plankton},${Sediment},${Sensor},${Sewage},${Vannplanter},${Water},${EMPTY}&amp;cols=df0174,df01d7,d7df01,01df01,7401df,dfd701,01df74,01dfd7,df7401,df01d7,74df00,0101df,df0101,ffffff" />
                 <Format>application/chart</Format>
               </ExternalGraphic>
               <Size>20</Size>
@@ -260,7 +260,7 @@
           <PointSymbolizer>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=O&amp;vals=${Water},${Sediment},${Biota},${Sewage},${Blotbunn},${Hardbunn},${Plankton},${Vannplanter},${Bunndyr},${Begroing},${Air},${EMPTY}&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
+                <OnlineResource xlink:href="http://aquamonitor?typ=O&amp;vals=${Air},${Begroing},${Biota},${Blotbunn},${Bunndyr},${Fish},${Hardbunn},${Plankton},${Sediment},${Sensor},${Sewage},${Vannplanter},${Water},${EMPTY}&amp;cols=df0174,df01d7,d7df01,01df01,7401df,dfd701,01df74,01dfd7,df7401,df01d7,74df00,0101df,df0101,ffffff" />
                 <Format>application/chart</Format>
               </ExternalGraphic>
               <Size>20</Size>
@@ -287,7 +287,7 @@
           <PointSymbolizer>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=I&amp;vals=${Water},${Sediment},${Biota},${Sewage},${Blotbunn},${Hardbunn},${Plankton},${Vannplanter},${Bunndyr},${Begroing},${Air},${EMPTY}&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
+                <OnlineResource xlink:href="http://aquamonitor?typ=N&amp;vals=${Air},${Begroing},${Biota},${Blotbunn},${Bunndyr},${Fish},${Hardbunn},${Plankton},${Sediment},${Sensor},${Sewage},${Vannplanter},${Water},${EMPTY}&amp;cols=df0174,df01d7,d7df01,01df01,7401df,dfd701,01df74,01dfd7,df7401,df01d7,74df00,0101df,df0101,ffffff" />
                 <Format>application/chart</Format>
               </ExternalGraphic>
               <Size>20</Size>
@@ -314,7 +314,7 @@
           <PointSymbolizer>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=L&amp;vals=${Water},${Sediment},${Biota},${Sewage},${Blotbunn},${Hardbunn},${Plankton},${Vannplanter},${Bunndyr},${Begroing},${Air},${EMPTY}&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
+                <OnlineResource xlink:href="http://aquamonitor?typ=L&amp;vals=${Air},${Begroing},${Biota},${Blotbunn},${Bunndyr},${Fish},${Hardbunn},${Plankton},${Sediment},${Sensor},${Sewage},${Vannplanter},${Water},${EMPTY}&amp;cols=df0174,df01d7,d7df01,01df01,7401df,dfd701,01df74,01dfd7,df7401,df01d7,74df00,0101df,df0101,ffffff" />
                 <Format>application/chart</Format>
               </ExternalGraphic>
               <Size>20</Size>
@@ -322,7 +322,7 @@
           </PointSymbolizer>
         </Rule>
         <Rule>
-          <Title>Akvakultur-Råvann</Title>
+          <Title>Akvakultur-R&#229;vann</Title>
           <LegendGraphic>
             <Graphic>
               <ExternalGraphic>
@@ -335,13 +335,13 @@
           <ogc:Filter>
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>STATION_TYPE</ogc:PropertyName>
-              <ogc:Literal>Akvakultur-Råvann</ogc:Literal>
+              <ogc:Literal>Akvakultur-R&#229;vann</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <PointSymbolizer>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=A&amp;vals=${Water},${Sediment},${Biota},${Sewage},${Blotbunn},${Hardbunn},${Plankton},${Vannplanter},${Bunndyr},${Begroing},${Air},${EMPTY}&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
+                <OnlineResource xlink:href="http://aquamonitor?typ=B&amp;vals=${Air},${Begroing},${Biota},${Blotbunn},${Bunndyr},${Fish},${Hardbunn},${Plankton},${Sediment},${Sensor},${Sewage},${Vannplanter},${Water},${EMPTY}&amp;cols=df0174,df01d7,d7df01,01df01,7401df,dfd701,01df74,01dfd7,df7401,df01d7,74df00,0101df,df0101,ffffff" />
                 <Format>application/chart</Format>
               </ExternalGraphic>
               <Size>20</Size>
@@ -368,7 +368,7 @@
           <PointSymbolizer>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=D&amp;vals=${Water},${Sediment},${Biota},${Sewage},${Blotbunn},${Hardbunn},${Plankton},${Vannplanter},${Bunndyr},${Begroing},${Air},${EMPTY}&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
+                <OnlineResource xlink:href="http://aquamonitor?typ=D&amp;vals=${Air},${Begroing},${Biota},${Blotbunn},${Bunndyr},${Fish},${Hardbunn},${Plankton},${Sediment},${Sensor},${Sewage},${Vannplanter},${Water},${EMPTY}&amp;cols=df0174,df01d7,d7df01,01df01,7401df,dfd701,01df74,01dfd7,df7401,df01d7,74df00,0101df,df0101,ffffff" />
                 <Format>application/chart</Format>
               </ExternalGraphic>
               <Size>20</Size>
@@ -395,7 +395,7 @@
           <PointSymbolizer>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=S&amp;vals=${Water},${Sediment},${Biota},${Sewage},${Blotbunn},${Hardbunn},${Plankton},${Vannplanter},${Bunndyr},${Begroing},${Air},${EMPTY}&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
+                <OnlineResource xlink:href="http://aquamonitor?typ=S&amp;vals=${Air},${Begroing},${Biota},${Blotbunn},${Bunndyr},${Fish},${Hardbunn},${Plankton},${Sediment},${Sensor},${Sewage},${Vannplanter},${Water},${EMPTY}&amp;cols=df0174,df01d7,d7df01,01df01,7401df,dfd701,01df74,01dfd7,df7401,df01d7,74df00,0101df,df0101,ffffff" />
                 <Format>application/chart</Format>
               </ExternalGraphic>
               <Size>20</Size>
@@ -422,7 +422,7 @@
           <PointSymbolizer>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=G&amp;vals=${Water},${Sediment},${Biota},${Sewage},${Blotbunn},${Hardbunn},${Plankton},${Vannplanter},${Bunndyr},${Begroing},${Air},${EMPTY}&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
+                <OnlineResource xlink:href="http://aquamonitor?typ=V&amp;vals=${Air},${Begroing},${Biota},${Blotbunn},${Bunndyr},${Fish},${Hardbunn},${Plankton},${Sediment},${Sensor},${Sewage},${Vannplanter},${Water},${EMPTY}&amp;cols=df0174,df01d7,d7df01,01df01,7401df,dfd701,01df74,01dfd7,df7401,df01d7,74df00,0101df,df0101,ffffff" />
                 <Format>application/chart</Format>
               </ExternalGraphic>
               <Size>20</Size>
@@ -449,7 +449,7 @@
           <PointSymbolizer>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=L&amp;vals=${Water},${Sediment},${Biota},${Sewage},${Blotbunn},${Hardbunn},${Plankton},${Vannplanter},${Bunndyr},${Begroing},${Air},${EMPTY}&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
+                <OnlineResource xlink:href="http://aquamonitor?typ=U&amp;vals=${Air},${Begroing},${Biota},${Blotbunn},${Bunndyr},${Fish},${Hardbunn},${Plankton},${Sediment},${Sensor},${Sewage},${Vannplanter},${Water},${EMPTY}&amp;cols=df0174,df01d7,d7df01,01df01,7401df,dfd701,01df74,01dfd7,df7401,df01d7,74df00,0101df,df0101,ffffff" />
                 <Format>application/chart</Format>
               </ExternalGraphic>
               <Size>20</Size>
@@ -476,7 +476,7 @@
           <PointSymbolizer>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?typ=M&amp;vals=${Water},${Sediment},${Biota},${Sewage},${Blotbunn},${Hardbunn},${Plankton},${Vannplanter},${Bunndyr},${Begroing},${Air},${EMPTY}&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
+                <OnlineResource xlink:href="http://aquamonitor?typ=Y&amp;vals=${Air},${Begroing},${Biota},${Blotbunn},${Bunndyr},${Fish},${Hardbunn},${Plankton},${Sediment},${Sensor},${Sewage},${Vannplanter},${Water},${EMPTY}&amp;cols=df0174,df01d7,d7df01,01df01,7401df,dfd701,01df74,01dfd7,df7401,df01d7,74df00,0101df,df0101,ffffff" />
                 <Format>application/chart</Format>
               </ExternalGraphic>
               <Size>20</Size>
@@ -509,7 +509,7 @@
           <PointSymbolizer>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?cnt=${COUNT}&amp;vals=${Water},${Sediment},${Biota},${Sewage},${Blotbunn},${Hardbunn},${Plankton},${Vannplanter},${Bunndyr},${Begroing},${Air},${EMPTY}&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
+                <OnlineResource xlink:href="http://aquamonitor?cnt=${COUNT}&amp;vals=${Air},${Begroing},${Biota},${Blotbunn},${Bunndyr},${Fish},${Hardbunn},${Plankton},${Sediment},${Sensor},${Sewage},${Vannplanter},${Water},${EMPTY}&amp;cols=df0174,df01d7,d7df01,01df01,7401df,dfd701,01df74,01dfd7,df7401,df01d7,74df00,0101df,df0101,ffffff" />
                 <Format>application/chart</Format>
               </ExternalGraphic>
               <Size>20</Size>
@@ -542,7 +542,7 @@
           <PointSymbolizer>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?cnt=${COUNT}&amp;vals=${Water},${Sediment},${Biota},${Sewage},${Blotbunn},${Hardbunn},${Plankton},${Vannplanter},${Bunndyr},${Begroing},${Air},${EMPTY}&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
+                <OnlineResource xlink:href="http://aquamonitor?cnt=${COUNT}&amp;vals=${Air},${Begroing},${Biota},${Blotbunn},${Bunndyr},${Fish},${Hardbunn},${Plankton},${Sediment},${Sensor},${Sewage},${Vannplanter},${Water},${EMPTY}&amp;cols=df0174,df01d7,d7df01,01df01,7401df,dfd701,01df74,01dfd7,df7401,df01d7,74df00,0101df,df0101,ffffff" />
                 <Format>application/chart</Format>
               </ExternalGraphic>
               <Size>30</Size>
@@ -575,7 +575,7 @@
           <PointSymbolizer>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?cnt=${COUNT}&amp;vals=${Water},${Sediment},${Biota},${Sewage},${Blotbunn},${Hardbunn},${Plankton},${Vannplanter},${Bunndyr},${Begroing},${Air},${EMPTY}&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
+                <OnlineResource xlink:href="http://aquamonitor?cnt=${COUNT}&amp;vals=${Air},${Begroing},${Biota},${Blotbunn},${Bunndyr},${Fish},${Hardbunn},${Plankton},${Sediment},${Sensor},${Sewage},${Vannplanter},${Water},${EMPTY}&amp;cols=df0174,df01d7,d7df01,01df01,7401df,dfd701,01df74,01dfd7,df7401,df01d7,74df00,0101df,df0101,ffffff" />
                 <Format>application/chart</Format>
               </ExternalGraphic>
               <Size>36</Size>
@@ -602,7 +602,7 @@
           <PointSymbolizer>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xlink:href="http://aquamonitor?cnt=${COUNT}&amp;vals=${Water},${Sediment},${Biota},${Sewage},${Blotbunn},${Hardbunn},${Plankton},${Vannplanter},${Bunndyr},${Begroing},${Air},${EMPTY}&amp;cols=df0101,df7401,d7df01,74df00,01df01,01df74,01dfd7,0101df,7401df,df01d7,df0174,ffffff" />
+                <OnlineResource xlink:href="http://aquamonitor?cnt=${COUNT}&amp;vals=${Air},${Begroing},${Biota},${Blotbunn},${Bunndyr},${Fish},${Hardbunn},${Plankton},${Sediment},${Sensor},${Sewage},${Vannplanter},${Water},${EMPTY}&amp;cols=df0174,df01d7,d7df01,01df01,7401df,dfd701,01df74,01dfd7,df7401,df01d7,74df00,0101df,df0101,ffffff" />
                 <Format>application/chart</Format>
               </ExternalGraphic>
               <Size>46</Size>
