@@ -37,8 +37,7 @@ import niva.geoserver.data.NivaTestSupport;
  */
 public class ShapefileDownloadTest extends NivaTestSupport {
     
-    private final static String TEST_HOST = "https://test-aquamonitor.niva.no/";
-    
+ 
     private final static String EXPECTED_ARCMAP_PROJ = "GEOGCS[\"GCS_WGS_1984\",DATUM[\"D_WGS_1984\","
             + "SPHEROID[\"WGS_1984\",6378137.0,298.257223563]]," + "PRIMEM[\"Greenwich\",0.0],"
             + "UNIT[\"Degree\",0.0174532925199433]]";
@@ -58,13 +57,13 @@ public class ShapefileDownloadTest extends NivaTestSupport {
         final Map<String, Serializable> params = store.getConnectionParameters();
         params.put("namespace", new URI("http://www.aquamonitor.no/"));
         params.put("dbtype", "aquamonitor-site");
-        params.put("host", TEST_HOST);
+        params.put("host", getAquaMonitorHost());
         params.put("site", "Intern");
         
         addAquaMonitorStore("Intern_download", params);
         addStationLayer(catalog.getDataStoreByName("no.niva.aquamonitor", "Intern_download"), "Intern_download_stations");
         
-        final String xml =  "<wfs:GetFeature service=\"WFS\" version=\"1.1.0\" "
+        final String xml = "<wfs:GetFeature service=\"WFS\" version=\"1.1.0\" "
                 + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
                 + "xmlns:wfs=\"http://www.opengis.net/wfs\" "
                 + "outputFormat=\"shape-zip\">"
