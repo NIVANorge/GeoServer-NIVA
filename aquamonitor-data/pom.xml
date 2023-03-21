@@ -94,4 +94,11 @@
   		</plugin>
   	</plugins>
   </build>
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub Packages NIVANorge</name>
+      <url>https://maven.pkg.github.com/nivanorge/maven</url>
+    </repository>
+  </distributionManagement>
 </project>
