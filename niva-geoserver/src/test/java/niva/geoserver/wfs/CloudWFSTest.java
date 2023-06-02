@@ -9,6 +9,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.impl.DataStoreInfoImpl;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Test;
 
 import niva.geoserver.data.NivaTestSupport;
@@ -30,6 +31,9 @@ public class CloudWFSTest extends NivaTestSupport {
 		String usrpwd = System.getProperty("AQUAMONITOR_TEST_USER");
 		if (usrpwd != null) {
 			int inx = usrpwd.indexOf(':');
+			if (inx == -1) {
+				throw new IllegalArgumentException("Not properly configured AQUAMONITOR_TEST_USER");
+			}
 			TEST_USER = usrpwd.substring(0, inx);
 			TEST_PWD = usrpwd.substring(inx + 1);
 		} else {
@@ -38,8 +42,10 @@ public class CloudWFSTest extends NivaTestSupport {
 		}
 	}
 	
+	
 	@Test
 	public void testGetFeatureWithExtent() throws Exception {
+		Assume.assumeNotNull(TEST_USER, TEST_PWD);
 		Catalog catalog = getCatalog();
 		
 		StoreInfo store = new DataStoreInfoImpl(catalog);
