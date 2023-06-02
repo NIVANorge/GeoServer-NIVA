@@ -30,6 +30,9 @@ import niva.geoserver.data.NivaTestSupport;
 
 /**
  * Test to control if the NIVA specific download format shapefile works.
+ * The format_options=SHAPEFILE is specific for NIVA and must be handled in:
+ * 
+ * org.geoserver.wfs.response.ShapeZipOutputFormat
  * 
  * 
  * @author Roar Brænden, NIVA
