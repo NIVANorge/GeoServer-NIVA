@@ -1,13 +1,11 @@
 package niva.geoserver.data;
 
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Map;
-
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
@@ -21,12 +19,11 @@ import org.geoserver.catalog.impl.FeatureTypeInfoImpl;
 import org.geoserver.catalog.impl.LayerInfoImpl;
 import org.geoserver.data.test.SystemTestData;
 import org.geoserver.test.GeoServerSystemTestSupport;
+import org.geotools.util.logging.Logging;
 import org.opengis.referencing.FactoryException;
 
 /**
  * Base class for NIVA related Geoserver setup.
- * 
- * 
  * 
  * @author Roar Brænden, NIVA
  *
@@ -110,7 +107,7 @@ public class NivaTestSupport extends GeoServerSystemTestSupport {
 		resourceCat.setNativeName(nativeName);
 		resourceCat.setNativeCRS(org.geotools.referencing.CRS.decode(srs));
 		resourceCat.setSRS(srs);
-		resourceCat.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
+		resourceCat.setProjectionPolicy(ProjectionPolicy.REPROJECT_TO_DECLARED);
 		resourceCat.setEnabled(true);
 		
 		catalog.add(resourceCat);
