@@ -8,7 +8,7 @@ import org.geoserver.wps.ppio.XMLPPIO;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-import niva.geotools.data.msaccess.DataAccessReport;
+import niva.geotools.data.DataAccessReport;
 
 /**
  * 

@@ -14,9 +14,9 @@ import org.geotools.process.factory.DescribeProcess;
 import org.geotools.process.factory.DescribeResult;
 import org.geotools.util.logging.Logging;
 
+import niva.geotools.data.DataAccessReport;
 import niva.geotools.data.msaccess.BegroingDataAccess;
 import niva.geotools.data.msaccess.BunndyrDataAccess;
-import niva.geotools.data.msaccess.DataAccessReport;
 
 @DescribeProcess(title = "MS Access XY-table", description = "Update featureStore based on some prefined tables within MS Access database.")
 public class MSAccessProcess implements NivaProcess {
