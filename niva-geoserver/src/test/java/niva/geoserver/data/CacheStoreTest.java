@@ -11,14 +11,11 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-import org.junit.Assert;
-import org.junit.Test;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
-
 import org.geotools.data.DataAccess;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
@@ -31,12 +28,13 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.filter.text.cql2.CQL;
 import org.geotools.util.logging.Logging;
+import org.junit.Assert;
+import org.junit.Test;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
-
 import niva.geotools.data.CacheDataStore;
 import niva.geotools.data.CacheFeatureStore;
 
@@ -46,17 +44,27 @@ public class CacheStoreTest extends NivaTestSupport {
     
     private static Logger LOGGER = Logging.getLogger(CacheStoreTest.class);
 	
-	private Map<String, Serializable> getTestParametersShapefile(File shpDir) throws Exception {
-		Map<String, Serializable> params = new HashMap<String, Serializable>();
+	public static Map<String, Serializable> getTestParametersProjectShapefile(String user, File shpDir) throws Exception {
+		Map<String, Serializable> params = getTestParametersShapefile(shpDir);
+		params.put("backend", "dbtype=aquamonitor;user=" + user);
+		return params;
+	}
+	
+	public static Map<String, Serializable> getTestParametersSiteShapefile(String site, File shpDir) throws Exception {
+		Map<String, Serializable> params = getTestParametersShapefile(shpDir);
+		params.put("backend", "dbtype=aquamonitor-site;host=https://test-aquamonitor.niva.no/;site=" + site);
+		return params;
+	}
+	
+	private static Map<String, Serializable> getTestParametersShapefile(File shpDir) throws Exception {
+		Map<String, Serializable> params = new HashMap<>();
 		params.put("dbtype", "cache");
 		params.put("namespace", "http://www.aquamonitor.no/");
-		params.put("backend", "dbtype=aquamonitor;user=Mjøsa");
 		params.put("cache", "dbtype=shapefile;url=file:" + shpDir.getAbsolutePath());
 		params.put("update", 0);
 		
 		return params;
 	}
-	
 	
    private Map<String, Serializable> getTestParametersPostgis() throws Exception {
         Map<String, Serializable> params = new HashMap<String, Serializable>();
@@ -78,7 +86,7 @@ public class CacheStoreTest extends NivaTestSupport {
         File shpDir = new File(new File(testData.getDataDirectoryRoot(), "data"), "cache");
         shpDir.mkdir();
        
-		addAquaMonitorStore("ShapeCache", getTestParametersShapefile(shpDir));
+		addAquaMonitorStore("ShapeCache", getTestParametersProjectShapefile("Mjøsa", shpDir));
 		
 		DataStoreInfo storeCat = catalog.getDataStoreByName("no.niva.aquamonitor", "ShapeCache");
 		
@@ -168,7 +176,7 @@ public class CacheStoreTest extends NivaTestSupport {
         File shpDir = new File(dataDir, "cache2");
         shpDir.mkdir();
         
-		addAquaMonitorStore("ShapeCache2", getTestParametersShapefile(shpDir));
+		addAquaMonitorStore("ShapeCache2", getTestParametersProjectShapefile("Mjøsa", shpDir));
 		DataStoreInfo storeCat = catalog.getDataStoreByName("no.niva.aquamonitor", "ShapeCache2");
 		
 		addStationLayer(storeCat, "Cache_points_2");
@@ -245,7 +253,7 @@ public class CacheStoreTest extends NivaTestSupport {
         File shpDir = new File(dataDir, "cache3");
         shpDir.mkdir();
         
-		addAquaMonitorStore("ShapeCache3", getTestParametersShapefile(shpDir));
+		addAquaMonitorStore("ShapeCache3", getTestParametersProjectShapefile("Mjøsa", shpDir));
 		DataStoreInfo storeCat = catalog.getDataStoreByName("no.niva.aquamonitor", "ShapeCache3");
 		addStationLayer(storeCat, "Cache_points_3");
 		FeatureTypeInfo layerCat = catalog.getFeatureTypeByName("http://www.aquamonitor.no/", "Cache_points_3");
@@ -295,4 +303,6 @@ public class CacheStoreTest extends NivaTestSupport {
         SimpleFeatureCollection coll3 = cacheSource.getFeatures(stFilt);
         Assert.assertEquals(0, coll3.size());
 	}
+	
+
 }

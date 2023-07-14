@@ -1,36 +1,39 @@
 package niva.geoserver.process;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
 import java.util.AbstractSet;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
-
 import org.geoserver.wps.WPSTestSupport;
-
+import org.geotools.TestData;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFinder;
 import org.geotools.data.memory.MemoryFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-
+import org.geotools.util.URLs;
+import org.junit.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 
-
+import niva.geotools.data.CacheDataStoreFactory;
 import niva.geotools.referencing.CRS;
-
-
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 
 public class PointAggregateGridProcessTest extends WPSTestSupport{
@@ -38,9 +41,9 @@ public class PointAggregateGridProcessTest extends WPSTestSupport{
 	
 	@Test
 	public void testPlain() throws Exception {
-		final SimpleFeatureCollection points = TestData.getPlain();
+		final SimpleFeatureCollection points = AquamonitorTestData.getPlain();
 		
-		final Set<String> aggregateAttributes = TestData.getAttributes();
+		final Set<String> aggregateAttributes = AquamonitorTestData.getAttributes();
 		final Integer cellSize = 50;
 		final Integer outputHeight = 100;
 		final Integer outputWidth = 100;
@@ -59,9 +62,9 @@ public class PointAggregateGridProcessTest extends WPSTestSupport{
 		
 		assertEquals(1025, Math.round(geom.getCoordinate().x * 100.0));
 		assertEquals(6035, Math.round(geom.getCoordinate().y * 100.0));
-		assertEquals(1, feat.getAttribute(TestData.WATER));
-		assertEquals(0, feat.getAttribute(TestData.PLANKTON));
-		assertEquals(1, feat.getAttribute(TestData.BIOTA));
+		assertEquals(1, feat.getAttribute(AquamonitorTestData.WATER));
+		assertEquals(0, feat.getAttribute(AquamonitorTestData.PLANKTON));
+		assertEquals(1, feat.getAttribute(AquamonitorTestData.BIOTA));
 		assertEquals(2, feat.getAttribute("COUNT"));
 		assertNull(feat.getAttribute("STATION_TYPE"));
 		
@@ -80,24 +83,58 @@ public class PointAggregateGridProcessTest extends WPSTestSupport{
 		assertNotNull(first.getAttribute("STATION_TYPE"));
 	}
 	
+	/** We've allowed the process to do reprojections at runtime */
 	@Test
 	public void testOtherCRS() throws Exception {
 		
 		final ReferencedEnvelope outputBbox = ReferencedEnvelope.create(new Envelope(221288, 283749, 6661953, 6769393), CRS.getUtm33());
 		
-		final SimpleFeatureCollection result = new PointAggregateGridProcess().execute(TestData.getPlain(),
+		final SimpleFeatureCollection result = new PointAggregateGridProcess().execute(AquamonitorTestData.getPlain(),
 																					   outputBbox,
 																					   100,
 																					   100,
 																					   50,
-																					   TestData.getAttributes());
+																					   AquamonitorTestData.getAttributes());
 		
 		assertEquals(1, result.size());
 	}
 
+	/** Special case where we got exception on cached points. More specific when using a Shapefile. */
+	@Test
+	public void testAggregateCachedPoints() throws Exception {
+		File cacheDir = TestData.file(this, "cache_vannmiljo");
+		
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put(CacheDataStoreFactory.NAMESPACE_PARAM.key, "http://www.aquamonitor.no/");
+		parameters.put(CacheDataStoreFactory.DBTYPE_PARAM.key, CacheDataStoreFactory.DBTYPE_PARAM.sample);
+		parameters.put(CacheDataStoreFactory.BACKEND_PARAM.key, "dbtype=aquamonitor-site;host=https://test-aquamonitor.niva.no/;site=Vannmiljo");
+		parameters.put(CacheDataStoreFactory.CACHE_PARAM.key, "dbtype=shapefile;url=" + URLs.fileToUrl(cacheDir).toExternalForm());
+		parameters.put(CacheDataStoreFactory.INTERVAL_PARAM.key, 1440);
+		final ReferencedEnvelope outputBbox = ReferencedEnvelope.create(new Envelope(221288, 283749, 6661953, 6769393), CRS.getUtm33());
+		
+		DataStore store = DataStoreFinder.getDataStore(parameters);
+		assertNotNull(store);
+		try {
+			SimpleFeatureCollection features = store.getFeatureSource("STATION_DATATYPE_POINTS").getFeatures();
+			final SimpleFeatureCollection result = new PointAggregateGridProcess()
+					.execute(features,outputBbox, 100, 100, 60, AquamonitorTestData.getAttributes());
+
+			assertTrue("Should at least contain one point", result.size() > 0);
+		} finally {
+			store.dispose();
+			Arrays.stream(cacheDir.listFiles())
+				  .filter(file -> !"dummy".equals(file.getName()))
+				  .forEach(file -> file.delete());
+		}
+	}
 	
 	
-	private static class TestData {
+	
+	
+	
+	
+	/** Test data representing usual from AquaMonitor. */
+	private static class AquamonitorTestData {
 		
 		static final String WATER = "Water";
 		static final String PLANKTON = "Plankton";

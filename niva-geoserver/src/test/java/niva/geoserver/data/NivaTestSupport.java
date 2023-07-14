@@ -19,7 +19,6 @@ import org.geoserver.catalog.impl.FeatureTypeInfoImpl;
 import org.geoserver.catalog.impl.LayerInfoImpl;
 import org.geoserver.data.test.SystemTestData;
 import org.geoserver.test.GeoServerSystemTestSupport;
-import org.geotools.util.logging.Logging;
 import org.opengis.referencing.FactoryException;
 
 /**
@@ -73,10 +72,7 @@ public class NivaTestSupport extends GeoServerSystemTestSupport {
                 + "UNIT[\"Degree\",0.0174532925199433]]";
     }
 	
-	
-	protected StoreInfo addAquaMonitorStore(String name, Map<String, Serializable> params) {
-		Catalog catalog = getCatalog();
-		
+    public static StoreInfo addAquaMonitorStore(Catalog catalog, String name, Map<String, Serializable> params) {
 		StoreInfo store = new DataStoreInfoImpl(catalog);
 		store.setName(name);
 		store.setWorkspace(catalog.getWorkspaceByName("no.niva.aquamonitor"));
@@ -85,19 +81,29 @@ public class NivaTestSupport extends GeoServerSystemTestSupport {
 
 		catalog.add(store);
 		return store;
+    }
+	
+	protected StoreInfo addAquaMonitorStore(String name, Map<String, Serializable> params) {
+		return addAquaMonitorStore(getCatalog(), name, params);
 	}
 	
-	protected LayerInfo addStationLayer(StoreInfo store, String name) {
-		try {
+	protected LayerInfo addStationLayer(StoreInfo store, String name) throws FactoryException {
 			return addLayer(addFeatureLayer(store, name, "STATION_POINTS", "EPSG:4326"), null);
-		} catch (FactoryException e) {
-			throw new RuntimeException("Something is missing in your setup.");
-		}
 	}
 	
-	protected FeatureTypeInfo addFeatureLayer(StoreInfo store, String name, String nativeName, String srs) throws FactoryException {
-		final Catalog catalog = getCatalog();
-		
+	public static LayerInfo addStationDatatypesLayer(Catalog catalog, StoreInfo store, StyleInfo style, String name) throws FactoryException {
+		return addLayer(catalog,addFeatureLayer(catalog, store, name, "STATION_DATATYPE_POINTS", "EPSG:4326"), style);
+	}
+	
+	protected LayerInfo addStationDatatypesLayer(StoreInfo store, String name) throws FactoryException {
+		return addStationDatatypesLayer(getCatalog(), store, null, name);
+	}
+	
+	protected LayerInfo addStationDatatypesLayer(StoreInfo store, StyleInfo style, String name) throws FactoryException {
+		return addStationDatatypesLayer(getCatalog(), store, style, name);
+	}
+	
+	public static FeatureTypeInfo addFeatureLayer(Catalog catalog, StoreInfo store, String name, String nativeName, String srs) throws FactoryException {
 		final NamespaceInfo namespace = catalog.getNamespaceByPrefix("no.niva.aquamonitor");
 		
 		FeatureTypeInfo resourceCat = new FeatureTypeInfoImpl(catalog);
@@ -112,12 +118,13 @@ public class NivaTestSupport extends GeoServerSystemTestSupport {
 		
 		catalog.add(resourceCat);
 		return resourceCat;
-		
 	}
 	
-	protected LayerInfo addLayer(FeatureTypeInfo resource, StyleInfo style) {
-		final Catalog catalog = getCatalog();
-		
+	protected FeatureTypeInfo addFeatureLayer(StoreInfo store, String name, String nativeName, String srs) throws FactoryException {
+		return addFeatureLayer(getCatalog(), store, name, nativeName, srs);
+	}
+	
+	public static LayerInfo addLayer(Catalog catalog, FeatureTypeInfo resource, StyleInfo style) {
 		final LayerInfo layerCat = new LayerInfoImpl();
 		layerCat.setResource(resource);
 		layerCat.setName(resource.getName());
@@ -127,5 +134,8 @@ public class NivaTestSupport extends GeoServerSystemTestSupport {
 		catalog.add(layerCat);
 		return layerCat;
 	}
-
+	
+	protected LayerInfo addLayer(FeatureTypeInfo resource, StyleInfo style) {
+		return addLayer(getCatalog(), resource, style);
+	}
 }

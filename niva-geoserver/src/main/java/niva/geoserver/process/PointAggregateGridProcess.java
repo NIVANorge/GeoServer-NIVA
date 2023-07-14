@@ -47,7 +47,8 @@ import org.locationtech.jts.geom.Point;
  * @author Roar Brænden, NIVA
  *
  */
-@DescribeProcess(title = "Aggregate points grid", description = "Collects points into different grid cells based on input. Sums up attributes and finds centroid point.")
+@DescribeProcess(title = "Aggregate points grid",
+			description = "Collects points into different grid cells based on input. Sums up attributes and finds centroid point.")
 public class PointAggregateGridProcess implements NivaProcess {
 	
 	private static final Logger LOGGER = Logging.getLogger(PointAggregateGridProcess.class);
@@ -56,10 +57,8 @@ public class PointAggregateGridProcess implements NivaProcess {
 	
 	private AggregatedFeatureCollection result;
 	
-
     /** Transformer */
     GeometryCoordinateSequenceTransformer tx = null;
-
 	
 	private double dy;
 	private double dx;
@@ -69,7 +68,6 @@ public class PointAggregateGridProcess implements NivaProcess {
 	
 	private int my;
 	private int mx;
-	
 	
 	@DescribeResult(name = "result", description = "centroid point with sum of attributes")
 	public SimpleFeatureCollection execute(
@@ -81,10 +79,8 @@ public class PointAggregateGridProcess implements NivaProcess {
 				@DescribeParameter(name = "aggregateAttributes", description = "Attributes to aggregate on", collectionType=String.class) Set<String> aggregateAttributes
 			) throws ProcessException {
 		
-		
-		final ClipProcess cp = new ClipProcess();
 		// Create result with same crs as outputBbox, Point as geometry and the given attributes
-		
+		LOGGER.fine("points are of class " + points.getClass().getCanonicalName());
 		final CoordinateReferenceSystem crs = outputBbox.getCoordinateReferenceSystem();
 		final String[] attributeArr = new String[aggregateAttributes.size()];
 		aggregateAttributes.toArray(attributeArr);
@@ -109,6 +105,7 @@ public class PointAggregateGridProcess implements NivaProcess {
 		Polygon rect = createOuterBound(outputBbox, pcrs);
 		
 		// Clip points with outputBbox
+		final ClipProcess cp = new ClipProcess();
 		points = cp.execute(points, rect, true);
 		
 		dy = outputBbox.getHeight() * ((double)cellSize/(double)outputHeight);
@@ -138,14 +135,13 @@ public class PointAggregateGridProcess implements NivaProcess {
 			}
 		}
 
-		final SimpleFeatureIterator iter = points.features();
-		pointCollections = new HashMap<String, LinkedList<Point>>();
-		LOGGER.fine("Start iteration");
-		
-		while (iter.hasNext()) {
-			new FeatureToGrid(iter.next()).run();
+		pointCollections = new HashMap<>();
+		try (final SimpleFeatureIterator iter = points.features()) {
+			LOGGER.fine("Start iteration");
+			while (iter.hasNext()) {
+				new FeatureToGrid(iter.next()).run();
+			}
 		}
-		iter.close();
 		LOGGER.fine("Stop iteration");
 		
 		LOGGER.fine("Start summation");
@@ -167,11 +163,8 @@ public class PointAggregateGridProcess implements NivaProcess {
 				ReferencedEnvelope projEnv = outputBbox.transform(pcrs, lenient, numPoints);
 				rect = JTS.toGeometry(projEnv);
 			}
-			catch (TransformException te) {
-				throw new ProcessException(te);
-			}
-			catch (FactoryException fe) {
-				throw new ProcessException(fe);
+			catch (FactoryException | TransformException e) {
+				throw new ProcessException("Failure while transforming envelope to crs [" + pcrs + "]", e);
 			}
 		}
 		else {
@@ -183,8 +176,8 @@ public class PointAggregateGridProcess implements NivaProcess {
 	private SimpleFeatureType createResultType(SimpleFeatureType source, String[] attributes, CoordinateReferenceSystem crs) {
 		
 		final SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
-		builder.setCRS(crs);
 		builder.setName(source.getName().getLocalPart() + "_aggregated");
+		builder.setCRS(crs);
 		builder.add("CENTRAL_POINT", Point.class);
 		builder.add("CELL_BOUNDS", Polygon.class);
 		builder.add("STATION_TYPE", String.class);
@@ -266,15 +259,10 @@ public class PointAggregateGridProcess implements NivaProcess {
 			final String id = Integer.toString(x) + ":" + Integer.toString(y);
 			
 			if (cell == null) {
-				
-				builder.add( null );
-				
-				builder.add(  JTS.toGeometry( new Envelope((x1+x) * dx, (x1+x+1) * dx, (y1+y) * dy, (y1+y+1) * dy)  ));
-				
+				builder.add(null);
+				builder.add(JTS.toGeometry(new Envelope((x1+x) * dx, (x1+x+1) * dx, (y1+y) * dy, (y1+y+1) * dy)));
 				builder.add(pnt.getAttribute("STATION_TYPE"));
-				
-				builder.add( 1 );
-				
+				builder.add(1);
 				boolean empty = true;
 				
 				for (String attr : attributes) {
@@ -282,10 +270,8 @@ public class PointAggregateGridProcess implements NivaProcess {
 					empty = (empty && (i == 0));
 					builder.add( i );
 				}
-				
-				builder.add( (empty ? 1 : 0) );
-				
-				cell = builder.buildFeature( id );
+				builder.add((empty ? 1 : 0));
+				cell = builder.buildFeature(id);
 				
 				this.matrix[x][y] = cell;
 			}
@@ -333,7 +319,7 @@ public class PointAggregateGridProcess implements NivaProcess {
 
 		@Override
 		protected Iterator<SimpleFeature> openIterator() {
-			Iterator<SimpleFeature> result = new Iterator<SimpleFeature>() {
+			return new Iterator<SimpleFeature>() {
 				int x = 0;
 				int y = 0;
 				SimpleFeature next = null;
@@ -372,7 +358,6 @@ public class PointAggregateGridProcess implements NivaProcess {
 				}
 				
 			};
-			return result;
 		}
 
 		@Override
@@ -442,5 +427,4 @@ public class PointAggregateGridProcess implements NivaProcess {
 			return new ReferencedEnvelope(x1, x2, y1, y2, this.schema.getCoordinateReferenceSystem());
 		}
 	}
-
 }
