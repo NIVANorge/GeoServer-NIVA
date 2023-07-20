@@ -1,64 +1,51 @@
 package niva.geoserver.process;
 
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.logging.Logger;
-
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.data.util.FeatureStreams;
 import org.geotools.feature.collection.AbstractFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.geotools.geometry.jts.GeometryCoordinateSequenceTransformer;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.process.ProcessException;
 import org.geotools.process.factory.DescribeParameter;
 import org.geotools.process.factory.DescribeProcess;
 import org.geotools.process.factory.DescribeResult;
-import org.geotools.process.vector.ClipProcess;
 import org.geotools.referencing.CRS;
-import org.geotools.referencing.ReferencingFactoryFinder;
 import org.geotools.util.logging.Logging;
-
+import org.locationtech.jts.geom.Envelope;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.TransformException;
-
-import org.locationtech.jts.geom.Envelope;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.MultiPoint;
-import org.locationtech.jts.geom.Polygon;
-import org.locationtech.jts.geom.Point;
-
-
 
 /**
- * Creates a grid based on input of image size / cell size, collects features into cells, sums attribute values and creates centroid point.
+ * Creates a grid based on input of image size / cell size and extent of bbox.
+ * Collects features into cells, sums attribute values and creates centered point.
+ * The cells will be using 0, 0 as a general origo.
  * 
  * @author Roar Brænden, NIVA
  *
  */
 @DescribeProcess(title = "Aggregate points grid",
-			description = "Collects points into different grid cells based on input. Sums up attributes and finds centroid point.")
+			description = "Collects points into different grid cells based on input. Sums up attributes and finds centered point.")
 public class PointAggregateGridProcess implements NivaProcess {
 	
 	private static final Logger LOGGER = Logging.getLogger(PointAggregateGridProcess.class);
-
-	private HashMap<String, LinkedList<Point>> pointCollections;
+	private static GeometryFactory GF = new GeometryFactory();
 	
+	private Map<String, List<Point>> pointCollections;
 	private AggregatedFeatureCollection result;
-	
-    /** Transformer */
-    GeometryCoordinateSequenceTransformer tx = null;
 	
 	private double dy;
 	private double dx;
@@ -81,7 +68,7 @@ public class PointAggregateGridProcess implements NivaProcess {
 		
 		// Create result with same crs as outputBbox, Point as geometry and the given attributes
 		LOGGER.fine("points are of class " + points.getClass().getCanonicalName());
-		final CoordinateReferenceSystem crs = outputBbox.getCoordinateReferenceSystem();
+
 		final String[] attributeArr = new String[aggregateAttributes.size()];
 		aggregateAttributes.toArray(attributeArr);
 		
@@ -99,82 +86,34 @@ public class PointAggregateGridProcess implements NivaProcess {
 			throw new ProcessException("AggregateAttributes has some attributes that doesn't exists: " + missingAttributes);	
 		}
 		
+		final CoordinateReferenceSystem crs = outputBbox.getCoordinateReferenceSystem();
 		final CoordinateReferenceSystem pcrs = schema.getCoordinateReferenceSystem();
+		// Throw exception if points and outputBbox doesn't have the same crs.
+		if ( !CRS.equalsIgnoreMetadata(crs, pcrs) ) {
+				throw new ProcessException("PointAggregateGridProcess depends on points and outputBbox having same CRS.");
+		}
 		
-		// If points and outputBbox doesn't have the same crs, reproject envelope before clipping
-		Polygon rect = createOuterBound(outputBbox, pcrs);
+		double resolution = outputBbox.getHeight() / (double)outputHeight; // world / image
 		
-		// Clip points with outputBbox
-		final ClipProcess cp = new ClipProcess();
-		points = cp.execute(points, rect, true);
+		dy = resolution * (double)cellSize; // cell size in world coordinates
+		dx = resolution * (double)cellSize;
 		
-		dy = outputBbox.getHeight() * ((double)cellSize/(double)outputHeight);
-		dx = outputBbox.getWidth() * ((double)cellSize/(double)outputWidth);
-		
-		y1 = (int)Math.floor(outputBbox.getMinY() / dy);
+		y1 = (int)Math.floor(outputBbox.getMinY() / dy); // origo of bbox expressed as grid cells
 		x1 = (int)Math.floor(outputBbox.getMinX() / dx);
 		
-		my = (int)Math.floor(outputBbox.getMaxY() / dy) - y1;
+		my = (int)Math.floor(outputBbox.getMaxY() / dy) - y1; // size of bbox expressed as grid cells
 		mx = (int)Math.floor(outputBbox.getMaxX() / dx) - x1;
 		
 		result = new AggregatedFeatureCollection(createResultType(schema, attributeArr, crs), attributeArr);
-		
-		// If points and outputBbox doesn't have the same crs, reproject points to crs
-		if ( !CRS.equalsIgnoreMetadata(crs, pcrs) ) {
-
-			try {
-				tx = new GeometryCoordinateSequenceTransformer();
-				
-				final MathTransform transform = ReferencingFactoryFinder.getCoordinateOperationFactory(null)
-				        .createOperation(pcrs, crs)
-				        .getMathTransform();
-				tx.setMathTransform(transform);
-				
-			} catch (FactoryException ex) {
-				throw new ProcessException("PointAggregateGridProcess has a failure in setup.", ex);
-			}
-		}
-
 		pointCollections = new HashMap<>();
-		try (final SimpleFeatureIterator iter = points.features()) {
-			LOGGER.fine("Start iteration");
-			while (iter.hasNext()) {
-				new FeatureToGrid(iter.next()).run();
-			}
-		}
-		LOGGER.fine("Stop iteration");
-		
-		LOGGER.fine("Start summation");
+		FeatureStreams.toFeatureStream(points).forEach(this::prepareFeature);
 		result.createPointGeometry(pointCollections);
-		LOGGER.fine("Stop summation");
-		
+
 		return result;
 	}
 
-
-	private Polygon createOuterBound(ReferencedEnvelope outputBbox,	CoordinateReferenceSystem pcrs) {
-		Polygon rect;
-		CoordinateReferenceSystem crs = outputBbox.getCoordinateReferenceSystem();
-		
-		if (!crs.equals(pcrs)) {
-			boolean lenient = false;
-			int numPoints = 20;
-			try {
-				ReferencedEnvelope projEnv = outputBbox.transform(pcrs, lenient, numPoints);
-				rect = JTS.toGeometry(projEnv);
-			}
-			catch (FactoryException | TransformException e) {
-				throw new ProcessException("Failure while transforming envelope to crs [" + pcrs + "]", e);
-			}
-		}
-		else {
-			rect = JTS.toGeometry(outputBbox);
-		}
-		return rect;
-	}
-
+	/** Builds the resulting scheme. */
 	private SimpleFeatureType createResultType(SimpleFeatureType source, String[] attributes, CoordinateReferenceSystem crs) {
-		
 		final SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
 		builder.setName(source.getName().getLocalPart() + "_aggregated");
 		builder.setCRS(crs);
@@ -193,59 +132,40 @@ public class PointAggregateGridProcess implements NivaProcess {
 		return builder.buildFeatureType();
 	}
 	
-	
-	class FeatureToGrid implements Runnable {
+	private void prepareFeature(final SimpleFeature feature) {
+		Point pnt = (Point)feature.getDefaultGeometry();
+		final int y = (int)Math.floor(pnt.getCoordinate().y / dy) - y1;
+		final int x = (int)Math.floor(pnt.getCoordinate().x / dx) - x1;
 		
-		private SimpleFeature feature; 
-		
-		FeatureToGrid(SimpleFeature feature) {
-			this.feature = feature;
-		}
-
-		@Override
-		public void run() {
-			try {
-				Point pnt = (Point)(tx == null 
-				                    ? feature.getDefaultGeometry() 
-				                    : tx.transform((Geometry)feature.getDefaultGeometry()));
-				
-				final int y = (int)Math.floor(pnt.getCoordinate().y / dy) - y1;
-				final int x = (int)Math.floor(pnt.getCoordinate().x / dx) - x1;
-				
-				if (x >= 0 && 
-					x <= mx && 
-					y >= 0 && 
-					y <= my) {
-					
-					final SimpleFeature cell = result.addPoint(x, y, feature);
-					final String pid = cell.getID();
-					
-					LinkedList<Point> list;
-					if (!pointCollections.containsKey( pid )) {
-						list = new LinkedList<>();
-						pointCollections.put(pid, list);
-					}
-					else {
-						list = pointCollections.get( pid );
-					}
-					
-					list.add(pnt);
-				}
-			} catch (TransformException e) {
-				throw new ProcessException("Error with transformation.", e);
+		if (x >= 0 && 
+			x <= mx && 
+			y >= 0 && 
+			y <= my) {
+			
+			final SimpleFeature cell = result.addPoint(x, y, feature);
+			final String pid = cell.getID();
+			
+			final List<Point> list;
+			if (!pointCollections.containsKey( pid )) {
+				list = new LinkedList<>();
+				pointCollections.put(pid, list);
 			}
+			else {
+				list = pointCollections.get( pid );
+			}
+			
+			list.add(pnt);
 		}
 	}
 	
 	/**
-	 * 
+	 * Collection of the cell's that contain one or more point. Each represented with the centroid.
 	 *
 	 */
 	class AggregatedFeatureCollection extends AbstractFeatureCollection {
 		SimpleFeature[][] matrix;
 		SimpleFeatureBuilder builder;
 		String[] attributes;
-		GeometryFactory gf = new GeometryFactory();
 		
 		AggregatedFeatureCollection(SimpleFeatureType schema, String[] attributes) {
 			super(schema);
@@ -300,18 +220,16 @@ public class PointAggregateGridProcess implements NivaProcess {
 			return cell;
 		}
 		
-		void createPointGeometry(HashMap<String, LinkedList<Point>> pointCollections) {
+		void createPointGeometry(Map<String, List<Point>> pointCollections) {
 			for (int x = 0; x < this.matrix.length; x++) {
 				for (int y = 0; y < this.matrix[x].length; y++) {
-					SimpleFeature cell = this.matrix[x][y];
+					final SimpleFeature cell = this.matrix[x][y];
 					if (cell != null) {
-						LinkedList<Point> points = pointCollections.get(cell.getID());
+						List<Point> points = pointCollections.get(cell.getID());
 						Point[] arr = new Point[points.size()];
 						points.toArray(arr);
-						
-						MultiPoint mp = gf.createMultiPoint(arr);
-						
-						cell.setAttribute("CENTRAL_POINT", mp.getCentroid());
+						cell.setAttribute("CENTRAL_POINT", 
+								GF.createMultiPoint(arr).getCentroid());
 					}
 				}
 			}
@@ -331,7 +249,6 @@ public class PointAggregateGridProcess implements NivaProcess {
 						while (cell == null && y < matrix[x].length) {
 							cell = matrix[x][y++];
 						}
-						
 						if (y == matrix[x].length) {
 							x++;
 							y = 0;
@@ -344,25 +261,21 @@ public class PointAggregateGridProcess implements NivaProcess {
 
 				@Override
 				public SimpleFeature next() throws NoSuchElementException {
-					if (next != null) {
-						return next;
-					}
-					else {
+					if (next == null) {
 						throw new NoSuchElementException();
 					}
+					return next;
 				}
 
 				@Override
 				public void remove() {
 					throw new UnsupportedOperationException();
 				}
-				
 			};
 		}
 
 		@Override
 		public int size() {
-			
 			int ant = 0;
 			for (int j = 0; j < this.matrix.length; j++) {
 				for (int i = 0; i < this.matrix[j].length; i++) {
@@ -408,7 +321,7 @@ public class PointAggregateGridProcess implements NivaProcess {
 				for (int j = 0; j < this.matrix.length; j++) {
 					SimpleFeature cell = this.matrix[j][y];
 					if (cell != null) {
-						y1 = Math.min( y1, ((Point)cell.getDefaultGeometry()).getY());
+						y1 = Math.min(y1, ((Point)cell.getDefaultGeometry()).getY());
 					}
 				}
 			}
@@ -419,7 +332,7 @@ public class PointAggregateGridProcess implements NivaProcess {
 				for (int j = 0; j < this.matrix.length; j++) {
 					SimpleFeature cell = this.matrix[j][y];
 					if (cell != null) {
-						y2 = Math.max( y2,  ((Point)cell.getDefaultGeometry()).getY());
+						y2 = Math.max(y2,  ((Point)cell.getDefaultGeometry()).getY());
 					}
 				}
 			}

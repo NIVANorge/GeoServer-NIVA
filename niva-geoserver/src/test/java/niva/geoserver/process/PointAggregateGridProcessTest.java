@@ -20,17 +20,22 @@ import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.memory.MemoryFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.store.ReprojectingFeatureCollection;
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.process.ProcessException;
 import org.geotools.util.URLs;
 import org.junit.Test;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory;
 
 import niva.geotools.data.CacheDataStoreFactory;
 import niva.geotools.referencing.CRS;
@@ -47,7 +52,7 @@ public class PointAggregateGridProcessTest extends WPSTestSupport{
 		final Integer cellSize = 50;
 		final Integer outputHeight = 100;
 		final Integer outputWidth = 100;
-		final ReferencedEnvelope outputBbox = ReferencedEnvelope.create(new Envelope(10.0, 11.0, 60.0, 61.0), CRS.getLengdeBreddegrad());
+		final ReferencedEnvelope outputBbox = new ReferencedEnvelope(10.0, 11.0, 60.0, 61.0, CRS.getLengdeBreddegrad());
 		
 		final SimpleFeatureCollection result = new PointAggregateGridProcess().execute(points, 
 		                                        outputBbox, 
@@ -83,20 +88,14 @@ public class PointAggregateGridProcessTest extends WPSTestSupport{
 		assertNotNull(first.getAttribute("STATION_TYPE"));
 	}
 	
-	/** We've allowed the process to do reprojections at runtime */
-	@Test
+	@Test(expected=ProcessException.class)
 	public void testOtherCRS() throws Exception {
 		
-		final ReferencedEnvelope outputBbox = ReferencedEnvelope.create(new Envelope(221288, 283749, 6661953, 6769393), CRS.getUtm33());
+		final ReferencedEnvelope outputBbox = new ReferencedEnvelope(221288, 283749, 6661953, 6769393, CRS.getUtm33());
 		
-		final SimpleFeatureCollection result = new PointAggregateGridProcess().execute(AquamonitorTestData.getPlain(),
-																					   outputBbox,
-																					   100,
-																					   100,
-																					   50,
-																					   AquamonitorTestData.getAttributes());
-		
-		assertEquals(1, result.size());
+		new PointAggregateGridProcess().execute(AquamonitorTestData.getPlain(),
+											   outputBbox, 100, 100, 50,
+											   AquamonitorTestData.getAttributes());
 	}
 
 	/** Special case where we got exception on cached points. More specific when using a Shapefile. */
@@ -110,14 +109,22 @@ public class PointAggregateGridProcessTest extends WPSTestSupport{
 		parameters.put(CacheDataStoreFactory.BACKEND_PARAM.key, "dbtype=aquamonitor-site;host=https://test-aquamonitor.niva.no/;site=Vannmiljo");
 		parameters.put(CacheDataStoreFactory.CACHE_PARAM.key, "dbtype=shapefile;url=" + URLs.fileToUrl(cacheDir).toExternalForm());
 		parameters.put(CacheDataStoreFactory.INTERVAL_PARAM.key, 1440);
-		final ReferencedEnvelope outputBbox = ReferencedEnvelope.create(new Envelope(221288, 283749, 6661953, 6769393), CRS.getUtm33());
+		ReferencedEnvelope outputBbox = new ReferencedEnvelope(221288, 283749, 6661953, 6769393, CRS.getUtm33());
+		FilterFactory ff = CommonFactoryFinder.getFilterFactory2();
+		Filter bboxFilter = ff.bbox(ff.property("the_geom"),
+									ff.literal(JTS.transform(outputBbox,
+											org.geotools.referencing.CRS.findMathTransform(CRS.getUtm33(),
+															CRS.getLengdeBreddegrad()))));
 		
 		DataStore store = DataStoreFinder.getDataStore(parameters);
 		assertNotNull(store);
 		try {
-			SimpleFeatureCollection features = store.getFeatureSource("STATION_DATATYPE_POINTS").getFeatures();
-			final SimpleFeatureCollection result = new PointAggregateGridProcess()
-					.execute(features,outputBbox, 100, 100, 60, AquamonitorTestData.getAttributes());
+			SimpleFeatureCollection features = new ReprojectingFeatureCollection(store.getFeatureSource("STATION_DATATYPE_POINTS").getFeatures(bboxFilter), 
+									outputBbox.getCoordinateReferenceSystem());
+			
+			final SimpleFeatureCollection result = new PointAggregateGridProcess().execute(features,
+																						outputBbox, 100, 100, 60, 
+																						AquamonitorTestData.getAttributes());
 
 			assertTrue("Should at least contain one point", result.size() > 0);
 		} finally {
