@@ -4,7 +4,7 @@
  <modelVersion>4.0.0</modelVersion>
  <groupId>niva.geoserver</groupId>
  <artifactId>niva-geoserver</artifactId>
- <version>10.1</version>
+ <version>10.1.2</version>
  <packaging>jar</packaging>
  <name>Niva GeoServer</name>
  <properties>
@@ -79,12 +79,12 @@
     <dependency>
 	  <groupId>niva.geotools</groupId>
   	  <artifactId>niva-core</artifactId>
-  	  <version>1.0</version>
+  	  <version>1.0.2</version>
     </dependency>
     <dependency>
       <groupId>niva.geotools</groupId>
       <artifactId>aquamonitor-data</artifactId>
-      <version>9.1</version>
+      <version>9.1.1</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -120,6 +120,12 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
       <version>${spring.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>gs-main</artifactId>
+      <version>${gs.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
