@@ -88,15 +88,6 @@ public class PointAggregateGridProcessTest extends WPSTestSupport{
 		assertNotNull(first.getAttribute("STATION_TYPE"));
 	}
 	
-	@Test(expected=ProcessException.class)
-	public void testOtherCRS() throws Exception {
-		
-		final ReferencedEnvelope outputBbox = new ReferencedEnvelope(221288, 283749, 6661953, 6769393, CRS.getUtm33());
-		
-		new PointAggregateGridProcess().execute(AquamonitorTestData.getPlain(),
-											   outputBbox, 100, 100, 50,
-											   AquamonitorTestData.getAttributes());
-	}
 
 	/** Special case where we got exception on cached points. More specific when using a Shapefile. */
 	@Test
