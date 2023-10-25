@@ -54,6 +54,8 @@ public class PointAggregateGridProcess implements NivaProcess {
 	
 	private AggregatedFeatureCollection result;
 	
+	private static final FilterFactory2 FF = CommonFactoryFinder.getFilterFactory2();
+	
     /** Transformer */
     GeometryCoordinateSequenceTransformer tx = null;
 	
@@ -102,9 +104,7 @@ public class PointAggregateGridProcess implements NivaProcess {
 		Polygon rect = createOuterBound(outputBbox, pcrs);
 		
 		// Filter points with outputBbox
-		FilterFactory2 FF = CommonFactoryFinder.getFilterFactory2();
-		String geometryField = points.getSchema().getGeometryDescriptor().getLocalName();
-		
+		String geometryField = schema.getGeometryDescriptor().getLocalName();
 		points = points.subCollection(FF.intersects(FF.property(geometryField), FF.literal(rect)));
 		
 		dy = outputBbox.getHeight() * ((double)cellSize/(double)outputHeight);
@@ -134,17 +134,11 @@ public class PointAggregateGridProcess implements NivaProcess {
 
 		pointCollections = new HashMap<>();
 		try (final SimpleFeatureIterator iter = points.features()) {
-			LOGGER.fine("Start iteration");
 			while (iter.hasNext()) {
-				new FeatureToGrid(iter.next()).run();
+				addFeatureToGrid(iter.next());
 			}
 		}
-		LOGGER.fine("Stop iteration");
-		
-		LOGGER.fine("Start summation");
-		result.createPointGeometry(pointCollections);
-		LOGGER.fine("Stop summation");
-		
+		result.createPointGeometry(pointCollections);		
 		return result;
 	}
 
@@ -191,46 +185,36 @@ public class PointAggregateGridProcess implements NivaProcess {
 	}
 	
 	
-	class FeatureToGrid implements Runnable {
-		
-		private SimpleFeature feature; 
-		
-		FeatureToGrid(SimpleFeature feature) {
-			this.feature = feature;
-		}
+	void addFeatureToGrid(final SimpleFeature feature) {
 
-		@Override
-		public void run() {
-			try {
-				Point pnt = (Point)(tx == null 
-				                    ? feature.getDefaultGeometry() 
-				                    : tx.transform((Geometry)feature.getDefaultGeometry()));
+		try {
+			Point pnt = (Point)(tx == null 
+			                    ? feature.getDefaultGeometry() 
+			                    : tx.transform((Geometry)feature.getDefaultGeometry()));
+			
+			final int y = (int)Math.floor(pnt.getCoordinate().y / dy) - y1;
+			final int x = (int)Math.floor(pnt.getCoordinate().x / dx) - x1;
+			
+			if (x >= 0 && 
+				x <= mx && 
+				y >= 0 && 
+				y <= my) {
 				
-				final int y = (int)Math.floor(pnt.getCoordinate().y / dy) - y1;
-				final int x = (int)Math.floor(pnt.getCoordinate().x / dx) - x1;
+				final SimpleFeature cell = result.addPoint(x, y, feature);
+				final String pid = cell.getID();
 				
-				if (x >= 0 && 
-					x <= mx && 
-					y >= 0 && 
-					y <= my) {
-					
-					final SimpleFeature cell = result.addPoint(x, y, feature);
-					final String pid = cell.getID();
-					
-					LinkedList<Point> list;
-					if (!pointCollections.containsKey( pid )) {
-						list = new LinkedList<>();
-						pointCollections.put(pid, list);
-					}
-					else {
-						list = pointCollections.get( pid );
-					}
-					
-					list.add(pnt);
+				final LinkedList<Point> list;
+				if (!pointCollections.containsKey( pid )) {
+					list = new LinkedList<>();
+					pointCollections.put(pid, list);
 				}
-			} catch (TransformException e) {
-				throw new ProcessException("Error with transformation.", e);
+				else {
+					list = pointCollections.get( pid );
+				}
+				list.add(pnt);
 			}
+		} catch (TransformException e) {
+			throw new ProcessException("Error with transformation.", e);
 		}
 	}
 	
