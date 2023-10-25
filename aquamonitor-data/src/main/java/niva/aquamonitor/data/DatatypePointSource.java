@@ -1,24 +1,22 @@
 package niva.aquamonitor.data;
 
 import java.io.IOException;
-
-import niva.aquamonitor.data.ws.DatatypeReader;
-import niva.geotools.referencing.CRS;
+import java.util.logging.Logger;
 
 import org.geotools.data.FeatureReader;
 import org.geotools.data.Query;
-
 import org.geotools.data.store.ContentEntry;
 import org.geotools.data.store.ContentFeatureSource;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-
-
+import org.geotools.util.logging.Logging;
+import org.locationtech.jts.geom.Point;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.geometry.BoundingBox;
 
-import org.locationtech.jts.geom.Point;
+import niva.aquamonitor.data.ws.DatatypeReader;
+import niva.geotools.referencing.CRS;
 
 /**
  * A Feature Source for points that represents a station with the datatypes that are handled at the location.
@@ -30,6 +28,8 @@ public class DatatypePointSource extends ContentFeatureSource {
 	
 	private final DatatypeReader reader;
 	private final String[] datatypes;
+	
+	private static final Logger LOGGER = Logging.getLogger(DatatypePointSource.class);
 	
 	/**
 	 * The constructor takes a ContentEntry, a reader and the name of all datatypes.
@@ -67,6 +67,7 @@ public class DatatypePointSource extends ContentFeatureSource {
 	 */
 	@Override
 	protected ReferencedEnvelope getBoundsInternal(Query query) throws IOException {
+		LOGGER.fine("Calling bounds internal.");
 		if (query.equals(Query.ALL)) {
 			return new ReferencedEnvelope(reader.getEnvelope(), CRS.getLengdeBreddegrad());
 		}
@@ -89,6 +90,7 @@ public class DatatypePointSource extends ContentFeatureSource {
 
 	@Override
 	protected int getCountInternal(Query query) throws IOException {
+		LOGGER.fine("Calling count internal.");
 		if (query.equals(Query.ALL)) {
 			return reader.getCount();
 		}
@@ -106,6 +108,7 @@ public class DatatypePointSource extends ContentFeatureSource {
 
 	@Override
 	protected FeatureReader<SimpleFeatureType, SimpleFeature> getReaderInternal(Query query) throws IOException {
+		LOGGER.fine("Calling reader internal, with filter :" + query.getFilter());
 		return new DatatypePointReader(buildFeatureType(), reader.iterator());
 	}
 }

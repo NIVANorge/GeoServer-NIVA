@@ -3,13 +3,13 @@ package niva.aquamonitor.data;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import niva.aquamonitor.data.ws.DatatypeReader;
 import niva.aquamonitor.data.ws.GeographyController;
 import niva.aquamonitor.data.ws.StationPointReader;
-import niva.aquamonitor.data.ws.StringReader;
 import niva.aquamonitor.data.ws.ValuePointReader;
 import org.geotools.data.DefaultServiceInfo;
 import org.geotools.data.ServiceInfo;
@@ -104,8 +104,12 @@ public class SiteDataStore extends ContentDataStore {
 		
 		final GeographyController ws = GeographyController.createService(getHost(), getSite());
 		final String typeName = entry.getTypeName();
-		
 		final String key = getKey();
+		
+		if (LOGGER.isLoggable(Level.FINE)) {
+			LOGGER.fine(String.format("Create feature source for %s with key %s.\n", typeName, key));
+		}
+		
 		
 		if (entry.getTypeName().equals(DEFAULT_LAYERS[0]) || entry.getTypeName().equals(DEFAULT_LAYERS[1])) {
 			StationPointReader reader;
@@ -129,8 +133,7 @@ public class SiteDataStore extends ContentDataStore {
 		else if (entry.getTypeName().equals(DEFAULT_LAYERS[2])) {
 			DatatypeReader reader = (key == null ? ws.getAllDatatypePointsReader()
 			                                     : ws.getCurrentDatatypePointsReader(key));
-			StringReader datatypesReader = ws.getAllDatatypesReader();
-			try (Stream<String> datatypesStream = datatypesReader.stream()) {
+			try (Stream<String> datatypesStream = ws.getAllDatatypesReader().stream()) {
                 List<String> list = datatypesStream.collect(Collectors.toList());
                 String[] datatypes = list.toArray(new String[list.size()]);
                 return new DatatypePointSource(entry, reader, datatypes);

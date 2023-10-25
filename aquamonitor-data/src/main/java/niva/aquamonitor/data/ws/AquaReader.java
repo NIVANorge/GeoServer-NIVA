@@ -12,7 +12,7 @@ import org.locationtech.jts.geom.Envelope;
 
 /**
  * Base functionality for reading content from a webservice in AquaMonitor.
- * Content could be one of the cargo classes. hich also has a super Reader class.
+ * Content could be one of the cargo classes. Which also has a super Reader class.
  * 
  * @author Roar Brænden, NIVA
  *
@@ -22,7 +22,7 @@ public abstract class AquaReader<T> {
 	
 	private final AquaWebService webservice;
 	private final String function;
-	private final String token;
+	protected final String token;
 	private final List<Argument> arguments;
 	private Integer timeoutMins  = null;
 	
@@ -70,10 +70,8 @@ public abstract class AquaReader<T> {
 	
 
 	/**
-	 * Get the number of points
+	 * Get the number of points.
 	 * 
-	 * @return
-	 * @throws IOException
 	 */
 	public int getCount() throws IOException {
 	    try (Stream<T> stream = stream()) {
@@ -83,7 +81,7 @@ public abstract class AquaReader<T> {
 
 
 	/**
-	 * Get envelope expressed as minLon,maxLon,minLat,maxLat
+	 * Get envelope expressed as minLon,maxLon,minLat,maxLat.
 	 * 
 	 * @return Empty Envelope in cases of no points
 	 * @throws IOException
@@ -92,7 +90,7 @@ public abstract class AquaReader<T> {
 	    final Envelope env = new Envelope();
 	    try (Stream<T> stream = stream()) {
     	    stream.map((next -> (PointCargo)next))
-    	            .forEach(point -> env.expandToInclude(point.longitude, point.latitude));
+    	          .forEach(point -> env.expandToInclude(point.longitude, point.latitude));
     		return env;
 	    }
 	}
@@ -115,20 +113,19 @@ public abstract class AquaReader<T> {
 	 */
 	public Stream<T> stream() throws IOException {
 	    final CloseableIterator<T> iter = iterator();
-	    
-	    return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iter,
-	                    Spliterator.DISTINCT), false)
-	            .onClose(() -> iter.close());
+	    return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iter, Spliterator.DISTINCT), false)
+	            			.onClose(() -> iter.close());
 	}
-
-	/**
-	 * Creates the url, and returns a new JsonStreamIterator.
-	 * timeoutMins could be set prior to this call.
-	 */
-	protected JsonStreamIterator callJsonService() throws IOException {
-
+	
+	/** Create a StringBuilder with the path of the url based on the webservice and function */
+	protected StringBuilder initUrlStringBuilder() {
 	    final StringBuilder builder = new StringBuilder();
 		builder.append(webservice.getUrl()).append("/").append(this.function);
+		return builder;
+	}
+	
+	/** Append query parameters to the url based on the arguments */
+	protected void appendQueryParameters(StringBuilder builder) {
 		String prefix = "?";
 		for (Argument arg : arguments) {
 		    builder.append(prefix)
@@ -138,7 +135,16 @@ public abstract class AquaReader<T> {
 		           .append("'");
 		    prefix = "&";
 		}
-		
+	}
+	
+	/**
+	 * Creates the url using function as path and returns a new JsonStreamIterator.
+	 * timeoutMins could be set prior to this call.
+	 */
+	protected JsonStreamIterator callJsonService() throws IOException {
+		final StringBuilder builder = initUrlStringBuilder();
+		appendQueryParameters(builder);
+
 		final String url = builder.toString();
 		return (timeoutMins != null ? 
 		            (token != null ? 
@@ -148,7 +154,7 @@ public abstract class AquaReader<T> {
 		                    new JsonStreamIterator(url, token) : 
 		                    new JsonStreamIterator(url)));
 	}
-	
+
 	class Argument {
 		private final String parameter;
 		private String value;

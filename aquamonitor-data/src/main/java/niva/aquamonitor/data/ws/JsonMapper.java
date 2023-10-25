@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 import org.geotools.util.logging.Logging;
 
 /**
- * Used as an inner static class inside an AquaReader. Each implementing mapCargo to read a json into the given cargo-object.
+ * Each implementing mapCargo to read a json into the given cargo-object.
  * The argument for constructor could come from a call to callJsonService.
  * 
  * @author Roar Brænden
