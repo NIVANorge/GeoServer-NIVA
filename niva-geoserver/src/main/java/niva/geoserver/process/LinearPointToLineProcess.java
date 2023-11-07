@@ -99,7 +99,7 @@ public class LinearPointToLineProcess implements NivaProcess {
 					coordinates[0] = vertices.get(0).getCoordinate();
 					coordinates[1] = vertices.get(vertices.size() - 1).getCoordinate();
 					
-					endPoints = geomFact.createMultiPoint(coordinates);
+					endPoints = geomFact.createMultiPointFromCoords(coordinates);
 
 					builder.add(endPoints);
 					return builder.buildFeature(String.valueOf(id++));	

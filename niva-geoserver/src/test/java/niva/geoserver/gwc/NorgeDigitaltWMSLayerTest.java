@@ -1,13 +1,9 @@
 package niva.geoserver.gwc;
 
-
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.InputStream;
-
 import javax.imageio.ImageIO;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerInfo;
@@ -17,9 +13,7 @@ import org.geoserver.catalog.impl.LayerInfoImpl;
 import org.geoserver.catalog.impl.WMSLayerInfoImpl;
 import org.geoserver.catalog.impl.WMSStoreInfoImpl;
 import org.geoserver.data.test.SystemTestData;
-import org.geoserver.platform.ServiceException;
 import org.geotools.test.TestData;
-
 import niva.geoserver.data.NivaTestSupport;
 import niva.geotools.referencing.CRS;
 import org.junit.Assert;

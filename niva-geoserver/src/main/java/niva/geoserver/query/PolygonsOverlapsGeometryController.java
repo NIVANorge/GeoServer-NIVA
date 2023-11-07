@@ -44,7 +44,7 @@ import org.locationtech.jts.io.WKTReader;
  */
 @RestController
 @RequestMapping(path = QueryBaseController.QUERY_ROOT_PATH + "/overlaps/{epsg}_{geometry}/features.json",
-				produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
+				produces = { MediaType.APPLICATION_JSON_VALUE })
 public class PolygonsOverlapsGeometryController extends QueryBaseController {
 
 	private static final Logger LOGGER = Logging.getLogger(PolygonsOverlapsGeometryController.class);

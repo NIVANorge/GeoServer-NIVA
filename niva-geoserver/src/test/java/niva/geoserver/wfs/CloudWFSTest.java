@@ -72,6 +72,7 @@ public class CloudWFSTest extends NivaTestSupport {
 		params.put("WFSDataStoreFactory:GET_CAPABILITIES_URL", new URL(TEST_WFS_URL));
 		params.put("WFSDataStoreFactory:USERNAME", TEST_USER);
 		params.put("WFSDataStoreFactory:PASSWORD", TEST_PWD);
+		params.put("WFSDataStoreFactory:TIMEOUT", 360000);
 		
 		addAquaMonitorStore("Intern_WFS", params);
 		FeatureTypeInfo featureInfo = addFeatureLayer(catalog.getDataStoreByName("no.niva.aquamonitor", "Intern_WFS"),

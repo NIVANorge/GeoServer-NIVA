@@ -43,7 +43,7 @@ public class ShapefileCacheDataStoreTest {
 	    File cacheFolder = new File(TestData.file(this, null), "cache_1");
 	    cacheFolder.mkdir();
 	    try {
-    		final HashMap<String, Serializable> params = new HashMap<String, Serializable>();
+    		final HashMap<String, Serializable> params = new HashMap<>();
     		params.put(CacheDataStoreFactory.NAMESPACE_PARAM.key, "http://www.aquamonitor.no/");
     		params.put(CacheDataStoreFactory.DBTYPE_PARAM.key, (Serializable) CacheDataStoreFactory.DBTYPE_PARAM.sample);
     		params.put(CacheDataStoreFactory.BACKEND_PARAM.key, "dbtype=aquamonitor;user=Ostfold");

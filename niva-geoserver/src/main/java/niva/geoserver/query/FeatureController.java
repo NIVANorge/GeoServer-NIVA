@@ -40,7 +40,7 @@ import org.springframework.http.MediaType;
  */
 @RestController
 @RequestMapping(path = QueryBaseController.QUERY_ROOT_PATH + "/{epsg}_{north}_{east}_{dist}/feature.json",
-				produces = { MediaType.APPLICATION_JSON_UTF8_VALUE} )
+				produces = { MediaType.APPLICATION_JSON_VALUE} )
 public class FeatureController extends QueryBaseController {
     
     private static final Logger LOGGER = Logging.getLogger(FeatureController.class);

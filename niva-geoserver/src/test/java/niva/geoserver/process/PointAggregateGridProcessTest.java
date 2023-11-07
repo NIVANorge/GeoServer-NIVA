@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
 import org.geoserver.wps.WPSTestSupport;
 import org.geotools.TestData;
 import org.geotools.data.DataStore;
@@ -26,7 +25,6 @@ import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.process.ProcessException;
 import org.geotools.util.URLs;
 import org.junit.Test;
 import org.locationtech.jts.geom.Coordinate;
@@ -36,7 +34,6 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
-
 import niva.geotools.data.CacheDataStoreFactory;
 import niva.geotools.referencing.CRS;
 

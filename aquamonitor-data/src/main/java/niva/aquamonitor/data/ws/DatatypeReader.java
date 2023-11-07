@@ -46,7 +46,7 @@ public class DatatypeReader extends AquaReader<DatatypeCargo>{
 		private Double maxLongitude;
 		
 		EnvelopeStream(String url, String token) throws IOException {
-			super(url, token);
+			super(url, token, 1);
 		}
 		
 		public Envelope getEnvelope() {

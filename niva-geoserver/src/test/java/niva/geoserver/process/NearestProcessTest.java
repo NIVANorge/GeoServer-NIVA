@@ -3,9 +3,7 @@ package niva.geoserver.process;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-
 import org.geoserver.wps.WPSTestSupport;
-
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.collection.AbstractFeatureCollection;
@@ -13,19 +11,15 @@ import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.process.vector.NearestProcess;
-
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
-
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
 import niva.geotools.referencing.CRS;
-
+import org.junit.Assert;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
 
 /**
  * 
@@ -47,21 +41,19 @@ public class NearestProcessTest extends WPSTestSupport {
 	}; 
 	
 	/** We've tampered with the NearestProcess to include a num argument. */
+	@SuppressWarnings("rawtypes")
 	@Test
 	public void testNearestFeature() throws Exception {
-		
 		SimpleFeatureCollection features = testFeatures();
 		Point point = geomFact.createPoint(new Coordinate(323000, 6730000));
 		CoordinateReferenceSystem crs = CRS.getUtm33();
 		int num = 5;
 		
-		/*
 		FeatureCollection result = new NearestProcess().execute(features, point, crs, num);
-		assertEquals(num, result.size());
-		*/
+		Assert.assertEquals(num, result.size());
 	}
-	
-	private final AbstractFeatureCollection testFeatures() {
+
+	private final SimpleFeatureCollection testFeatures() {
 		return new AbstractFeatureCollection(createTestSchema()) {
 	
 			@Override
@@ -113,5 +105,5 @@ public class NearestProcessTest extends WPSTestSupport {
 		builder.setDefaultGeometry("theGeom");
 		
 		return builder.buildFeatureType();
-	};
+	}
 }

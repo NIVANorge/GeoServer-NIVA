@@ -46,7 +46,7 @@ import org.springframework.http.MediaType;
  *
  */
 @RestController
-@RequestMapping(produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+@RequestMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
 public class PointsWithinGeometryController extends QueryBaseController {
 	
 	private static final Logger LOGGER = Logging.getLogger(PointsWithinGeometryController.class);

@@ -19,7 +19,6 @@ import org.geotools.ows.wmts.WebMapTileServer;
 import org.geotools.ows.wmts.model.WMTSLayer;
 import org.junit.Assert;
 import org.junit.Test;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import niva.geoserver.data.NivaTestSupport;
 import niva.geotools.referencing.CRS;
 
