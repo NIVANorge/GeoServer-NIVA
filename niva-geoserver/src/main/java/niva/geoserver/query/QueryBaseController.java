@@ -6,6 +6,8 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 
@@ -138,18 +140,18 @@ public abstract class QueryBaseController extends RestBaseController {
 
 	
 	protected HashMap<String, Object> createResultMap(SimpleFeatureCollection coll) {
-		final HashMap<String, Object> features = new HashMap<String, Object>();
-		final ArrayList<HashMap<String, Object>> arr = new ArrayList<HashMap<String, Object>>();
+		final HashMap<String, Object> features = new HashMap<>();
+		final List<Map<String, Object>> arr = new ArrayList<>();
 		
 		final SimpleFeatureType schema = coll.getSchema();
 		
 		final String geometry = schema.getGeometryDescriptor().getLocalName();
-		final ArrayList<Pair<Integer, String>> descs = new ArrayList<>(schema.getAttributeCount());
+		final List<Pair<Integer, String>> descs = new ArrayList<>(schema.getAttributeCount());
 		
 		for (int i = 0; i < schema.getAttributeDescriptors().size(); i++) {
 		    final String name = schema.getDescriptor(i).getLocalName();
 		    if (!geometry.equals(name)) {
-		        descs.add(new ImmutablePair<Integer, String>(i, name));
+		        descs.add(new ImmutablePair<>(i, name));
 		    }
 		}
 		
@@ -157,7 +159,7 @@ public abstract class QueryBaseController extends RestBaseController {
 
 			while (iter.hasNext()) {
 				final SimpleFeature feat = iter.next();
-				final HashMap<String, Object> map = new HashMap<String, Object>();
+				final Map<String, Object> map = new HashMap<>();
 				for(Pair<Integer, String> desc : descs) {
 				    map.put(desc.getRight(), feat.getAttribute(desc.getLeft()));
 				}
