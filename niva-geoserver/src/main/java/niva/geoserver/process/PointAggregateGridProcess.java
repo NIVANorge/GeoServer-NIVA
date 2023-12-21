@@ -1,6 +1,6 @@
 package niva.geoserver.process;
 
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -80,23 +80,23 @@ public class PointAggregateGridProcess implements NivaProcess {
 		
 		// Create result with same crs as outputBbox, Point as geometry and the given attributes
 		LOGGER.fine("points are of class " + points.getClass().getCanonicalName());
-		final CoordinateReferenceSystem crs = outputBbox.getCoordinateReferenceSystem();
-		final String[] attributeArr = new String[aggregateAttributes.size()];
-		aggregateAttributes.toArray(attributeArr);
-		
+		final CoordinateReferenceSystem crs = outputBbox.getCoordinateReferenceSystem();		
 		final SimpleFeatureType schema = points.getSchema();
-		
 		String missingAttributes = null;
+		ArrayList<String> foundAttributes = new ArrayList<>(aggregateAttributes.size());
 		
-		for (String attribute: attributeArr) {
-			if (schema.getDescriptor(attribute) == null) {
-				missingAttributes = (missingAttributes == null ? attribute : ", " + attribute);
+		for (String attr : aggregateAttributes) {
+			if (schema.getDescriptor(attr) == null) {
+				missingAttributes = (missingAttributes == null ? attr : ", " + attr);
+			} else {
+				foundAttributes.add(attr);
 			}
 		}
-		
 		if (missingAttributes != null) {
-			throw new ProcessException("AggregateAttributes has some attributes that doesn't exists: " + missingAttributes);	
+			LOGGER.warning("AggregateAttributes has some attributes that doesn't exists: " + missingAttributes);	
 		}
+		
+		final String[] attributeArr = foundAttributes.toArray(new String[foundAttributes.size()]);
 		
 		final CoordinateReferenceSystem pcrs = schema.getCoordinateReferenceSystem();
 		
