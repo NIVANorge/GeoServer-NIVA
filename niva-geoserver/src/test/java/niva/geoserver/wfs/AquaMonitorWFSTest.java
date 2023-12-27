@@ -62,8 +62,13 @@ public class AquaMonitorWFSTest extends NivaTestSupport {
 				resp += next;
 				next = reader.readLine();
 			}
-			
 			assertTrue("Result didn't contain station id:3570", resp.contains("<no.niva.aquamonitor:STATION_ID>3570</no.niva.aquamonitor:STATION_ID>"));
+			assertTrue("Result had an unknown geographic representation", resp.contains("<gml:boundedBy>"
+					+ "<gml:Envelope srsName=\"urn:x-ogc:def:crs:EPSG:4326\" srsDimension=\"2\">"
+					+ "<gml:lowerCorner>60.64815413 6.00033668</gml:lowerCorner>"
+					+ "<gml:upperCorner>60.64815413 6.00033668</gml:upperCorner>"
+					+ "</gml:Envelope>"
+					+ "</gml:boundedBy>"));
 			assertTrue("Result doesn't contain project id.", !resp.contains("PROJECT_ID"));
 		}
 	}

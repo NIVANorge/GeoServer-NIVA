@@ -73,7 +73,11 @@ public class CloudWFSTest extends NivaTestSupport {
 		params.put("WFSDataStoreFactory:USERNAME", TEST_USER);
 		params.put("WFSDataStoreFactory:PASSWORD", TEST_PWD);
 		params.put("WFSDataStoreFactory:TIMEOUT", 360000);
-		
+		params.put("WFSDataStoreFactory:AXIS_ORDER", "Compliant");
+		params.put("WFSDataStoreFactory:AXIS_ORDER_FILTER", "Compliant");
+		params.put("WFSDataStoreFactory:WFS_STRATEGY", "auto");
+		params.put("usedefaultsrs", false);
+	
 		addAquaMonitorStore("Intern_WFS", params);
 		FeatureTypeInfo featureInfo = addFeatureLayer(catalog.getDataStoreByName("no.niva.aquamonitor", "Intern_WFS"),
 						"Intern_wfs_stations",
@@ -101,7 +105,7 @@ public class CloudWFSTest extends NivaTestSupport {
 	@Test
 	public void testWFSGetFeatureFromRemoteInternCache() throws Exception {
 
-		String path = "no.niva.aquamonitor/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=no.niva.aquamonitor%3AIntern_wfs_stations&maxFeatures=10&outputFormat=application%2Fgml%2Bxml%3B%20version%3D3.2";
+		String path = "no.niva.aquamonitor/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=no.niva.aquamonitor%3AIntern_wfs_stations&maxFeatures=10&outputFormat=application%2Fgml%2Bxml%3B%20version%3D3.2";
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(get(path)))) {
 			StringBuilder resp = new StringBuilder();
 			String next = reader.readLine();
@@ -118,9 +122,10 @@ public class CloudWFSTest extends NivaTestSupport {
 	
 	@Test
 	public void testWMS_1_3_0_GetMapFullExtentNECoordinates() throws Exception {
-
 		String path = "no.niva.aquamonitor/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&STYLES&LAYERS=Intern_wfs_stations&SRS=EPSG%3A4326&WIDTH=506&HEIGHT=768&BBOX=37.79296875%2C-24.08203125%2C82.265625%2C43.41796875";
 		BufferedImage img = this.getAsImage(path, "image/png");
 		ImageIO.write(img, "png", new File(TestData.file(this, null), "intern_stations.png"));
+		int[] pixel = img.getData().getPixel(253, 384, new int[4]);
+		Assert.assertArrayEquals(new int[] {255, 0, 0, 255}, pixel);
 	}
 }

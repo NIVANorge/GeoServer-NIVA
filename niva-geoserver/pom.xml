@@ -24,37 +24,31 @@
      <groupId>org.geoserver</groupId>
      <artifactId>gs-wms</artifactId>
      <version>${gs.version}</version>
-     <scope>compile</scope>
    </dependency>
    <dependency>
      <groupId>org.geoserver</groupId>
      <artifactId>gs-wfs</artifactId>
      <version>${gs.version}</version>
-     <scope>compile</scope>
    </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>gs-rest</artifactId>
       <version>${gs.version}</version>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>gs-restconfig</artifactId>
       <version>${gs.version}</version>
-      <scope>compile</scope>
     </dependency>
     <dependency>
   	  <groupId>org.geoserver.web</groupId>
   	  <artifactId>gs-web-sec-core</artifactId>
   	  <version>${gs.version}</version>
-  	  <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.geoserver.extension</groupId>
       <artifactId>gs-wps-core</artifactId>
       <version>${gs.version}</version>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -163,10 +157,10 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-    	<groupId>org.geotools</groupId>
-    	<artifactId>gt-property</artifactId>
-    	<version>${gt.version}</version>
-    	<scope>test</scope>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-property</artifactId>
+      <version>${gt.version}</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -189,7 +183,6 @@
         <configuration>
   			<source>1.8</source>
   			<target>1.8</target>
-  			<encoding>UTF-8</encoding>
   		</configuration>
       </plugin>
       <plugin>
