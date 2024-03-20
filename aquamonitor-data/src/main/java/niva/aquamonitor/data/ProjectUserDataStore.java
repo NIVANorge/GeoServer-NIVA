@@ -6,14 +6,14 @@ import java.util.List;
 import niva.aquamonitor.data.ws.GeographyController;
 import niva.aquamonitor.data.ws.StationPointReader;
 import org.geotools.data.DefaultServiceInfo;
-import org.geotools.data.ServiceInfo;
+import org.geotools.api.data.ServiceInfo;
 import org.geotools.data.store.ContentDataStore;
 import org.geotools.data.store.ContentEntry;
 import org.geotools.data.store.ContentFeatureSource;
 import org.geotools.feature.FeatureTypes;
 import org.geotools.feature.NameImpl;
 
-import org.opengis.feature.type.Name;
+import org.geotools.api.feature.type.Name;
 
 
 /**

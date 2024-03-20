@@ -9,28 +9,25 @@ import java.util.List;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.geotools.TestData;
-import org.geotools.data.Query;
+import org.geotools.api.data.Query;
 import org.geotools.data.memory.MemoryFeatureCollection;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.shapefile.ShapefileDataStoreFactory;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
-import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.data.store.ContentFeatureStore;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.filter.text.cql2.CQL;
 import org.geotools.util.logging.Logging;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.Name;
-import org.opengis.filter.Filter;
-
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.feature.simple.SimpleFeatureType;
+import org.geotools.api.feature.type.Name;
+import org.geotools.api.filter.Filter;
 import niva.geotools.data.CacheDataStore;
 import niva.geotools.data.CacheDataStoreFactory;
 import niva.geotools.data.CacheFeatureStore;
-
-
 import org.junit.Test;
 import org.junit.Assert;
 

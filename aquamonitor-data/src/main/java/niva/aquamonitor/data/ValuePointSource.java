@@ -5,7 +5,7 @@ import java.util.Date;
 import org.geotools.data.store.ContentEntry;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.opengis.feature.simple.SimpleFeatureType;
+import org.geotools.api.feature.simple.SimpleFeatureType;
 import niva.aquamonitor.data.ws.AquaReader;
 import niva.aquamonitor.data.ws.CloseableIterator;
 import niva.aquamonitor.data.ws.ValuePointCargo;

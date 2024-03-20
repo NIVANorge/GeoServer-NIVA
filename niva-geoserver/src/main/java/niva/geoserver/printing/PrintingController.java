@@ -5,10 +5,8 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Optional;
 import java.util.logging.Logger;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
-
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.platform.Operation;
@@ -21,17 +19,14 @@ import org.geoserver.wms.WMSMapContent;
 import org.geoserver.wms.map.PNGMapResponse;
 import org.geoserver.wms.map.RenderedImageMap;
 import org.geoserver.wms.map.RenderedImageMapOutputFormat;
-
-import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.geometry.GeneralBounds;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.FeatureLayer;
 import org.geotools.map.Layer;
 import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Logging;
-
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
+import org.geotools.api.referencing.FactoryException;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.MethodParameter;
@@ -40,9 +35,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.thoughtworks.xstream.XStream;
-
 import niva.geotools.osm.OSMGridLayer;
 
 /**
@@ -74,7 +67,7 @@ public class PrintingController extends RestBaseController {
 		final CoordinateReferenceSystem crs;
 		try {
 			crs = CRS.decode(spec.srs);
-		} catch (FactoryException ex) {
+		} catch (org.geotools.api.referencing.FactoryException ex) {
 			throw new IllegalArgumentException("Uknown srs:" + spec.srs);
 		}
 
@@ -118,8 +111,8 @@ public class PrintingController extends RestBaseController {
 			}
 			case "OSM" : {
 				return Optional.of((spec.baseURL != null 
-						? new OSMGridLayer(GeneralEnvelope.toGeneralEnvelope(envelope), spec.baseURL) 
-						: new OSMGridLayer(GeneralEnvelope.toGeneralEnvelope(envelope))));
+						? new OSMGridLayer(GeneralBounds.toGeneralEnvelope(envelope), spec.baseURL) 
+						: new OSMGridLayer(GeneralBounds.toGeneralEnvelope(envelope))));
 			}
 			default:{
 				LOGGER.info("Unknown layer specification type:" + spec.type);

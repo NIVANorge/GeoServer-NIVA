@@ -15,8 +15,8 @@ import java.util.Map;
 import java.util.Set;
 import org.geoserver.wps.WPSTestSupport;
 import org.geotools.TestData;
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFinder;
+import org.geotools.api.data.DataStore;
+import org.geotools.api.data.DataStoreFinder;
 import org.geotools.data.memory.MemoryFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.store.ReprojectingFeatureCollection;
@@ -30,10 +30,10 @@ import org.junit.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory;
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.feature.simple.SimpleFeatureType;
+import org.geotools.api.filter.Filter;
+import org.geotools.api.filter.FilterFactory;
 import niva.geotools.data.CacheDataStoreFactory;
 import niva.geotools.referencing.CRS;
 
@@ -98,7 +98,7 @@ public class PointAggregateGridProcessTest extends WPSTestSupport{
 		parameters.put(CacheDataStoreFactory.CACHE_PARAM.key, "dbtype=shapefile;url=" + URLs.fileToUrl(cacheDir).toExternalForm());
 		parameters.put(CacheDataStoreFactory.INTERVAL_PARAM.key, 1440);
 		ReferencedEnvelope outputBbox = new ReferencedEnvelope(221288, 283749, 6661953, 6769393, CRS.getUtm33());
-		FilterFactory ff = CommonFactoryFinder.getFilterFactory2();
+		FilterFactory ff = CommonFactoryFinder.getFilterFactory();
 		Filter bboxFilter = ff.bbox(ff.property("the_geom"),
 									ff.literal(JTS.transform(outputBbox,
 											org.geotools.referencing.CRS.findMathTransform(CRS.getUtm33(),

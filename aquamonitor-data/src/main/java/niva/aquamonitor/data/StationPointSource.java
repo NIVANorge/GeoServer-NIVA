@@ -4,7 +4,7 @@ import java.io.IOException;
 import org.geotools.data.store.ContentEntry;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.opengis.feature.simple.SimpleFeatureType;
+import org.geotools.api.feature.simple.SimpleFeatureType;
 import niva.aquamonitor.data.ws.CloseableIterator;
 import niva.aquamonitor.data.ws.StationPointCargo;
 import niva.aquamonitor.data.ws.StationPointReader;

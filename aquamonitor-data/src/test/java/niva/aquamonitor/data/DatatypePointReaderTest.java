@@ -2,8 +2,8 @@ package niva.aquamonitor.data;
 
 
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.feature.simple.SimpleFeatureType;
 import org.locationtech.jts.geom.Point;
 import niva.aquamonitor.data.ws.GeographyController;
 import niva.geotools.referencing.CRS;

@@ -14,9 +14,9 @@ import org.geotools.process.vector.NearestProcess;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.feature.simple.SimpleFeatureType;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import niva.geotools.referencing.CRS;
 import org.junit.Assert;
 import org.junit.Test;
@@ -44,7 +44,7 @@ public class NearestProcessTest extends WPSTestSupport {
 	@SuppressWarnings("rawtypes")
 	@Test
 	public void testNearestFeature() throws Exception {
-		SimpleFeatureCollection features = testFeatures();
+		FeatureCollection features = testFeatures();
 		Point point = geomFact.createPoint(new Coordinate(323000, 6730000));
 		CoordinateReferenceSystem crs = CRS.getUtm33();
 		int num = 5;

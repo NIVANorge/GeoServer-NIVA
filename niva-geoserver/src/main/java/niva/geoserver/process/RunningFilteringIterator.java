@@ -6,7 +6,7 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.filter.BinaryComparisonAbstract;
 import org.geotools.filter.ConstantExpression;
 import org.geotools.filter.spatial.DWithinImpl;
-import org.opengis.feature.simple.SimpleFeature;
+import org.geotools.api.feature.simple.SimpleFeature;
 
 /**
  * Iterator that takes one Collection and creates a new collection based on a filter at the original collection.

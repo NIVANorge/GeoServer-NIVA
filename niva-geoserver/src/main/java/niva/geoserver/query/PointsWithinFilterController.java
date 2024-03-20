@@ -7,14 +7,14 @@ import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.rest.RestException;
 import org.geotools.data.simple.SimpleFeatureIterator;
-import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.util.logging.Logging;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory2;
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.filter.Filter;
+import org.geotools.api.filter.FilterFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +42,7 @@ public class PointsWithinFilterController extends QueryBaseController {
 	
 	private static final Logger LOGGER = Logging.getLogger(PointsWithinFilterController.class);
 	
-	private final FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
+	private final FilterFactory ff = CommonFactoryFinder.getFilterFactory();
 
 	@Autowired
 	public PointsWithinFilterController(@Qualifier("catalog") Catalog catalog) {

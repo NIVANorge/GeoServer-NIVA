@@ -1,7 +1,7 @@
 package niva.geoserver.process;
 
 
-import org.opengis.feature.simple.SimpleFeature;
+import org.geotools.api.feature.simple.SimpleFeature;
 
 public interface AggregateFeatures {
 	void add(SimpleFeature feature);

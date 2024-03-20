@@ -25,7 +25,7 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.util.URLs;
 import org.junit.Test;
 import org.locationtech.jts.geom.Point;
-import org.opengis.feature.simple.SimpleFeature;
+import org.geotools.api.feature.simple.SimpleFeature;
 import niva.geoserver.data.NivaTestSupport;
 
 /**
