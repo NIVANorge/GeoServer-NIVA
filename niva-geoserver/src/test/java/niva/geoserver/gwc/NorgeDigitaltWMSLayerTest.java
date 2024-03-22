@@ -110,7 +110,7 @@ public class NorgeDigitaltWMSLayerTest extends NivaTestSupport {
 	        Assert.assertNotNull(bi);
 	        ImageIO.write(bi, "png", TestData.temp(this, "orto.png"));
         } else {
-        	Assert.assertEquals("application/vnd.ogc.se_xml", resp.getContentType());
+        	Assert.assertEquals("application/vnd.ogc.se_xml;charset=UTF-8", resp.getContentType());
         	Assert.assertTrue("geonorge returnerte en ukjent feil.", 
 					resp.getContentAsString().contains("Bruker kan ikke autentiseres."));
         }

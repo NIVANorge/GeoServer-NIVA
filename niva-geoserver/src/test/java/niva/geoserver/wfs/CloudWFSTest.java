@@ -23,6 +23,7 @@ import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 
+import niva.aquamonitor.data.ws.TestAuthentication;
 import niva.geoserver.data.NivaTestSupport;
 
 /**
@@ -39,23 +40,8 @@ public class CloudWFSTest extends NivaTestSupport {
 	private static Logger LOGGER = Logging.getLogger(CloudWFSTest.class);
 	
 	private final static String TEST_WFS_URL = "https://test-aquamonitor.niva.no/geoserver/no.niva.aquamonitor/Intern_stations/wfs";
-	
-	private final static String TEST_USER;
-	private final static String TEST_PWD;
-	static {
-		String usrpwd = System.getProperty("AQUAMONITOR_TEST_USER");
-		if (usrpwd != null) {
-			int inx = usrpwd.indexOf(':');
-			if (inx == -1) {
-				throw new IllegalArgumentException("Not properly configured AQUAMONITOR_TEST_USER");
-			}
-			TEST_USER = usrpwd.substring(0, inx);
-			TEST_PWD = usrpwd.substring(inx + 1);
-		} else {
-			TEST_USER = null;
-			TEST_PWD = null;
-		}
-	}
+	private final static String TEST_USER = TestAuthentication.getUsername();
+	private final static String TEST_PWD = TestAuthentication.getPassword();
 	
 	@Before
 	public void setupInternWFSProxy() throws Exception {

@@ -22,9 +22,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
+ * NearestProcess - where do we use this one. It will not work for UTM coordinates.
  * 
  * @author Roar Brænden, NIVA
- *
  */
 public class NearestProcessTest extends WPSTestSupport {
 	
