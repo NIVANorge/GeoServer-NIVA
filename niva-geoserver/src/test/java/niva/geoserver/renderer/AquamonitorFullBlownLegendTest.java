@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import niva.geoserver.data.CacheStoreTest;
 import niva.geoserver.data.NivaTestSupport;
+//import javax.imageio.ImageIO;
 
 /**
  * Tests to check that the legends used within AquaMonitor is correct.
