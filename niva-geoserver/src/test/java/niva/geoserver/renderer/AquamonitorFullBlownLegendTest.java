@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import niva.geoserver.data.CacheStoreTest;
 import niva.geoserver.data.NivaTestSupport;
-//import javax.imageio.ImageIO;
+import javax.imageio.ImageIO;
 
 /**
  * Tests to check that the legends used within AquaMonitor is correct.
@@ -66,7 +66,7 @@ public class AquamonitorFullBlownLegendTest extends WMSTestSupport {
         						catalog);        
     }
     
-    public static void setupAquamonitorAggregationStyle(SystemTestData testData, Catalog catalog) throws URISyntaxException, IOException {
+    private void setupAquamonitorAggregationStyle(SystemTestData testData, Catalog catalog) throws URISyntaxException, IOException {
     	
     	testData.addStyle("AquaMonitor_aggregation",
 				  "test-data/AquaMonitor_Aggragation.sld",
@@ -77,18 +77,19 @@ public class AquamonitorFullBlownLegendTest extends WMSTestSupport {
 		URL iconsDir = TestData.url(AquamonitorFullBlownLegendTest.class, "aqm_icons");
 		new File(testData.getDataDirectoryRoot(), iconsRoot).mkdir();
 		Files.walk(Paths.get(iconsDir.toURI()))
-		  .filter(Files::isRegularFile)
-		  .map(f -> f.toFile().getName())
-		  .forEach(n -> {
-		      try {
-		          testData.copyTo(
-		                  TestData.openStream(AquamonitorFullBlownLegendTest.class, "aqm_icons/" + n),
-		                  iconsRoot + n);
-		      } catch (IOException e) {
-		          throw new Error("Trouble setting up this test. " + e.getMessage());
-		      }
-		  });
-
+			  .filter(Files::isRegularFile)
+			  .map(f -> f.toFile().getName())
+			  .forEach(n -> copyIcon(testData, iconsRoot, n));
+    }
+    
+    private void copyIcon(SystemTestData testData, String root, String name) {
+    	try {
+	          testData.copyTo(
+	                  TestData.openStream(AquamonitorFullBlownLegendTest.class, "aqm_icons/" + name),
+	                  root + name);
+	      } catch (IOException e) {
+	          throw new Error("Trouble setting up this test. " + e.getMessage());
+	      }
     }
     
     
@@ -103,7 +104,7 @@ public class AquamonitorFullBlownLegendTest extends WMSTestSupport {
 
 		final String requestURL = "wms?LAYERS=no.niva.aquamonitor:Intern_station_datatype&"
 								+ "FORMAT=image/png&TRANSPARENT=TRUE&SERVICE=WMS&"
-								+ "VERSION=1.1.1&REQUEST=GetLegendGraphic&STYLES=&"
+								+ "VERSION=1.3.0&REQUEST=GetLegendGraphic&STYLES=&"
 								+ "SRS=EPSG:32633&LAYER=no.niva.aquamonitor:Intern_station_datatype"
 								+ "&legend_options=rescaleSymbols:off";
 		
@@ -113,7 +114,7 @@ public class AquamonitorFullBlownLegendTest extends WMSTestSupport {
         																		  (Map)parseKvp(rawKvp),
         																		  (Map)rawKvp));
         
-        //ImageIO.write(image, "png", new File("C:\\temp\\Internal_legend.png"));
+        ImageIO.write(image, "png", new File("C:\\temp\\Internal_legend.png"));
         
         ResourceImageTester.assertImage("Internal_legend.png", image);   
 	}
