@@ -1,6 +1,5 @@
 package niva.geoserver.printing;
 
-
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Optional;
@@ -61,7 +60,7 @@ public class PrintingController extends RestBaseController {
 	}
 
 	@PostMapping(path = PrintingController.PRINTING_ROOT_PATH, consumes = MediaType.APPLICATION_JSON)
-	public void postSpec(@RequestBody PrintSpecification spec, HttpServletResponse response) throws IOException {
+	public void postSpec(@RequestBody PrintSpecification spec, HttpServletResponse httpResponse) throws IOException {
 		
 		final CoordinateReferenceSystem crs;
 		try {
@@ -89,7 +88,7 @@ public class PrintingController extends RestBaseController {
 		LOGGER.fine("Map produced - now sending response");
 		Operation operation = null;
 		final PNGMapResponse mapResponse = new PNGMapResponse(this.wms);
-		mapResponse.write(map, response.getOutputStream(), operation);
+		mapResponse.write(map, httpResponse.getOutputStream(), operation);
 	}
 	
 	private Optional<Layer> mapLayer(LayerSpecification spec, final ReferencedEnvelope envelope) {
