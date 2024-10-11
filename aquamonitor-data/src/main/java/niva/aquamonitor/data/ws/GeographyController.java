@@ -37,37 +37,32 @@ public class GeographyController extends AquaWebService {
     public static GeographyController createService(String host, String site) {
         return new GeographyController(host + site + "/api/geography");
     }
-    
+
     
     private static void lookupSecretToken() {
         LOGGER.fine("Lookup AquaMonitor secret token.");
         
         final String[] typeStrs = {
-            "Java system property ",
-            "System environment variable "
+            "Java system property",
+            "System environment variable"
         };
 
         // Loop over variable access methods
-        for (int j = 0; j < typeStrs.length; j++) {
+        for (String typ : typeStrs) {
             String value = null;
-             
             // Lookup section
-            switch (j) {
-                case 0:
-                    value = System.getProperty(TOKEN_PROPERTY);
-                    break;
-                case 1:
-                    value = System.getenv(TOKEN_PROPERTY);
-                    break;
+            switch (typ) {
+                case "Java system property":
+                    value = System.getProperty(TOKEN_PROPERTY); break;
+                case "System environment variable":
+                    value = System.getenv(TOKEN_PROPERTY); break;
             }
 
-            if (value == null || value.equalsIgnoreCase("")) {
+            if (value != null && !value.equalsIgnoreCase("")) {
+                LOGGER.fine(String.format("Found AquaMonitor secret token %s within %s", value, typ));
+                defaultToken = value;
                 break;
             }
-
-            LOGGER.fine(String.format("Found AquaMonitor secret token %s within %s", value, typeStrs[j]));
-            
-            defaultToken = value;
         }
         
         if (Objects.isNull(defaultToken)) {
@@ -81,17 +76,13 @@ public class GeographyController extends AquaWebService {
         }
     }
 
-
-    
-
     public StationPointReader getProjectUserStationReader(String username) throws IOException {
         checkToken();
         LOGGER.fine("username:" + username);
         return new StationPointReader(this, 
                 String.format("projectuser/%s/stationpoints", username), 
                 defaultToken);
-    }
-    
+    }    
 
     public StationPointReader getAllStationReader() throws IOException {
         checkToken();
