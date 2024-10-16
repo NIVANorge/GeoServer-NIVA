@@ -2,22 +2,26 @@ package niva.geoserver.query;
 
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
-import org.geoserver.feature.ReprojectingFeatureCollection;
 import org.geoserver.rest.RestException;
 import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.api.data.SimpleFeatureSource;
-import org.geotools.feature.SchemaException;
-import org.geotools.filter.text.cql2.CQL;
-import org.geotools.filter.text.cql2.CQLException;
+import org.geotools.geometry.jts.JTS;
+import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Logging;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 import org.geotools.api.filter.Filter;
+import org.geotools.api.filter.FilterFactory;
 import org.geotools.api.referencing.FactoryException;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.operation.TransformException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,6 +54,8 @@ import org.springframework.http.MediaType;
 public class PointsWithinGeometryController extends QueryBaseController {
 	
 	private static final Logger LOGGER = Logging.getLogger(PointsWithinGeometryController.class);
+	
+	private static final FilterFactory FF = CommonFactoryFinder.getFilterFactory();
 
 
 	@Autowired
@@ -59,29 +65,27 @@ public class PointsWithinGeometryController extends QueryBaseController {
 
 	@SuppressWarnings("rawtypes")
 	@GetMapping(path = QueryBaseController.QUERY_ROOT_PATH + "/geometry/{epsg}_{geometry}/features.json")
-	public HashMap get(@PathVariable String workspace,
+	public Map get(@PathVariable String workspace,
 									@PathVariable String layer,
 									@PathVariable String epsg,
 									@PathVariable String geometry) {
-		LOGGER.fine("Query a geometry.");
+		LOGGER.fine("Query a geometry: " + geometry);
 		
 		SimpleFeatureSource source = this.extractSourceFromPathVariable(workspace, layer);
 		String geomField = source.getSchema().getGeometryDescriptor().getLocalName();
-		final CoordinateReferenceSystem targetCrs = this.extractCRSFromPathVariable(epsg);
-		final CoordinateReferenceSystem sourceCrs = source.getSchema().getCoordinateReferenceSystem();
+		final CoordinateReferenceSystem sourceCrs = this.extractCRSFromPathVariable(epsg);
+		final CoordinateReferenceSystem targetCrs = source.getSchema().getCoordinateReferenceSystem();
 		final String decodedGeometry = this.extractGeometryFromPathVariable(geometry);
 
 		try {
-			
-			final Filter within = CQL.toFilter("WITHIN( " + geomField	+ ", " + decodedGeometry + ")");
-	
-			SimpleFeatureCollection result = (CRS.equalsIgnoreMetadata(sourceCrs, targetCrs) ?
-			        source.getFeatures(within) :
-				    new ReprojectingFeatureCollection(source.getFeatures(), targetCrs).subCollection(within));
-		
-			return createResultMap(result);
+        	Geometry geom = parseGeometry(decodedGeometry);
+        	if (!CRS.equalsIgnoreMetadata(sourceCrs, targetCrs)) {
+        		geom = JTS.transform(geom,  CRS.findMathTransform(sourceCrs, targetCrs));
+        	}
+			final Filter within = FF.intersects(geomField, geom);
+			return createResultMap(source.getFeatures(within));
 		}
-		catch (FactoryException | CQLException | SchemaException | IOException ex) {
+		catch (TransformException | FactoryException | IOException ex) {
 		    LOGGER.log(Level.SEVERE, "Get Points within geometry.", ex);
 			throw new RestException(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -90,7 +94,7 @@ public class PointsWithinGeometryController extends QueryBaseController {
 
     @SuppressWarnings("rawtypes")
     @PostMapping(path = QueryBaseController.QUERY_ROOT_PATH + "/geometry/{epsg}/features.json")
-    public HashMap post(@PathVariable String workspace,
+    public Map post(@PathVariable String workspace,
                                     @PathVariable String layer,
                                     @PathVariable String epsg,                                   
                                     @RequestBody String geometry) {
@@ -102,17 +106,27 @@ public class PointsWithinGeometryController extends QueryBaseController {
         final CoordinateReferenceSystem sourceCrs = source.getSchema().getCoordinateReferenceSystem();
         
         try {
-            final Filter within = CQL.toFilter("WITHIN( " + geomField   + ", " + geometry + ")");
+        	Geometry geom = parseGeometry(geometry);
+        	if (!CRS.equalsIgnoreMetadata(sourceCrs, targetCrs)) {
+        		geom = JTS.transform(geom,  CRS.findMathTransform(sourceCrs, targetCrs));
+        	}
+            final Filter within = FF.intersects(geomField, geom);
             
-            SimpleFeatureCollection result = (CRS.equalsIgnoreMetadata(sourceCrs, targetCrs) ?
-                    source.getFeatures(within) :
-                    new ReprojectingFeatureCollection(source.getFeatures(), targetCrs).subCollection(within));
+            SimpleFeatureCollection result = source.getFeatures(within);
         
             return createResultMap(result);
         }
-        catch (FactoryException | CQLException | SchemaException | IOException ex) {
+        catch (TransformException | FactoryException | IOException ex) {
             LOGGER.log(Level.SEVERE, "Post Points within geometry.", ex);
             throw new RestException(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+    
+    private Geometry parseGeometry(String decodedGeom) {
+        try {
+			return new WKTReader(JTSFactoryFinder.getGeometryFactory()).read(decodedGeom);
+		} catch (ParseException e) {
+			throw new RestException(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
     }
 }
