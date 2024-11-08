@@ -58,10 +58,9 @@ public class CloudWFSTest extends NivaTestSupport {
 		params.put("WFSDataStoreFactory:GET_CAPABILITIES_URL", new URL(TEST_WFS_URL));
 		params.put("WFSDataStoreFactory:USERNAME", TEST_USER);
 		params.put("WFSDataStoreFactory:PASSWORD", TEST_PWD);
-		params.put("WFSDataStoreFactory:TIMEOUT", 360000);
-		params.put("WFSDataStoreFactory:AXIS_ORDER", "Compliant");
-		params.put("WFSDataStoreFactory:AXIS_ORDER_FILTER", "Compliant");
+		params.put("WFSDataStoreFactory:TIMEOUT", 30000);
 		params.put("WFSDataStoreFactory:WFS_STRATEGY", "auto");
+		params.put("WFSDataStoreFactory:GML_COMPLIANCE_LEVEL", 0);
 		params.put("usedefaultsrs", false);
 	
 		addAquaMonitorStore("Intern_WFS", params);
