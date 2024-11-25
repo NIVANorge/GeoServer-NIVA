@@ -2,6 +2,7 @@ package niva.aquamonitor.data.ws;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
@@ -86,8 +87,15 @@ abstract class AquaWebService {
             if (value == null || value.equalsIgnoreCase("")) {
                 continue;
             }
-
-            LOGGER.fine("Found AquaMonitor host address " + value + " within " + typeStrs[j]);
+            
+            if (LOGGER.isLoggable(Level.FINE)) {
+            	LOGGER.fine("Found AquaMonitor host address " 
+            				+ (value.length() > 3 
+            						? value.substring(0, 2) + "x".repeat(value.length() - 3) 
+            								: "x".repeat(value.length()))
+            				+ " within " + typeStrs[j]);
+            }
+            
             
             if (servContext == null) {
             	defaultHostAddress = value;
