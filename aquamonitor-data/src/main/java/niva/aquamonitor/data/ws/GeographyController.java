@@ -59,7 +59,10 @@ public class GeographyController extends AquaWebService {
             }
 
             if (value != null && !value.equalsIgnoreCase("")) {
-                LOGGER.fine(String.format("Found AquaMonitor secret token %s within %s", value, typ));
+            	String logValue = value.length() > 3 
+            			? value.substring(0, 2) + "x".repeat(value.length() - 3) 
+						: "x".repeat(value.length());
+                LOGGER.fine(String.format("Found AquaMonitor secret token %s within %s", logValue, typ));
                 defaultToken = value;
                 break;
             }

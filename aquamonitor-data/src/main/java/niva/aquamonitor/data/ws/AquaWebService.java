@@ -90,9 +90,7 @@ abstract class AquaWebService {
             
             if (LOGGER.isLoggable(Level.FINE)) {
             	LOGGER.fine("Found AquaMonitor host address " 
-            				+ (value.length() > 3 
-            						? value.substring(0, 2) + "x".repeat(value.length() - 3) 
-            								: "x".repeat(value.length()))
+            				+ value
             				+ " within " + typeStrs[j]);
             }
             
