@@ -45,6 +45,8 @@ public class SiteDataStore extends ContentDataStore {
 	private final String host;
 	private final String site;
 	private final String key;
+	
+	private String[] allDatatypes = null;
 
 
 	public SiteDataStore(String host, String site) {
@@ -84,7 +86,7 @@ public class SiteDataStore extends ContentDataStore {
 	 */
 	@Override
 	protected List<Name> createTypeNames() throws IOException {
-		List<Name> list = new ArrayList<Name>();
+		List<Name> list = new ArrayList<>();
 		list.add(new NameImpl(getNamespaceURI(), DEFAULT_LAYERS[0]));
 		if (getKey() != null) {
 			list.add(new NameImpl(getNamespaceURI(), DEFAULT_LAYERS[1]));
@@ -94,6 +96,25 @@ public class SiteDataStore extends ContentDataStore {
 		    list.add(new NameImpl(getNamespaceURI(), DEFAULT_LAYERS[3]));
 		}
 		return list;
+	}
+	
+	private String[] getAlldatatypes() {
+		if (allDatatypes == null) {
+			final String[] datatypes;
+
+			final GeographyController ws = GeographyController.createService(getHost(), getSite());
+			try (Stream<String> datatypesStream = ws.getAllDatatypesReader().stream()) {
+                List<String> list = datatypesStream.collect(Collectors.toList());
+                datatypes = list.toArray(new String[list.size()]);
+			} catch (IOException e) {
+				if ("Feil bruker".equals(e.getMessage())) {
+					throw new RuntimeException("AQUAMONITOR_SECRET_TOKEN must be reconfigured.");
+				}
+				throw new Error("Failed to collect all datatypes.", e);
+			}
+			allDatatypes = datatypes;
+		}
+		return allDatatypes;
 	}
 
 	/***
@@ -109,7 +130,6 @@ public class SiteDataStore extends ContentDataStore {
 		if (LOGGER.isLoggable(Level.FINE)) {
 			LOGGER.fine(String.format("Create feature source for %s with key %s.\n", typeName, key));
 		}
-		
 		
 		if (entry.getTypeName().equals(DEFAULT_LAYERS[0]) || entry.getTypeName().equals(DEFAULT_LAYERS[1])) {
 			StationPointReader reader;
@@ -132,12 +152,8 @@ public class SiteDataStore extends ContentDataStore {
 		}
 		else if (entry.getTypeName().equals(DEFAULT_LAYERS[2])) {
 			DatatypeReader reader = (key == null ? ws.getAllDatatypePointsReader()
-			                                     : ws.getCurrentDatatypePointsReader(key));
-			try (Stream<String> datatypesStream = ws.getAllDatatypesReader().stream()) {
-                List<String> list = datatypesStream.collect(Collectors.toList());
-                String[] datatypes = list.toArray(new String[list.size()]);
-                return new DatatypePointSource(entry, reader, datatypes);
-			}
+                    : ws.getCurrentDatatypePointsReader(key));
+            return new DatatypePointSource(entry, reader, getAlldatatypes());
 		}
 		else if (entry.getTypeName().equals(DEFAULT_LAYERS[3])) {
 		    ValuePointReader reader = ws.getCurrentValuePointsReader(key);
