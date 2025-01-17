@@ -42,9 +42,9 @@ public class SiteDataStore extends ContentDataStore {
 	
 	private static final Logger LOGGER = Logging.getLogger(SiteDataStore.class);
 
-	private final String host;
-	private final String site;
-	private final String key;
+	private String host;
+	private String site;
+	private String key;
 	
 	private String[] allDatatypes = null;
 
@@ -59,17 +59,29 @@ public class SiteDataStore extends ContentDataStore {
 		this.key = key;
 	}
 
-	private String getHost() {
+	public String getHost() {
 		return this.host;
 	}
 	
-	private String getSite()  {
+	public void setHost(String host) {
+		this.host = host;
+	}
+	
+	public String getSite()  {
 		return this.site;
 	}
 	
+	public void setSite(String site) {
+		this.site = site;
+	}
 	
-	private String getKey() {
+	
+	public String getKey() {
 		return this.key;
+	}
+	
+	public void setKey(String key) {
+		this.key = key;
 	}
 
 	@Override
@@ -110,7 +122,7 @@ public class SiteDataStore extends ContentDataStore {
 				if ("Feil bruker".equals(e.getMessage())) {
 					throw new RuntimeException("AQUAMONITOR_SECRET_TOKEN must be reconfigured.");
 				}
-				throw new Error("Failed to collect all datatypes.", e);
+				throw new RuntimeException("Failed to collect all datatypes from site: " + getSite(), e);
 			}
 			allDatatypes = datatypes;
 		}
