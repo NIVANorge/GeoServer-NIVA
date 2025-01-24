@@ -6,6 +6,7 @@ NIVA is running Geoserver at three servers:
 - aquamonitor.niva.no
 - test-aquamonitor.niva.no
 - geoserver.t.niva.no
+- geoserver.p.niva.no
 
 They are running the same version of Geoserver which has it's own adaptions. Partly within a fork at [NIVANorge/geoserver](https://github.com/NIVANorge/geoserver), as plugin's from this repository, and also from [GeoTools-NIVA](https://github.com/NIVANorge/GeoTools-NIVA).
 
