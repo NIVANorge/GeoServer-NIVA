@@ -16,8 +16,8 @@ At the moment we're running:
 
 | Software      | Version       |
 |---------------|---------------|
-| OpenJDK       | 11.0.13       |
-| Apache Tomcat | 9.0.56        |
+| OpenJDK       | 11.0.26       |
+| Apache Tomcat | 9.0.98        |
 
 ## Accessing SAMPLE_POINTS from GeoServer
 
