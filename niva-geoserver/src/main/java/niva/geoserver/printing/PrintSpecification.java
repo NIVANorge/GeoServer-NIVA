@@ -12,6 +12,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
  * @author Roar Brænden, NIVA
  *
  */
+@Deprecated
 @XStreamAlias("PrintSpecification")
 @SuppressWarnings("unused")
 public class PrintSpecification {

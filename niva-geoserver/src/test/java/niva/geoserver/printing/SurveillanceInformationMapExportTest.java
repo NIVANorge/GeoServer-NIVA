@@ -21,7 +21,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.data.test.SystemTestData;
 
 import org.geotools.TestData;
-
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -34,8 +34,10 @@ import niva.geoserver.data.NivaTestSupport;
  * The images exported from AquaMonitor SI have some anomalies within the color tables.
  * 
  * @author Roar Brænden, NIVA
+ * @deprecated No need for this one
  *
  */
+@Deprecated
 public class SurveillanceInformationMapExportTest extends NivaTestSupport {
 	
 	
@@ -84,6 +86,7 @@ public class SurveillanceInformationMapExportTest extends NivaTestSupport {
 	 * 
 	 * @throws Exception
 	 */
+	@Ignore
 	@Test
 	public void testSurveillanceInformationMapExport() throws Exception {
 		String spec = null;

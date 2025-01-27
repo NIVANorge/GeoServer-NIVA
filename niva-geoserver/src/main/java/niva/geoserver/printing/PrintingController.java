@@ -41,8 +41,9 @@ import niva.geotools.osm.OSMGridLayer;
  * Eliminating the original overhead with mapfish-print
  * 
  * @author Roar Brænden, NIVA
- *
+ * @deprecated No need for this one
  */
+@Deprecated
 @RestController
 @ControllerAdvice
 public class PrintingController extends RestBaseController {

@@ -9,6 +9,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * @author Roar Brænden, NIVA
  *
  */
+@Deprecated
 @XStreamAlias("LayerSpecification")
 public class LayerSpecification {
 
