@@ -44,7 +44,11 @@ abstract class JsonMapper<T> extends CloseableIterator<T>  {
 	}
 	
 	
-	protected int getInteger(Map<String, Object> current, String key) {
+	protected Integer getInteger(Map<String, Object> current, String key) {
+		Object val = current.get(key);
+		if (val == null)
+			return null;
+		
 		return (int)(long)current.get(key);
 	}
 	

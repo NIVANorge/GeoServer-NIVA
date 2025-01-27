@@ -3,19 +3,19 @@ package niva.aquamonitor.data.ws;
 public class StationPointCargo extends PointCargo {
 
 
-	public int samplePointId;
+	public Integer samplePointId;
     
 
-	public int projectId;
+	public Integer projectId;
     
 
 	public String projectName;
     
 
-	public int stationId;
+	public Integer stationId;
     
 
-	public int stationTypeId;
+	public Integer stationTypeId;
     
 
 	public String stationType;

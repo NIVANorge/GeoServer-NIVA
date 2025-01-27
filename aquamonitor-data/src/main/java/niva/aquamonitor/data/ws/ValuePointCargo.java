@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public class ValuePointCargo extends PointCargo {
     
-    public int samplePointId;
+    public Integer samplePointId;
     
     public Date sampleDate;
     
@@ -20,7 +20,7 @@ public class ValuePointCargo extends PointCargo {
     
     public String datatype;
     
-    public int parameterId;
+    public Integer parameterId;
     
     public String parameterName;
     
