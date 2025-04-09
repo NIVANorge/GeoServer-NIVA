@@ -40,7 +40,8 @@ public class NearestProcessTest extends WPSTestSupport {
 			new Coordinate(11.29, 60.34)
 	}; 
 	
-	/** We've tampered with the NearestProcess to include a num argument. */
+	/** We've tampered with the NearestProcess to include a num argument.
+	 *  Have to reassess this. As the original code may have changed. */
 	@SuppressWarnings("rawtypes")
 	@Test
 	public void testNearestFeature() throws Exception {
@@ -48,9 +49,11 @@ public class NearestProcessTest extends WPSTestSupport {
 		Point point = geomFact.createPoint(new Coordinate(323000, 6730000));
 		CoordinateReferenceSystem crs = CRS.getUtm33();
 		int num = 5;
-		
+		/*
 		FeatureCollection result = new NearestProcess().execute(features, point, crs, num);
 		Assert.assertEquals(num, result.size());
+		*/
+		Assert.fail("We don't have NearestProcess with num as argument.");
 	}
 
 	private final SimpleFeatureCollection testFeatures() {
