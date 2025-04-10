@@ -120,14 +120,14 @@
       <version>${gs.version}</version>
     </dependency>
     <dependency>
-    	<groupId>org.geotools</groupId>
-    	<artifactId>gt-referencing</artifactId>
-    	<version>${gt.version}</version>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-referencing</artifactId>
+      <version>${gt.version}</version>
     </dependency>
     <dependency>
-    	<groupId>org.apache.wicket</groupId>
-    	<artifactId>wicket-core</artifactId>
-    	<version>7.18.0</version>
+      <groupId>org.apache.wicket</groupId>
+      <artifactId>wicket-core</artifactId>
+      <version>7.18.0</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
