@@ -35,11 +35,11 @@ public class NorgeDigitaltWMSLayerTest extends NivaTestSupport {
 		final Catalog catalog = getCatalog();
         	
 		WMSStoreInfoImpl store = createWMSStore(catalog, "Toporaster",
-		        "http://openwms.statkart.no/skwms1/wms.toporaster4?service=wms&version=1.3.0");
+		        "https://wms.geonorge.no/skwms1/wms.toporaster4?service=wms&version=1.3.0");
 		createWMSLayer(catalog, store, "toporaster");
 		
 		WMSStoreInfoImpl flyfotoStore = createWMSStore(catalog, "NorgeIBilder",
-		        "http://wms.geonorge.no/skwms1/wms.nib?service=WMS&request=GetCapabilities&version=1.1.1");
+		        "https://wms.geonorge.no/skwms1/wms.nib?service=WMS&request=GetCapabilities&version=1.1.1");
 		createWMSLayer(catalog, flyfotoStore, "ortofoto");
 		
 	}
