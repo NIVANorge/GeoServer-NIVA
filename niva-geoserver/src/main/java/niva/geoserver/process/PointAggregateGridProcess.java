@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.data.util.FeatureStreams;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.collection.AbstractFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -118,7 +118,11 @@ public class PointAggregateGridProcess implements NivaProcess {
 			tx = null;
 		}
 		AggregatedFeatureCollection result = new AggregatedFeatureCollection(schema, crs, tx, attributeArr, dx, dy, x1, y1, mx, my);
-		FeatureStreams.toFeatureStream(points).forEach(result::addPoint);
+		try (SimpleFeatureIterator features = points.features()) {
+			while (features.hasNext()) {
+				result.addPoint(features.next());
+			}
+		}
 		result.computeCentralPoints();		
 		return result;
 	}
