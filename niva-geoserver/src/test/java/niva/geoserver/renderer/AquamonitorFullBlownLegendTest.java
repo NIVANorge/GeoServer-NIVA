@@ -98,6 +98,10 @@ public class AquamonitorFullBlownLegendTest extends WMSTestSupport {
         this.legendProducer = new BufferedImageLegendGraphicBuilder();
     }
 
+    /**
+     * A fix that makes sure legend symbols are drawn in sizes set by sld.
+     * https://github.com/NIVANorge/geoserver/commit/fdb0473764bfaa14ff6e3e761d0eb45286068787
+     */
     @SuppressWarnings("rawtypes")
     @Test
 	public void testLegendInternal() throws Exception {
@@ -120,8 +124,8 @@ public class AquamonitorFullBlownLegendTest extends WMSTestSupport {
 	}
     
     
-    /** Tests for a problem that want be fixed in GeoTools, but that we fix in NIVANorge. 
-     *  https://github.com/geotools/geotools/pull/4073 */
+    /** Tests for a problem that wont be fixed in GeoTools, but that we fix in NIVANorge. 
+     *  https://github.com/NIVANorge/geotools/commit/ad27558f0b973ca0f89489cdf1bd0f45516fd3f3  */
 	@Test
 	public void generateMapWithTransformCachedShapefile() throws Exception {
         File shpDir = new File(new File(testData.getDataDirectoryRoot(), "data"), "vannmiljo_cache");

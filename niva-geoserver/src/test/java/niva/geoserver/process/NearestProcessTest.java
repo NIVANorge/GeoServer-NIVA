@@ -49,11 +49,11 @@ public class NearestProcessTest extends WPSTestSupport {
 		Point point = geomFact.createPoint(new Coordinate(323000, 6730000));
 		CoordinateReferenceSystem crs = CRS.getUtm33();
 		int num = 5;
-		/*
+		
 		FeatureCollection result = new NearestProcess().execute(features, point, crs, num);
 		Assert.assertEquals(num, result.size());
-		*/
-		Assert.fail("We don't have NearestProcess with num as argument.");
+		
+		//Assert.fail("We don't have NearestProcess with num as argument.");
 	}
 
 	private final SimpleFeatureCollection testFeatures() {
