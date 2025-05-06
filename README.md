@@ -20,6 +20,22 @@ At the moment we're running:
 | OpenJDK       | 11.0.26       |
 | Apache Tomcat | 9.0.98        |
 
+Tomcat should have some "Java Options" for Geoserver to function properly.
+```
+-Dcatalina.home=C:\Program Files\Apache Software Foundation\Tomcat 9.0
+-Dcatalina.base=C:\Program Files\Apache Software Foundation\Tomcat 9.0
+-Djava.io.tmpdir=C:\Program Files\Apache Software Foundation\Tomcat 9.0\temp
+-Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager
+-Djava.util.logging.config.file=C:\Program Files\Apache Software Foundation\Tomcat 9.0\conf\logging.properties
+-XX:ParallelGCThreads=4
+-Dfile.encoding=UTF-8
+-DGEOSERVER_CSRF_WHITELIST=test-aquamonitor.niva.no
+-DAQUAMONITOR_HOST_ADDRESS=https://test-aquamonitor.niva.no/
+-DAQUAMONITOR_SECRET_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+-Djava.locale.providers=COMPAT,CLDR
+-DGEOSERVER_DATA_DIR=C:\Geoserver
+```
+
 ## Accessing SAMPLE_POINTS from GeoServer
 
 Use personal NIVA username / password, or a System account from NIVADATABASEN.USERS
