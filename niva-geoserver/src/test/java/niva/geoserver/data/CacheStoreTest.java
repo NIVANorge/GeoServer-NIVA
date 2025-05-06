@@ -212,19 +212,19 @@ public class CacheStoreTest extends NivaTestSupport {
             SimpleFeatureCollection coll2 = cacheSource.getFeatures(stFilt);
             Assert.assertTrue(coll2.size() == 0);
             
-            String xml =  "<wfs:Transaction service=\"WFS\" version=\"1.0.0\""
-                    + " xmlns:ogc=\"http://www.opengis.net/ogc\""
-                    + " xmlns:wfs=\"http://www.opengis.net/wfs\""
+            String xml =  "<wfs:Transaction service=\"WFS\" version=\"2.0.0\""
+                    + " xmlns:fes=\"http://www.opengis.net/fes/2.0\""
+                    + " xmlns:wfs=\"http://www.opengis.net/wfs/2.0\""
                     + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
                     + " xsi:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-transaction.xsd\">"
                     + "<wfs:Update typeName=\"no.niva.aquamonitor:Cache_points_2\">"
-                    + "<wfs:Property><wfs:Name>STATION_ID</wfs:Name><wfs:Value>" + stid + "</wfs:Value></wfs:Property>"
-                    + "<ogc:Filter>"
-                    + "<ogc:PropertyIsEqualTo>"
-                    + "<ogc:PropertyName>no.niva.aquamonitor:STATION_ID</ogc:PropertyName>"
-                    + "<ogc:Literal>" + stid + "</ogc:Literal>"
-                    + "</ogc:PropertyIsEqualTo>"
-                    + "</ogc:Filter>"
+                    + "<wfs:Property><wfs:ValueReference>STATION_ID</wfs:ValueReference><wfs:Value>" + stid + "</wfs:Value></wfs:Property>"
+                    + "<fes:Filter>"
+                    + "<fes:PropertyIsEqualTo>"
+                    + "<fes:ValueReference>no.niva.aquamonitor:STATION_ID</fes:ValueReference>"
+                    + "<fes:Literal>" + stid + "</fes:Literal>"
+                    + "</fes:PropertyIsEqualTo>"
+                    + "</fes:Filter>"
                     + "</wfs:Update>"
                     + "</wfs:Transaction>";
             
@@ -239,8 +239,7 @@ public class CacheStoreTest extends NivaTestSupport {
                 }
             }
 
-            Assert.assertTrue(resp.contains("SUCCESS"));
-            Assert.assertTrue(resp.contains("<wfs:InsertResult><ogc:FeatureId fid=\"none\"/></wfs:InsertResult>"));
+            Assert.assertTrue(resp.contains("<wfs:TransactionSummary><wfs:totalInserted>0</wfs:totalInserted><wfs:totalUpdated>0</wfs:totalUpdated><wfs:totalReplaced>0</wfs:totalReplaced><wfs:totalDeleted>0</wfs:totalDeleted></wfs:TransactionSummary>"));
             Assert.assertTrue(cacheSource.getFeatures(stFilt).size() > 0);
 		}
 	}
