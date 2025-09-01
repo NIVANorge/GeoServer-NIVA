@@ -5,10 +5,10 @@
   <groupId>niva.geotools</groupId>
   <artifactId>aquamonitor-data</artifactId>
   <packaging>jar</packaging>
-  <version>11.1.0</version>
+  <version>11.1.1</version>
   <name>AquaMonitor data</name>
   <properties>
-  	<gt.version>32.1-NIVA</gt.version>
+  	<gt.version>32.4-NIVA</gt.version>
   	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <dependencies>
@@ -66,7 +66,7 @@
      <dependency>
        <groupId>niva.geotools</groupId>
   	   <artifactId>niva-core</artifactId>
-       <version>3.1.0</version>
+       <version>3.3.4</version>
      </dependency>
     <dependency>
         <groupId>org.geotools</groupId>
