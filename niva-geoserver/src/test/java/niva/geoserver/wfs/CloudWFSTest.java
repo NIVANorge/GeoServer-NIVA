@@ -65,6 +65,7 @@ public class CloudWFSTest extends NivaTestSupport {
 	
 		addAquaMonitorStore("Intern_WFS", params);
 		FeatureTypeInfo featureInfo = addFeatureLayer(catalog.getDataStoreByName("no.niva.aquamonitor", "Intern_WFS"),
+						"no.niva.aquamonitor",
 						"Intern_wfs_stations",
 						"no.niva.aquamonitor_Intern_stations",
 						"EPSG:4326");

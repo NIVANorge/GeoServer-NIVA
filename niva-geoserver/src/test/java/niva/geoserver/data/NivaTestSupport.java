@@ -88,11 +88,11 @@ public class NivaTestSupport extends GeoServerSystemTestSupport {
 	}
 	
 	protected LayerInfo addStationLayer(StoreInfo store, String name) throws FactoryException {
-			return addLayer(addFeatureLayer(store, name, "STATION_POINTS", "EPSG:4326"), null);
+			return addLayer(addFeatureLayer(store, "no.niva.aquamonitor", name, "STATION_POINTS", "EPSG:4326"), null);
 	}
 	
 	public static LayerInfo addStationDatatypesLayer(Catalog catalog, StoreInfo store, StyleInfo style, String name) throws FactoryException {
-		return addLayer(catalog,addFeatureLayer(catalog, store, name, "STATION_DATATYPE_POINTS", "EPSG:4326"), style);
+		return addLayer(catalog,addFeatureLayer(catalog, store, "no.niva.aquamonitor", name, "STATION_DATATYPE_POINTS", "EPSG:4326"), style);
 	}
 	
 	protected LayerInfo addStationDatatypesLayer(StoreInfo store, String name) throws FactoryException {
@@ -103,8 +103,8 @@ public class NivaTestSupport extends GeoServerSystemTestSupport {
 		return addStationDatatypesLayer(getCatalog(), store, style, name);
 	}
 	
-	public static FeatureTypeInfo addFeatureLayer(Catalog catalog, StoreInfo store, String name, String nativeName, String srs) throws FactoryException {
-		final NamespaceInfo namespace = catalog.getNamespaceByPrefix("no.niva.aquamonitor");
+	public static FeatureTypeInfo addFeatureLayer(Catalog catalog, StoreInfo store, String prefix, String name, String nativeName, String srs) throws FactoryException {
+		NamespaceInfo namespace = catalog.getNamespaceByPrefix(prefix);
 		
 		FeatureTypeInfo resourceCat = new FeatureTypeInfoImpl(catalog);
 		resourceCat.setStore(store);
@@ -120,8 +120,8 @@ public class NivaTestSupport extends GeoServerSystemTestSupport {
 		return resourceCat;
 	}
 	
-	protected FeatureTypeInfo addFeatureLayer(StoreInfo store, String name, String nativeName, String srs) throws FactoryException {
-		return addFeatureLayer(getCatalog(), store, name, nativeName, srs);
+	protected FeatureTypeInfo addFeatureLayer(StoreInfo store, String prefix, String name, String nativeName, String srs) throws FactoryException {
+		return addFeatureLayer(getCatalog(), store, prefix, name, nativeName, srs);
 	}
 	
 	public static LayerInfo addLayer(Catalog catalog, FeatureTypeInfo resource, StyleInfo style) {
