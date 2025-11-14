@@ -8,7 +8,7 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd">
     
-    <bean id="aquamonitorSecurityProvider" class="niva.geoserver.security.AquamonitorSecurityProvider" >
+    <bean id="aquamonitorSecurityProvider" class="niva.geoserver.security.AquamonitorSecurityProvider">
   	</bean>
 
     <bean id="aquamonitorAuthenticationProviderPanelInfo" class="niva.geoserver.security.AquamonitorAuthenticationProviderPanelInfo">
@@ -20,7 +20,15 @@
     
     <bean id="dataAccessReportPPIO" class="niva.geoserver.process.DataAccessReportPPIO" /> 
     
+    <bean id="taskScheduler" class="org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler">
+        <property name="poolSize" value="2"/>
+        <property name="threadNamePrefix" value="CacheScheduler-"/>
+    </bean>
+    
+    <bean id="cacheScheduler" class="niva.geoserver.data.CacheScheduler">
+    	<constructor-arg ref="rawCatalog"/>
+        <constructor-arg ref="taskScheduler"/>
+    </bean>
+    
 	<context:component-scan base-package="niva.geoserver.query" />
-	<context:component-scan base-package="niva.geoserver.printing" />
-	
 </beans>

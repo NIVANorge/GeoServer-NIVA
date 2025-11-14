@@ -26,18 +26,15 @@ import org.geotools.data.shapefile.ShapefileDataStoreFactory;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.api.data.SimpleFeatureStore;
-import org.geotools.filter.text.cql2.CQL;
-import org.geotools.util.logging.Logging;
-import org.junit.Assert;
-import org.junit.Test;
 import org.geotools.api.feature.Feature;
 import org.geotools.api.feature.simple.SimpleFeature;
 import org.geotools.api.feature.simple.SimpleFeatureType;
 import org.geotools.api.feature.type.FeatureType;
 import org.geotools.api.filter.Filter;
-import niva.geotools.data.CacheDataStore;
-import niva.geotools.data.CacheFeatureStore;
-
+import org.geotools.filter.text.cql2.CQL;
+import org.geotools.util.logging.Logging;
+import org.junit.Assert;
+import org.junit.Test;
 
 
 public class CacheStoreTest extends NivaTestSupport {
