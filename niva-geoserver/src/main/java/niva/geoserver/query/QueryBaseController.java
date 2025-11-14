@@ -47,7 +47,7 @@ public abstract class QueryBaseController extends RestBaseController {
 	private static final Logger LOGGER = Logging.getLogger(QueryBaseController.class);
 
 	
-	public QueryBaseController(Catalog catalog) {
+	QueryBaseController(Catalog catalog) {
 		this.catalog = catalog;
 	}
 

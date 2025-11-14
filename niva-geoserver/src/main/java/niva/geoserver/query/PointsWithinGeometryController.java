@@ -59,7 +59,7 @@ public class PointsWithinGeometryController extends QueryBaseController {
 
 
 	@Autowired
-	public PointsWithinGeometryController(@Qualifier("catalog") Catalog catalog) {
+	public PointsWithinGeometryController(@Qualifier("secureCatalog") Catalog catalog) {
 		super(catalog);
 	}
 

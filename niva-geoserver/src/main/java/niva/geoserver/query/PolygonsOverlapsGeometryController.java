@@ -45,7 +45,7 @@ public class PolygonsOverlapsGeometryController extends QueryBaseController {
 	private static final Logger LOGGER = Logging.getLogger(PolygonsOverlapsGeometryController.class);
 
 	@Autowired
-	public PolygonsOverlapsGeometryController(@Qualifier("catalog") Catalog catalog) {
+	public PolygonsOverlapsGeometryController(@Qualifier("secureCatalog") Catalog catalog) {
 		super(catalog);
 	}
 

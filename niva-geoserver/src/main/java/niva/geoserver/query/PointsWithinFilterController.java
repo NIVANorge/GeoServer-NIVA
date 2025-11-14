@@ -45,7 +45,7 @@ public class PointsWithinFilterController extends QueryBaseController {
 	private final FilterFactory ff = CommonFactoryFinder.getFilterFactory();
 
 	@Autowired
-	public PointsWithinFilterController(@Qualifier("catalog") Catalog catalog) {
+	public PointsWithinFilterController(@Qualifier("secureCatalog") Catalog catalog) {
 		super(catalog);
 	}
 

@@ -35,7 +35,7 @@ public class ExtentController extends QueryBaseController {
 	private static final Logger LOGGER = Logging.getLogger(ExtentController.class);
 
 	@Autowired
-	public ExtentController(@Qualifier("catalog") Catalog catalog) {
+	public ExtentController(@Qualifier("secureCatalog") Catalog catalog) {
 		super(catalog);
 	}
 

@@ -48,7 +48,7 @@ public class FeatureController extends QueryBaseController {
     private GeometryFactory gFact = JTSFactoryFinder.getGeometryFactory();
 
 	@Autowired
-	public FeatureController(@Qualifier("catalog") Catalog catalog) {
+	public FeatureController(@Qualifier("secureCatalog") Catalog catalog) {
 		super(catalog);
 	}
 

@@ -18,11 +18,9 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.geotools.api.feature.type.GeometryDescriptor;
 import org.geotools.api.filter.Filter;
-import org.geotools.api.filter.FilterFactory;
 import org.geotools.api.referencing.FactoryException;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.geotools.api.referencing.operation.TransformException;
-import org.geotools.factory.CommonFactoryFinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,7 +49,7 @@ public class PointsWithinDistanceController extends QueryBaseController {
     private static final GeometryFactory gFact = JTSFactoryFinder.getGeometryFactory();
 
 	@Autowired
-	public PointsWithinDistanceController(@Qualifier("catalog") Catalog catalog) {
+	public PointsWithinDistanceController(@Qualifier("secureCatalog") Catalog catalog) {
 		super(catalog);
 	}
 
