@@ -41,6 +41,7 @@ public class KorallrevWFSTest extends NivaTestSupport {
 		params.put("WFSDataStoreFactory:GET_CAPABILITIES_URL", WFS_URL);
 		params.put("WFSDataStoreFactory:WFS_STRATEGY", "auto");
 		params.put("WFSDataStoreFactory:GML_COMPLIANCE_LEVEL", 0);
+		params.put("WFSDataStoreFactory:TIMEOUT", 5000);
 		params.put("usedefaultsrs", false);
 		catalog.add(store);
 		
