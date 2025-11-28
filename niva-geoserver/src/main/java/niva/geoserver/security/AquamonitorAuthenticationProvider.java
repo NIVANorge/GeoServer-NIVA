@@ -2,6 +2,7 @@ package niva.geoserver.security;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.logging.Logger;
@@ -38,6 +39,12 @@ import niva.aquamonitor.data.ws.UserCargo;
 public class AquamonitorAuthenticationProvider extends GeoServerAuthenticationProvider {
 
 	static final String NO_USER = "NoUser";
+	
+	private static final String TOKEN = "AQUA_TOKEN";
+	
+	private static final String KEY = "AQUA_KEY";
+	
+	private static final String ROLE = "AQUAMONITOR_USER";
 	
 	private static final Logger LOGGER = Logging.getLogger(AquamonitorAuthenticationProvider.class);
 	
@@ -107,7 +114,6 @@ public class AquamonitorAuthenticationProvider extends GeoServerAuthenticationPr
 			catch (IOException ie) {
 				LOGGER.severe("Exception calling Aquamonitor Login.");
 				throw new AuthenticationServiceException(ie.getMessage(),ie);
-	
 			}
 		}
 		
@@ -117,7 +123,7 @@ public class AquamonitorAuthenticationProvider extends GeoServerAuthenticationPr
 		
 		LOGGER.fine("Aquamonitor user found.");
         try {
-            final Set<GrantedAuthority> roles = new HashSet<GrantedAuthority>();
+            final Set<GrantedAuthority> roles = new HashSet<>();
             roles.addAll(calculateRoles(user.username));
             roles.add(GeoServerRole.AUTHENTICATED_ROLE);
             roles.add(new AquamonitorUserRole(user));
@@ -131,7 +137,7 @@ public class AquamonitorAuthenticationProvider extends GeoServerAuthenticationPr
 	
 	private SortedSet<GeoServerRole> calculateRoles(String username) throws IOException {
 	    return new RoleCalculator(getSecurityManager().getActiveRoleService())
-                .calculateRoles(new GeoServerUser(username));
+                	.calculateRoles(new GeoServerUser(username));
 	}
 	
 	static class AquamonitorUserRole extends GeoServerRole {
@@ -140,10 +146,11 @@ public class AquamonitorAuthenticationProvider extends GeoServerAuthenticationPr
         private static final long serialVersionUID = 2853237326337565198L;
 
         AquamonitorUserRole(UserCargo user) {
-	        super("AQUAMONITOR_USER");
+	        super(ROLE);
 	        this.setUserName(user.username);
-	        this.getProperties().setProperty("AQUA_KEY", user.key);
-	        this.getProperties().setProperty("AQUA_TOKEN", user.token);
+	        Properties props = this.getProperties();
+	        props.setProperty(KEY, user.key);
+	        props.setProperty(TOKEN, user.token);
 	    }
 	}
 
