@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
@@ -69,8 +70,9 @@ public abstract class QueryBaseController extends RestBaseController {
 			return source;
 		}
 		catch (IOException ie) {
-			LOGGER.severe(ie.getMessage());
-			throw new RestException(String.format("Exception when reading layer: %s:%s (%s)", workspace, layer, ie.getMessage()), 
+			LOGGER.log(Level.SEVERE, "Error while getting feature source " + workspace + ":" + layer, ie);
+			throw new RestException(
+					String.format("Exception when reading layer: %s:%s (%s)", workspace, layer, ie.getMessage()), 
 			        HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
@@ -90,8 +92,10 @@ public abstract class QueryBaseController extends RestBaseController {
 			
 			return crs;
 		} catch (NoSuchAuthorityCodeException e) {
+			LOGGER.log(Level.SEVERE, "Problem with epsg code: " + epsg, e);
 			throw new RestException("GeoServer can't handle EPSG-code", HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (FactoryException e) {
+			LOGGER.log(Level.SEVERE, "Error with CRS factory.", e);
 			throw new RestException("GeoServer isn't set up correctly", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -106,6 +110,7 @@ public abstract class QueryBaseController extends RestBaseController {
 			geometry = URLDecoder.decode(geometry, "UTF-8");	
 			return geometry;
 		} catch (UnsupportedEncodingException e) {
+			LOGGER.log(Level.SEVERE, "Error while extracting geometry: " + geometry, e);
 			throw new RestException("GeoServer doesn't support UTF-8", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
