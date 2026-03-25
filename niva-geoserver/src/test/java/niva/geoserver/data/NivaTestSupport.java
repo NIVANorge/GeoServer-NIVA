@@ -130,6 +130,7 @@ public class NivaTestSupport extends GeoServerSystemTestSupport {
 		layerCat.setName(resource.getName());
 		layerCat.setDefaultStyle(style);
 		layerCat.setEnabled(true);
+		layerCat.setAdvertised(true);
 		
 		catalog.add(layerCat);
 		return layerCat;

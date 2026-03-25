@@ -14,6 +14,10 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
 
+/**
+ * Tests for WFS queries on AquaMonitor stores.
+ * These tests uses the end-point of the AquaMonitor Test server.
+ */
 public class AquaMonitorWFSTest extends NivaTestSupport {
 	
 	private final static String TEST_HOST = "https://test-aquamonitor.niva.no/";
