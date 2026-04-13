@@ -4,14 +4,14 @@
  <modelVersion>4.0.0</modelVersion>
  <groupId>niva.geoserver</groupId>
  <artifactId>niva-geoserver</artifactId>
- <version>12.6.0</version>
+ <version>12.6.1</version>
  <packaging>jar</packaging>
  <name>Niva GeoServer</name>
  <properties>
    <gt.version>32.7-NIVA</gt.version>
-   <gs.version>2.26.9-NIVA</gs.version>
+   <gs.version>2.26.10-NIVA</gs.version>
    <aqm.version>11.3.0</aqm.version>
-   <core.version>3.8.8</core.version>
+   <core.version>3.8.9</core.version>
    <spring.version>5.3.39</spring.version>
    <spring.security.version>5.8.16</spring.security.version>
    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
