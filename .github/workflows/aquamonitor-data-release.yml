@@ -24,3 +24,6 @@ jobs:
     - name: Build and deploy
       run: mvn -s $GITHUB_WORKSPACE/.github/workflows/maven-settings.xml clean deploy -DskipTests
       working-directory: aquamonitor-data
+      env:
+          USER_NAME: ${{ secrets.MVN_USER }}
+          ACCESS_TOKEN: ${{ secrets.MVN_TOKEN }}

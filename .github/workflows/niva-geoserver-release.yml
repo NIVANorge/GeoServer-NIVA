@@ -23,7 +23,10 @@ jobs:
     - name: Build and package
       run: mvn -s $GITHUB_WORKSPACE/.github/workflows/maven-settings.xml clean deploy -DskipTests
       working-directory: niva-geoserver
-      
+      env:
+          USER_NAME: ${{ secrets.MVN_USER }}
+          ACCESS_TOKEN: ${{ secrets.MVN_TOKEN }}
+
     - name: Get version from pom.xml
       id: get_version
       run: |
