@@ -23,7 +23,8 @@ import org.geotools.test.TestData;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import niva.geoserver.data.CacheStoreTest;
+
+import niva.geoserver.cache.CacheStoreTest;
 import niva.geoserver.data.NivaTestSupport;
 import javax.imageio.ImageIO;
 

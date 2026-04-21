@@ -1,4 +1,4 @@
-package niva.geoserver.data;
+package niva.geoserver.cache;
 
 /**
  * Exception for cache problems

@@ -1,4 +1,4 @@
-package niva.geoserver.data;
+package niva.geoserver.cache;
 
 
 import java.io.BufferedReader;
@@ -36,7 +36,11 @@ import org.geotools.util.logging.Logging;
 import org.junit.Assert;
 import org.junit.Test;
 
+import niva.geoserver.data.NivaTestSupport;
 
+/**
+ * AquaMonitor related tests for cache datastore
+ */
 public class CacheStoreTest extends NivaTestSupport {
     
     private static Logger LOGGER = Logging.getLogger(CacheStoreTest.class);

@@ -1,4 +1,4 @@
-package niva.geoserver.data;
+package niva.geoserver.cache;
 
 import java.time.Duration;
 import java.time.Instant;

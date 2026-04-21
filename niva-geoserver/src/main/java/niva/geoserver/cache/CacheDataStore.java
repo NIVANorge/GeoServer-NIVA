@@ -1,4 +1,4 @@
-package niva.geoserver.data;
+package niva.geoserver.cache;
 
 import java.io.IOException;
 import java.time.Duration;

@@ -102,7 +102,7 @@ public class GeographyController extends AquaWebService {
     }
     
 
-    
+    @Deprecated
     public StationPointReader getAdminStationReader(String userkey) throws IOException {
         checkToken();
         LOGGER.fine("userkey:" + userkey);

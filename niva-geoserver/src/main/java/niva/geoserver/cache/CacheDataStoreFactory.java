@@ -1,4 +1,4 @@
-package niva.geoserver.data;
+package niva.geoserver.cache;
 
 import java.awt.RenderingHints.Key;
 import java.io.IOException;

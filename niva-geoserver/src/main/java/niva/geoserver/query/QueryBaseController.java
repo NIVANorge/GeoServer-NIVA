@@ -136,14 +136,15 @@ public abstract class QueryBaseController extends RestBaseController {
 		return (SimpleFeatureSource)info.getFeatureSource(null, null);
 	}
 	
-
-	
-	protected HashMap<String, Object> createResultMap(SimpleFeatureCollection coll) {
-		final HashMap<String, Object> features = new HashMap<>();
-		final List<Map<String, Object>> arr = new ArrayList<>();
-		
+	/**
+	 * Creates a map with the features in the collection. The map has a key "features" with an array of maps as value.
+	 * Each map in the array represents a feature, and has the attribute names as keys and the attribute values as values.
+	 * The geometry attribute is not included in the result.
+	 * @param coll
+	 * @return
+	 */
+	protected Map<String, Object> createResultMap(SimpleFeatureCollection coll) {
 		final SimpleFeatureType schema = coll.getSchema();
-		
 		final String geometry = schema.getGeometryDescriptor().getLocalName();
 		final List<Pair<Integer, String>> descs = new ArrayList<>(schema.getAttributeCount());
 		
@@ -154,60 +155,45 @@ public abstract class QueryBaseController extends RestBaseController {
 		    }
 		}
 		
+		final List<Map<String, Object>> arr = new ArrayList<>();
 		try (final SimpleFeatureIterator iter = coll.features()) {
-
 			while (iter.hasNext()) {
 				final SimpleFeature feat = iter.next();
 				final Map<String, Object> map = new HashMap<>();
-				for(Pair<Integer, String> desc : descs) {
-				    map.put(desc.getRight(), feat.getAttribute(desc.getLeft()));
-				}
+				descs.forEach(desc -> map.put(desc.getRight(), feat.getAttribute(desc.getLeft())));
 				arr.add(map);
 			}
 		}
-		features.put("features", arr);
-		
-		return features;
+		return Map.of("features", arr);
 	}
 	
-	protected HashMap<String, Object> createResultMapWithArea(SimpleFeatureCollection coll) {
-		HashMap<String, Object> features = new HashMap<String, Object>();
-		
-		SimpleFeatureIterator iter = coll.features();
-		ArrayList<HashMap<String, Object>> arr = new ArrayList<HashMap<String, Object>>();
-		Collection<PropertyDescriptor> descs = coll.getSchema().getDescriptors();
-		String geometry = coll.getSchema().getGeometryDescriptor().getLocalName();
-		
-		while (iter.hasNext()) {
-			SimpleFeature feat = iter.next();
+	protected Map<String, Object> createResultMapWithArea(SimpleFeatureCollection coll) {
+		List<Map<String, Object>> arr = new ArrayList<>();
+		try (SimpleFeatureIterator iter = coll.features()) {
+			Collection<PropertyDescriptor> descs = coll.getSchema().getDescriptors();
+			String geometry = coll.getSchema().getGeometryDescriptor().getLocalName();
 			
-			HashMap<String, Object> map = new HashMap<String, Object>();
-			
-			for (PropertyDescriptor desc: descs) {
-				String name = desc.getName().getLocalPart();
-				if (!name.equals(geometry)) {
-					Object value;
-					value = feat.getAttribute(desc.getName());
-					map.put(name, value);
+			while (iter.hasNext()) {
+				SimpleFeature feat = iter.next();
+				Map<String, Object> map = new HashMap<>();
+				for (PropertyDescriptor desc: descs) {
+					String name = desc.getName().getLocalPart();
+					if (!name.equals(geometry)) {
+						Object value = feat.getAttribute(desc.getName());
+						map.put(name, value);
+					}
+					else {
+						map.put("area", ((Geometry)feat.getAttribute(geometry)).getArea());
+					}
 				}
-				else {
-					map.put("area", ((Geometry)feat.getAttribute(geometry)).getArea());
-				}
-			}
-			arr.add(map);
+				arr.add(map);
+			}	
 		}
-		
-		iter.close();
-		
-		features.put("features", arr);
-		
-		return features;
+		return Map.of("features", arr);
 	}
 	
-	protected HashMap<String, Object> createEmptyResult() {
-		HashMap<String, Object> features = new HashMap<String, Object>();
-		features.put("features", null);
-		return features;
+	protected Map<String, Object> createEmptyResult() {
+		return Map.of("features", null);
 	}
 
 }

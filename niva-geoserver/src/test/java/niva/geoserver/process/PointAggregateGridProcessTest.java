@@ -34,7 +34,7 @@ import org.geotools.api.feature.simple.SimpleFeature;
 import org.geotools.api.feature.simple.SimpleFeatureType;
 import org.geotools.api.filter.Filter;
 import org.geotools.api.filter.FilterFactory;
-import niva.geotools.data.CacheDataStoreFactory;
+import niva.geoserver.cache.CacheDataStoreFactory;
 import niva.geotools.referencing.CRS;
 
 

@@ -25,7 +25,7 @@
         <property name="threadNamePrefix" value="CacheScheduler-"/>
     </bean>
     
-    <bean id="cacheScheduler" class="niva.geoserver.data.CacheScheduler">
+    <bean id="cacheScheduler" class="niva.geoserver.cache.CacheScheduler">
     	<constructor-arg ref="rawCatalog"/>
         <constructor-arg ref="taskScheduler"/>
     </bean>

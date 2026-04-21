@@ -29,8 +29,8 @@ import org.geotools.api.filter.expression.Expression;
  */
 public class AquamonitorSymbolFactory implements ExternalGraphicFactory {
 	
-	final static String FORMAT = "application/chart";
-	final static String HTTP_CHART = "http://aquamonitor?";
+	public final static String FORMAT = "application/chart";
+	public final static String HTTP_CHART = "http://aquamonitor?";
 	
 	private final static int MIN_PIE_BORDER = 4;
 	

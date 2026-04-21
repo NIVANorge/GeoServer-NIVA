@@ -36,7 +36,6 @@ public class SiteDataStore extends ContentDataStore {
 	
 	public static final String[] DEFAULT_LAYERS = new String[] {
 	        "STATION_POINTS",
-	        "ADMIN_STATION_POINTS", 
 	        "STATION_DATATYPE_POINTS", 
 	        "VALUE_POINTS"};
 	
@@ -100,12 +99,9 @@ public class SiteDataStore extends ContentDataStore {
 	protected List<Name> createTypeNames() throws IOException {
 		List<Name> list = new ArrayList<>();
 		list.add(new NameImpl(getNamespaceURI(), DEFAULT_LAYERS[0]));
+		list.add(new NameImpl(getNamespaceURI(), DEFAULT_LAYERS[1]));
 		if (getKey() != null) {
-			list.add(new NameImpl(getNamespaceURI(), DEFAULT_LAYERS[1]));
-		}
-		list.add(new NameImpl(getNamespaceURI(), DEFAULT_LAYERS[2]));
-		if (getKey() != null) {
-		    list.add(new NameImpl(getNamespaceURI(), DEFAULT_LAYERS[3]));
+		    list.add(new NameImpl(getNamespaceURI(), DEFAULT_LAYERS[2]));
 		}
 		return list;
 	}
@@ -143,36 +139,21 @@ public class SiteDataStore extends ContentDataStore {
 			LOGGER.fine(String.format("Create feature source for %s with key %s.\n", typeName, key));
 		}
 		
-		if (entry.getTypeName().equals(DEFAULT_LAYERS[0]) || entry.getTypeName().equals(DEFAULT_LAYERS[1])) {
-			StationPointReader reader;
-			
-			if (key == null && typeName.equals(DEFAULT_LAYERS[0])) {
-				reader =  ws.getAllStationReader();
-			}
-			else if (key != null && typeName.equals(DEFAULT_LAYERS[0])) {
-				reader =  ws.getCurrentStationReader(key);
-			}
-			else if (key != null && typeName.equals(DEFAULT_LAYERS[1])) {
-				reader =  ws.getAdminStationReader(key);
-			}
-			else {
-				LOGGER.severe("Unknown typename specified: " + typeName);
-				throw new IllegalArgumentException("Unknown TypeName");
-			}
-		
+		if (entry.getTypeName().equals(DEFAULT_LAYERS[0])) {
+			StationPointReader reader = key == null ? ws.getAllStationReader() : ws.getCurrentStationReader(key);
 			return new StationPointSource(entry, reader);
 		}
-		else if (entry.getTypeName().equals(DEFAULT_LAYERS[2])) {
-			DatatypeReader reader = (key == null ? ws.getAllDatatypePointsReader()
-                    : ws.getCurrentDatatypePointsReader(key));
+		else if (entry.getTypeName().equals(DEFAULT_LAYERS[1])) {
+			DatatypeReader reader = key == null ? ws.getAllDatatypePointsReader()
+                    : ws.getCurrentDatatypePointsReader(key);
             return new DatatypePointSource(entry, reader, getAlldatatypes());
 		}
-		else if (entry.getTypeName().equals(DEFAULT_LAYERS[3])) {
+		else if (entry.getTypeName().equals(DEFAULT_LAYERS[2])) {
 		    ValuePointReader reader = ws.getCurrentValuePointsReader(key);
 		    return new ValuePointSource(entry, reader);
 		}
 		else {
-			throw new IllegalArgumentException("Unknown typeName");
+			throw new IllegalArgumentException("Unknown TypeName [" + typeName + "]");
 		}
 	}
 }

@@ -1,7 +1,7 @@
 package niva.geoserver.query;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
@@ -55,7 +55,7 @@ public class PointsWithinFilterController extends QueryBaseController {
 	 *  Uses the union of the geometries to make another call for workspace&layer*/
 	@SuppressWarnings("rawtypes")
 	@GetMapping
-	public HashMap get(@PathVariable String workspace,
+	public Map get(@PathVariable String workspace,
 									@PathVariable String layer,
 									@PathVariable String workspace2,
 									@PathVariable String layer2,

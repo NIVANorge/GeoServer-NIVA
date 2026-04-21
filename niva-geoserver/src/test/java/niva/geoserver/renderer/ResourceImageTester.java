@@ -14,7 +14,9 @@ import javax.imageio.ImageIO;
 
 import org.geotools.TestData;
 
-
+/**
+ * Helper class to compare two images, and to find the most frequent color in a clip.
+ */
 public class ResourceImageTester {
 	
 	static void assertImage(String filenameActual, BufferedImage imageTest) throws Exception {

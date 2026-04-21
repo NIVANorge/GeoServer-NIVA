@@ -1,11 +1,11 @@
-package niva.aquamonitor.data;
+package niva.geoserver.cache;
 
 
 import java.io.File;
-import java.io.Serializable;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.geotools.TestData;
@@ -25,9 +25,6 @@ import org.geotools.api.feature.simple.SimpleFeature;
 import org.geotools.api.feature.simple.SimpleFeatureType;
 import org.geotools.api.feature.type.Name;
 import org.geotools.api.filter.Filter;
-import niva.geotools.data.CacheDataStore;
-import niva.geotools.data.CacheDataStoreFactory;
-import niva.geotools.data.CacheFeatureStore;
 import org.junit.Test;
 import org.junit.Assert;
 
@@ -40,12 +37,12 @@ public class ShapefileCacheDataStoreTest {
 	    File cacheFolder = new File(TestData.file(this, null), "cache_1");
 	    cacheFolder.mkdir();
 	    try {
-    		final HashMap<String, Serializable> params = new HashMap<>();
+    		final Map<String, Object> params = new HashMap<>();
     		params.put(CacheDataStoreFactory.NAMESPACE_PARAM.key, "http://www.aquamonitor.no/");
-    		params.put(CacheDataStoreFactory.DBTYPE_PARAM.key, (Serializable) CacheDataStoreFactory.DBTYPE_PARAM.sample);
+    		params.put(CacheDataStoreFactory.DBTYPE_PARAM.key, CacheDataStoreFactory.DBTYPE_PARAM.sample);
     		params.put(CacheDataStoreFactory.BACKEND_PARAM.key, "dbtype=aquamonitor;user=Ostfold");
     		params.put(CacheDataStoreFactory.CACHE_PARAM.key, "dbtype=shapefile;url=file:" + cacheFolder.getAbsolutePath());
-    		params.put(CacheDataStoreFactory.INTERVAL_PARAM.key, (Serializable) CacheDataStoreFactory.INTERVAL_PARAM.sample);
+    		params.put(CacheDataStoreFactory.INTERVAL_PARAM.key, CacheDataStoreFactory.INTERVAL_PARAM.sample);
     		
     		final CacheDataStore store = new CacheDataStoreFactory().createDataStore(params);
     		final List<Name> names = store.getNames();
@@ -61,15 +58,15 @@ public class ShapefileCacheDataStoreTest {
 	
 	@Test
 	public void datatypePointToShapeTest() throws Exception {
-		HashMap<String, Serializable> params = new HashMap<String, Serializable>();
+		Map<String, Object> params = new HashMap<>();
 		
 		File cacheFolder = new File(TestData.file(this, null), "cache_2");
         cacheFolder.mkdir();
 		params.put(CacheDataStoreFactory.NAMESPACE_PARAM.key, "http://www.aquamonitor.no/");	
-		params.put(CacheDataStoreFactory.DBTYPE_PARAM.key, (Serializable) CacheDataStoreFactory.DBTYPE_PARAM.sample);
+		params.put(CacheDataStoreFactory.DBTYPE_PARAM.key, CacheDataStoreFactory.DBTYPE_PARAM.sample);
 		params.put(CacheDataStoreFactory.BACKEND_PARAM.key, "dbtype=aquamonitor-site;site=Intern;host=https://test-aquamonitor.niva.no/");
 		params.put(CacheDataStoreFactory.CACHE_PARAM.key, "dbtype=shapefile;url=file:" + cacheFolder.getAbsolutePath());
-		params.put(CacheDataStoreFactory.INTERVAL_PARAM.key, (Serializable) CacheDataStoreFactory.INTERVAL_PARAM.sample);
+		params.put(CacheDataStoreFactory.INTERVAL_PARAM.key, CacheDataStoreFactory.INTERVAL_PARAM.sample);
 		params.put(CacheDataStoreFactory.CACHE_TYPE_NAME_PARAM.key, "INTERN_%1s");
 		
 		CacheDataStore store = new CacheDataStoreFactory().createDataStore(params);
@@ -98,9 +95,9 @@ public class ShapefileCacheDataStoreTest {
 	@Test
 	public void stationPointToMemoryTest() throws Exception {
 		CacheDataStoreFactory factory = new CacheDataStoreFactory();
-		HashMap<String, Serializable> params = new HashMap<String, Serializable>();
+		Map<String, Object> params = new HashMap<>();
 		params.put(CacheDataStoreFactory.NAMESPACE_PARAM.key, "http://www.aquamonitor.no/");		
-		params.put(CacheDataStoreFactory.DBTYPE_PARAM.key, (Serializable) CacheDataStoreFactory.DBTYPE_PARAM.sample);
+		params.put(CacheDataStoreFactory.DBTYPE_PARAM.key, CacheDataStoreFactory.DBTYPE_PARAM.sample);
 		params.put(CacheDataStoreFactory.BACKEND_PARAM.key, "dbtype=aquamonitor;user=Ostfold");
 		params.put(CacheDataStoreFactory.INTERVAL_PARAM.key, 0);
 		
@@ -124,12 +121,12 @@ public class ShapefileCacheDataStoreTest {
 		File cacheFolder = new File(TestData.file(this, null), "cache_3");
         cacheFolder.mkdir();
 		
-		HashMap<String, Serializable> params = new HashMap<String, Serializable>();
+		Map<String, Object> params = new HashMap<>();
 		params.put(CacheDataStoreFactory.NAMESPACE_PARAM.key, "http://www.aquamonitor.no/");	
-		params.put(CacheDataStoreFactory.DBTYPE_PARAM.key, (Serializable) CacheDataStoreFactory.DBTYPE_PARAM.sample);
+		params.put(CacheDataStoreFactory.DBTYPE_PARAM.key, CacheDataStoreFactory.DBTYPE_PARAM.sample);
 		params.put(CacheDataStoreFactory.BACKEND_PARAM.key, "dbtype=aquamonitor;user=Ostfold");
 		params.put(CacheDataStoreFactory.CACHE_PARAM.key, "dbtype=shapefile;url=file:" + cacheFolder.getAbsolutePath());
-		params.put(CacheDataStoreFactory.INTERVAL_PARAM.key, (Serializable) CacheDataStoreFactory.INTERVAL_PARAM.sample);
+		params.put(CacheDataStoreFactory.INTERVAL_PARAM.key, CacheDataStoreFactory.INTERVAL_PARAM.sample);
 
 		ShapefileDataStore shpDataStore = null;
 		CacheDataStore store = new CacheDataStoreFactory().createDataStore(params);

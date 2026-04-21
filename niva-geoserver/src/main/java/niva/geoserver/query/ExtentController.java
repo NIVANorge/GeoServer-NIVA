@@ -2,6 +2,7 @@ package niva.geoserver.query;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
@@ -42,12 +43,12 @@ public class ExtentController extends QueryBaseController {
 
 	@SuppressWarnings("rawtypes")
 	@GetMapping()
-	public HashMap get(@PathVariable String workspace, @PathVariable String layer) {
+	public Map get(@PathVariable String workspace, @PathVariable String layer) {
 		SimpleFeatureSource source = this.extractSourceFromPathVariable(workspace, layer);
 		try {
 			ReferencedEnvelope env = source.getBounds();
 			
-			HashMap<String, Double> extent = new HashMap<String, Double>();
+			Map<String, Double> extent = new HashMap<>();
 			
 			extent.put("minX", env.getMinX());
 			extent.put("maxX", env.getMaxX());

@@ -1,7 +1,5 @@
-package niva.aquamonitor.data;
+package niva.geoserver.cache;
 
-
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.HashMap;
@@ -10,10 +8,8 @@ import org.geotools.api.data.Query;
 import org.geotools.data.postgis.PostgisNGDataStoreFactory;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.filter.text.cql2.CQL;
-import niva.geotools.data.CacheDataStore;
-import niva.geotools.data.CacheDataStoreFactory;
-import niva.geotools.data.CacheFeatureStore;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Test;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -21,19 +17,27 @@ import static org.junit.Assert.assertTrue;
 /**
  * 
  * Tests for usage of Postgis as an CacheDataStore for AquaMonitor specific datastores.
+ * Credentials for the Postgis database is expected to be set as environment variables:
+ * PG_TEST_HOST, PG_TEST_USER, PG_TEST_PASSWORD.
+ * Uses the user Ostfold, and a station_id of 9456 for testing.
+ * This station should be present in the test database, and have a matching projects_stations with station_id=9456.
+ * 
+ * The test will create a new database named temp_1, and will be deleted after the test is done.
+ * 
  * @author Roar Brænden
  *
  */
 public class PostgisCacheDataStoreTest {
 	
-	private final String HOST = "etna.niva.no";
-	private final String USER  = "nivakart";
-	private final String PASSWORD = "316miljo";
+	private final String HOST = System.getenv("PG_TEST_HOST");
+	private final String USER  = System.getenv("PG_TEST_USER");
+	private final String PASSWORD = System.getenv("PG_TEST_PASSWORD");
 	
 	private Map<String, ?> getTestParameters() {
-	    final HashMap<String, Serializable> params = new HashMap<String, Serializable>();
+		
+	    final HashMap<String, Object> params = new HashMap<>();
         params.put(CacheDataStoreFactory.NAMESPACE_PARAM.key, "http://www.aquamonitor.no/");
-        params.put(CacheDataStoreFactory.DBTYPE_PARAM.key, (Serializable) CacheDataStoreFactory.DBTYPE_PARAM.sample);
+        params.put(CacheDataStoreFactory.DBTYPE_PARAM.key, CacheDataStoreFactory.DBTYPE_PARAM.sample);
         params.put(CacheDataStoreFactory.BACKEND_PARAM.key, "dbtype=aquamonitor;user=Ostfold");
         params.put(CacheDataStoreFactory.CACHE_PARAM.key, "dbtype=" + PostgisNGDataStoreFactory.DBTYPE.sample + 
                                                           ";host=" + HOST +
@@ -43,13 +47,14 @@ public class PostgisCacheDataStoreTest {
                                                           ";database=temp_1" + 
                                                           ";create database=true");
         
-        params.put(CacheDataStoreFactory.INTERVAL_PARAM.key, (Serializable) CacheDataStoreFactory.INTERVAL_PARAM.sample);
+        params.put(CacheDataStoreFactory.INTERVAL_PARAM.key, CacheDataStoreFactory.INTERVAL_PARAM.sample);
         
         return params;
 	}
 	
 	@Test
 	public void stationPointToPostgisTest() throws Exception {
+		Assume.assumeNotNull(HOST, USER, PASSWORD);
 		final CacheDataStore store = new CacheDataStoreFactory().createDataStore(getTestParameters());
 		assertNotNull(store);
 
@@ -70,6 +75,7 @@ public class PostgisCacheDataStoreTest {
 	 */
 	@Test
 	public void testModifyFeaturesUpdatingCache() throws Exception {
+		Assume.assumeNotNull(HOST, USER, PASSWORD);
 	    final String pgConnectionStr = "jdbc:postgresql://"+HOST+":"+PostgisNGDataStoreFactory.PORT.sample+"/temp_1";
 
 	    try (Connection conn = DriverManager.getConnection(pgConnectionStr, USER, PASSWORD)) {

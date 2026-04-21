@@ -1,4 +1,4 @@
-package niva.geoserver.renderer;
+package niva.aquamonitor.tools;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -10,13 +10,18 @@ import java.awt.event.WindowEvent;
 import javax.swing.Icon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-
-import org.geotools.factory.CommonFactoryFinder;
-
 import org.geotools.api.filter.FilterFactory;
 import org.geotools.api.filter.expression.Literal;
+import org.geotools.factory.CommonFactoryFinder;
+
+import niva.geoserver.renderer.AquamonitorSymbolFactory;
 
 
+/**
+ * A simple application to test the AquaMonitorSymbolFactory.
+ * 
+ * @author Roar Brænden, NIVA
+ */
 public class AquaMonitorIconApp {
 	
     public static final void main(String[] args) {

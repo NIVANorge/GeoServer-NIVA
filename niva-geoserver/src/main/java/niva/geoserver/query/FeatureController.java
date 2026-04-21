@@ -1,7 +1,7 @@
 package niva.geoserver.query;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.geotools.api.data.SimpleFeatureSource;
@@ -55,7 +55,7 @@ public class FeatureController extends QueryBaseController {
 	
 	@SuppressWarnings("rawtypes")
 	@GetMapping
-	public HashMap get(@PathVariable String workspace,
+	public Map get(@PathVariable String workspace,
 									@PathVariable String layer,
 									@PathVariable String epsg,
 									@PathVariable Double north,

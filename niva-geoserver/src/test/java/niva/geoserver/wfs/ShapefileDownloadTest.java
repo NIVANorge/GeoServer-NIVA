@@ -12,7 +12,9 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -66,17 +68,22 @@ public class ShapefileDownloadTest extends NivaTestSupport {
         addAquaMonitorStore("Intern_download", params);
         addStationLayer(catalog.getDataStoreByName("no.niva.aquamonitor", "Intern_download"), "Intern_download_stations");
         
-        final String xml = "<wfs:GetFeature service=\"WFS\" version=\"1.1.0\" "
-                + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
-                + "xmlns:wfs=\"http://www.opengis.net/wfs\" "
-                + "outputFormat=\"shape-zip\">"
-                + "<wfs:Query typeName=\"no.niva.aquamonitor:Intern_download_stations\" srsName=\"EPSG:4326\">"
-                + "<ogc:Filter>"
-                + "<ogc:PropertyIsEqualTo><ogc:PropertyName>no.niva.aquamonitor:STATION_ID</ogc:PropertyName>"
-                + "<ogc:Literal>3570</ogc:Literal></ogc:PropertyIsEqualTo>"
-                + "</ogc:Filter></wfs:Query></wfs:GetFeature>";
+        final String xml = """
+        		           <wfs:GetFeature service="WFS" version="2.0.0" xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                					xmlns:fes="http://www.opengis.net/fes/2.0"
+        							outputFormat="shape-zip">
+                				<wfs:Query typeNames="no.niva.aquamonitor:Intern_download_stations">
+                					<fes:Filter>
+                						<fes:PropertyIsEqualTo>
+        		      						<fes:ValueReference>STATION_ID</fes:ValueReference>
+                							<fes:Literal>3570</fes:Literal>
+                						</fes:PropertyIsEqualTo>
+                					</fes:Filter>
+                				</wfs:Query>	
+        					</wfs:GetFeature>
+        					""";
         
-        final String path = "wfs?typeName=no.niva.aquamonitor:Intern_download_stations&format_options=SHAPEFILE:download.shp;PRJFILEFORMAT:ESRI";
+        final String path = "wfs?format_options=" + URLDecoder.decode("PRJFILEFORMAT:ESRI;SHAPEFILE:download.shp", StandardCharsets.UTF_8);
         
         File temp = null;
         try (InputStream is = getBinaryInputStream(postAsServletResponse(path, xml))){
