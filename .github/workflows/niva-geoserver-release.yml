@@ -19,19 +19,9 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: 'maven'
-        
-    - name: Configure Maven settings
-      uses: s4u/maven-settings-action@v3.0.0
-      with:
-        servers: |
-          [{
-            "id": "github",
-            "username": "${{ github.actor }}",
-            "password": "${{ secrets.GITHUB_TOKEN }}"
-          }]
     
     - name: Build and package
-      run: mvn clean deploy -DskipTests
+      run: mvn -s $GITHUB_WORKSPACE/.github/workflows/maven-settings.xml clean deploy -DskipTests
       working-directory: niva-geoserver
       
     - name: Get version from pom.xml
