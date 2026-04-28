@@ -4,7 +4,7 @@
  <modelVersion>4.0.0</modelVersion>
  <groupId>niva.geoserver</groupId>
  <artifactId>niva-geoserver</artifactId>
- <version>12.7.1</version>
+ <version>12.8.0</version>
  <packaging>jar</packaging>
  <name>Niva GeoServer</name>
  <properties>
@@ -17,6 +17,23 @@
    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
  </properties>
  <dependencies>
+    <dependency>
+    	<groupId>org.jfree</groupId>
+    	<artifactId>jfreechart</artifactId>
+    	<version>1.5.3</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.18.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+	  <groupId>javax.media</groupId>
+	  <artifactId>jai_core</artifactId>
+	  <version>1.1.3</version>
+	  <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -38,6 +55,12 @@
     <dependency>
      <groupId>org.geotools</groupId>
      <artifactId>gt-main</artifactId>
+     <version>${gt.version}</version>
+     <scope>provided</scope>
+   </dependency>
+    <dependency>
+     <groupId>org.geotools</groupId>
+     <artifactId>gt-jdbc</artifactId>
      <version>${gt.version}</version>
      <scope>provided</scope>
    </dependency>
@@ -100,11 +123,6 @@
      <artifactId>jts-core</artifactId>
      <version>1.20.0</version>
      <scope>provided</scope>
-   </dependency>
-   <dependency>
-   	<groupId>org.jfree</groupId>
-   	<artifactId>jfreechart</artifactId>
-   	<version>1.5.6</version>
    </dependency>
    <dependency>
      <groupId>org.geoserver</groupId>
@@ -219,10 +237,56 @@
   	  <artifactId>niva-core</artifactId>
   	  <version>${core.version}</version>
   	  <exclusions>
-  	  	<exclusion>
-  	  	    <groupId>*</groupId>
-    	  	<artifactId>*</artifactId>
-  	  	</exclusion>
+  	    <!-- Exclude GeoTools dependencies already in GeoServer -->
+  	    <exclusion>
+  	      <groupId>org.geotools</groupId>
+  	      <artifactId>*</artifactId>
+  	    </exclusion>
+   	    <exclusion>
+  	      <groupId>org.geotools.xsd</groupId>
+  	      <artifactId>*</artifactId>
+  	    </exclusion>
+  	    <!-- Exclude JTS already in GeoServer -->
+  	    <exclusion>
+  	      <groupId>org.locationtech.jts</groupId>
+  	      <artifactId>*</artifactId>
+  	    </exclusion>
+  	    <!-- Exclude common libraries in GeoServer -->
+  	    <exclusion>
+  	      <groupId>commons-logging</groupId>
+  	      <artifactId>*</artifactId>
+  	    </exclusion>
+  	    <exclusion>
+  	      <groupId>org.apache.commons</groupId>
+  	      <artifactId>*</artifactId>
+  	    </exclusion>
+  	    <exclusion>
+  	      <groupId>com.fasterxml.jackson.core</groupId>
+  	      <artifactId>*</artifactId>
+  	    </exclusion>
+  	    <exclusion>
+  	      <groupId>com.thoughtworks.xstream</groupId>
+  	      <artifactId>*</artifactId>
+  	    </exclusion>
+  	    <!-- Exclude Spring Framework (already in GeoServer) -->
+  	    <exclusion>
+  	      <groupId>org.springframework</groupId>
+  	      <artifactId>*</artifactId>
+  	    </exclusion>
+  	    <!-- Exclude Apache HTTP components (may be in GeoServer) -->
+  	    <exclusion>
+  	      <groupId>org.apache.httpcomponents</groupId>
+  	      <artifactId>*</artifactId>
+  	    </exclusion>
+  	    <!-- Exclude Servlet API (already provided) -->
+  	    <exclusion>
+  	      <groupId>javax.servlet</groupId>
+  	      <artifactId>*</artifactId>
+  	    </exclusion>
+  	    <exclusion>
+  	      <groupId>jakarta.servlet</groupId>
+  	      <artifactId>*</artifactId>
+  	    </exclusion>
   	  </exclusions>
     </dependency>
     <dependency>
@@ -230,11 +294,57 @@
       <artifactId>aquamonitor-data</artifactId>
       <version>${aqm.version}</version>
       <exclusions>
-  	  	<exclusion>
-  	  	    <groupId>*</groupId>
-    	  	<artifactId>*</artifactId>
-  	  	</exclusion>
-  	  </exclusions>
+        <!-- Exclude GeoTools dependencies already in GeoServer -->
+        <exclusion>
+          <groupId>org.geotools</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+   	    <exclusion>
+  	      <groupId>org.geotools.xsd</groupId>
+  	      <artifactId>*</artifactId>
+  	    </exclusion>
+        <!-- Exclude JTS already in GeoServer -->
+        <exclusion>
+          <groupId>org.locationtech.jts</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <!-- Exclude common libraries in GeoServer -->
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.thoughtworks.xstream</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <!-- Exclude Spring Framework (already in GeoServer) -->
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <!-- Exclude Apache HTTP components (may be in GeoServer) -->
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <!-- Exclude Servlet API (already provided) -->
+        <exclusion>
+          <groupId>javax.servlet</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>jakarta.servlet</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
      <groupId>org.geotools</groupId>
@@ -451,6 +561,16 @@
 	  </plugin>
     </plugins>
   </build>
+  <repositories>
+    <repository>
+      <id>osgeo</id>
+      <name>OSGeo Release Repository</name>
+      <url>https://repo.osgeo.org/repository/release/</url>
+      <snapshots>
+      	<enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
   <distributionManagement>
     <repository>
       <id>github</id>
