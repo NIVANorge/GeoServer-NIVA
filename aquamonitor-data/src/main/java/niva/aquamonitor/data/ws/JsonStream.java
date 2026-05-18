@@ -4,22 +4,19 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-import javax.net.ssl.SSLHandshakeException;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHeaders;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.config.RequestConfig.Builder;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.config.RequestConfig.Builder;
+import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 import org.geotools.util.logging.Logging;
 import org.json.simple.parser.ContentHandler;
 import org.json.simple.parser.JSONParser;
@@ -119,46 +116,35 @@ public abstract class JsonStream implements ContentHandler, AutoCloseable  {
 		final HttpGet get = new HttpGet(url);
 		get.setHeader(HttpHeaders.ACCEPT, "application/json");
 		Builder configBuilder = RequestConfig.custom()
-		        .setCookieSpec(CookieSpecs.STANDARD)
-                .setConnectTimeout(5 * 1000);
+		                                     .setCookieSpec(null)
+		                                     .setConnectTimeout(5 * 1000, TimeUnit.MILLISECONDS);
 		if (timeoutMins != null) {
-            configBuilder.setSocketTimeout(timeoutMins * 60 * 1000);
+            configBuilder.setResponseTimeout(timeoutMins * 60 * 1000, TimeUnit.MILLISECONDS);
             LOGGER.fine(String.format("Timeout set to %d minutes", timeoutMins));
 		}
         get.setConfig(configBuilder.build());
-		try {
-		    response = client.execute(get);
-			int respStatusCode = response.getStatusLine().getStatusCode();
-			if (respStatusCode == HttpStatus.SC_NOT_FOUND) {
-				throw new IOException("Url: " + this.url + " responds with http status code 404.");
-			}
-            HttpEntity entity = response.getEntity();
-			if (entity != null) {
-				parser = new JSONParser();
-				reader = new InputStreamReader(entity.getContent(), "utf-8");
-				try  {
-					parser.parse(reader, this);
-					hasReadHeader = true;
-				}
-				catch (ParseException pe) {
-					
-					if ("Unexpected character (<) at position 0.".equals(pe.toString())) {
-						throw new IOException("WebService seems to return HTML instead of Json.");
-					}
-					else {
-						LOGGER.warning(pe.toString());
-						throw new IOException("Json parser exception.");
-					}
-				}
-			}
+	    response = client.execute(get);
+		int respStatusCode = response.getCode();
+		if (respStatusCode == org.apache.hc.core5.http.HttpStatus.SC_NOT_FOUND) {
+			throw new IOException("Url: " + this.url + " responds with http status code 404.");
 		}
-		catch (SSLHandshakeException ex) {
-			if (ex.getMessage().startsWith("Unsupported curveId")) {
-				throw new IOException("The host " + get.getURI().getHost() + " doesn't respond correct on a HTTPS request.", ex);
+        HttpEntity entity = response.getEntity();
+		if (entity != null) {
+			parser = new JSONParser();
+			reader = new InputStreamReader(entity.getContent(), "utf-8");
+			try  {
+				parser.parse(reader, this);
+				hasReadHeader = true;
 			}
-			else {
-				LOGGER.warning(ex.toString());
-				throw ex;
+			catch (ParseException pe) {
+				
+				if ("Unexpected character (<) at position 0.".equals(pe.toString())) {
+					throw new IOException("WebService seems to return HTML instead of Json.");
+				}
+				else {
+					LOGGER.warning(pe.toString());
+					throw new IOException("Json parser exception.");
+				}
 			}
 		}
 	}

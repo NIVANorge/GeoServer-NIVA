@@ -4,16 +4,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.logging.Logger;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHeaders;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.geotools.util.logging.Logging;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -60,7 +60,7 @@ public class LoginController extends AquaWebService {
 	        post.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
 
 	        RequestConfig config = RequestConfig.custom()
-                                                .setCookieSpec(CookieSpecs.STANDARD)
+                                                .setCookieSpec(null)
                                                 .build();
 	        post.setConfig(config);
 
@@ -79,9 +79,6 @@ public class LoginController extends AquaWebService {
 	                throw new IOException("AquaMonitor server didn't provide any response.");
 	            }
 	        }
-	        finally {
-	            post.releaseConnection();
-	        } 
 		}
 	}
 	
