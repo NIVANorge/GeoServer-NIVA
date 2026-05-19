@@ -2,7 +2,7 @@ package niva.geoserver.security;
 
 import java.io.IOException;
 
-import javax.servlet.http.Cookie;
+import jakarta.servlet.http.Cookie;
 
 import niva.aquamonitor.data.ws.LoginController;
 import niva.aquamonitor.data.ws.UserCargo;
@@ -11,8 +11,7 @@ import org.geoserver.test.GeoServerTestSupport;
 import org.junit.Assert;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
-
-import com.mockrunner.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletRequest;
 
 
 
@@ -49,7 +48,7 @@ public class AquamonitorAuthenticationProviderTest extends GeoServerTestSupport 
 		UserCargo uc = loginServ.authenticateUser(TEST_USERNAME, TEST_PASSWORD);
 		
 		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.addCookie(new Cookie("aqua_key", uc.token));
+		request.setCookies(new Cookie("aqua_key", uc.token));
 		
 		Authentication res = authProvider.authenticate(new TestingAuthenticationToken("dummy", "yyy"), request);
 		

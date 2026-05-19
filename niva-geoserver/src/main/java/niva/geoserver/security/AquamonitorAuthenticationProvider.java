@@ -7,8 +7,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.logging.Logger;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 import org.springframework.security.authentication.AuthenticationServiceException;

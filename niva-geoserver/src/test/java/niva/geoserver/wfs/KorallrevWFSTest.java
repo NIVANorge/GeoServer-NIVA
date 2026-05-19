@@ -24,7 +24,7 @@ import niva.geoserver.data.NivaTestSupport;
  */
 public class KorallrevWFSTest extends NivaTestSupport {
 	
-	private static final String WFS_URL = "https://wfs.geonorge.no/skwms1/wfs.korallrev?";
+	private static final String WFS_URL = "https://wfs.geonorge.no/skwms1/wfs.korallrev";
 	@Before
 	public void setupKorallrevWFSProxy() throws Exception {
 		System.setProperty("org.geotools.http.logging", "TRUE");
