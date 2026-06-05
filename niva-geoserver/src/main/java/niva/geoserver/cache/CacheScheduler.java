@@ -2,9 +2,7 @@ package niva.geoserver.cache;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Date;
 import java.util.logging.Logger;
-
 import org.geoserver.catalog.Catalog;
 import org.geotools.util.logging.Logging;
 import org.springframework.scheduling.TaskScheduler;
@@ -35,7 +33,7 @@ public class CacheScheduler {
 		LOGGER.info("Initializing CacheScheduler");
 		this.catalog = catalog;
 		this.scheduler = scheduler;
-		Date startTime = Date.from(Instant.now().plus(Duration.ofMinutes(INITIAL_DELAY_REFRESH_MINUTES)));
+		Instant startTime = Instant.now().plus(Duration.ofMinutes(INITIAL_DELAY_REFRESH_MINUTES));
 		this.scheduler.schedule(this::startScheduler, startTime);
 	}
 	

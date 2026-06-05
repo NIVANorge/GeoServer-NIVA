@@ -97,7 +97,7 @@ public class CacheDataStore implements DataStore {
 	}
 	
 	public void initScheduledRefresh(TaskScheduler taskScheduler) {
-		ScheduledFuture<?> future = taskScheduler.scheduleAtFixedRate(new RefreshCacheDataStore(), Duration.ofMinutes(intervalMinutes).toMillis());
+		ScheduledFuture<?> future = taskScheduler.scheduleAtFixedRate(new RefreshCacheDataStore(), Duration.ofMinutes(intervalMinutes));
 		LOGGER.info("Init CacheDataStore(" + getInfo().getTitle() + ") will start refresh each " + intervalMinutes + " minutes.");
 		scheduledRefresh = future;
 	}
