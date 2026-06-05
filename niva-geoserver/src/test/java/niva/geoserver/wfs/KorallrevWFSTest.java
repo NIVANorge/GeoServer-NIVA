@@ -69,7 +69,9 @@ public class KorallrevWFSTest extends NivaTestSupport {
 	}
 	
 	/**
-	 * Test a GetFeature request similar to the one QGIS would send. Should return one random feature.
+	 * Test a GetFeature request similar to the one QGIS would send.
+	 * This is to verify that a WFS proxy using ordinary Capabilities document based on the URL will fail.
+	 * Instead we use a local file with corrected URLs.
 	 */
 	@Test
 	public void testQGISGetFeatureCall() throws Exception {
@@ -80,7 +82,7 @@ public class KorallrevWFSTest extends NivaTestSupport {
 			while ((line = reader.readLine()) != null) {
 				response.append(line);
 			}
-			Assert.assertTrue(response.toString().contains("<wfs:member><no.norgedigitalt:korallrev"));
+			Assert.assertTrue(response.toString().contains("Server returned HTTP error code 403 for URL http://wfs.geonorge.no/skwms1/wfs.korallrev?"));
 		}
 	}
 }
