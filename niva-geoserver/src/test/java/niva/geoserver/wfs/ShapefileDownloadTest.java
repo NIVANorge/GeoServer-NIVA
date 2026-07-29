@@ -12,9 +12,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -43,9 +41,8 @@ import niva.geoserver.data.NivaTestSupport;
 public class ShapefileDownloadTest extends NivaTestSupport {
     
  
-    private final static String EXPECTED_ARCMAP_PROJ = "GEOGCS[\"GCS_WGS_1984\",DATUM[\"D_WGS_1984\","
-            + "SPHEROID[\"WGS_1984\",6378137.0,298.257223563]]," + "PRIMEM[\"Greenwich\",0.0],"
-            + "UNIT[\"Degree\",0.0174532925199433]]";
+    private final static String EXPECTED_ARCMAP_PROJ = """
+    		GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]""";
 
     /**
      * 
@@ -71,8 +68,10 @@ public class ShapefileDownloadTest extends NivaTestSupport {
         final String xml = """
         		           <wfs:GetFeature service="WFS" version="2.0.0" xmlns:wfs="http://www.opengis.net/wfs/2.0"
                 					xmlns:fes="http://www.opengis.net/fes/2.0"
-        							outputFormat="shape-zip">
-                				<wfs:Query typeNames="no.niva.aquamonitor:Intern_download_stations">
+        							outputFormat="shape-zip"
+        							formatOptions="PRJFILEFORMAT:ESRI;SHAPEFILE:download.shp">
+        						<wfs:Query typeNames="no.niva.aquamonitor:Intern_download_stations"
+        						           srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
                 					<fes:Filter>
                 						<fes:PropertyIsEqualTo>
         		      						<fes:ValueReference>STATION_ID</fes:ValueReference>
@@ -83,10 +82,8 @@ public class ShapefileDownloadTest extends NivaTestSupport {
         					</wfs:GetFeature>
         					""";
         
-        final String path = "wfs?format_options=" + URLDecoder.decode("PRJFILEFORMAT:ESRI;SHAPEFILE:download.shp", StandardCharsets.UTF_8);
-        
         File temp = null;
-        try (InputStream is = getBinaryInputStream(postAsServletResponse(path, xml))){
+        try (InputStream is = getBinaryInputStream(postAsServletResponse("wfs", xml))){
 
             temp = saveUnwrapZip("downloaded", is);
             checkFileExists("download.shp", temp);
@@ -97,7 +94,10 @@ public class ShapefileDownloadTest extends NivaTestSupport {
 
             final URL downloadFileURL = URLs.extendUrl(URLs.fileToUrl(temp), "download.shp");
 
-            try (SimpleFeatureIterator iter = new ShapefileDataStore(downloadFileURL)
+
+            ShapefileDataStore shpDataStore = new ShapefileDataStore(downloadFileURL);
+            
+            try (SimpleFeatureIterator iter = shpDataStore
                                                 .getFeatureSource()
                                                 .getFeatures()
                                                 .features()){
@@ -124,21 +124,18 @@ public class ShapefileDownloadTest extends NivaTestSupport {
     
     
     private File saveUnwrapZip(String temp, InputStream in) throws IOException {
-        ZipInputStream zis = new ZipInputStream(in);
-        ZipEntry entry = null;
-
         File tempFolder = createTempFolder(temp);
-
-        while ((entry = zis.getNextEntry()) != null) {
-            final String name = entry.getName();
-            String outName = tempFolder.getAbsolutePath() + File.separatorChar + name;
-            
-            FileOutputStream outFile = new FileOutputStream(outName);
-            copyStream(zis, outFile);
-            outFile.close();
-            zis.closeEntry();
+        try (ZipInputStream zis = new ZipInputStream(in)) {
+	        ZipEntry entry = null;
+	        while ((entry = zis.getNextEntry()) != null) {
+	            final String name = entry.getName();
+	            String outName = tempFolder.getAbsolutePath() + File.separatorChar + name;
+	            try (FileOutputStream outFile = new FileOutputStream(outName)) {
+	            	copyStream(zis, outFile);
+	            }
+	            zis.closeEntry();
+	        }
         }
-        zis.close();
 
         return tempFolder;
     }

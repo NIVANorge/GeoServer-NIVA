@@ -1,12 +1,14 @@
 package niva.geoserver.data;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Map;
-
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
@@ -20,6 +22,9 @@ import org.geoserver.catalog.impl.LayerInfoImpl;
 import org.geoserver.data.test.SystemTestData;
 import org.geoserver.test.GeoServerSystemTestSupport;
 import org.geotools.api.referencing.FactoryException;
+import org.geotools.util.logging.Logging;
+import org.junit.Assert;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 /**
  * Base class for NIVA related Geoserver setup.
@@ -28,6 +33,8 @@ import org.geotools.api.referencing.FactoryException;
  *
  */
 public class NivaTestSupport extends GeoServerSystemTestSupport {
+	
+	private static final Logger LOGGER = Logging.getLogger(NivaTestSupport.class);
     
     private static final String HOST_ADDRESS_KEY = "AQUAMONITOR_HOST_ADDRESS";
     
@@ -41,10 +48,11 @@ public class NivaTestSupport extends GeoServerSystemTestSupport {
 	
 	@Override
 	protected void onSetUp(SystemTestData testData) throws Exception {
+		
 		Catalog catalog = getCatalog();
 		testData.addWorkspace("no.niva.aquamonitor", "http://www.aquamonitor.no/", catalog);
 		testData.addWorkspace("no.norgedigitalt", "http://www.norgedigitalt.no", catalog);
-		
+        
 		File dataDir = new File(testData.getDataDirectoryRoot(), "data");
         if (!dataDir.exists()) {
         	dataDir.mkdir();
@@ -52,6 +60,19 @@ public class NivaTestSupport extends GeoServerSystemTestSupport {
         
         setupESRIPropertyFile();
 	}
+	
+    @Override
+    protected BufferedImage getAsImage(String path, String mime) throws Exception {
+        MockHttpServletResponse resp = getAsServletResponse(path);
+        if (mime.equals(resp.getContentType())) {
+        	try (InputStream is = getBinaryInputStream(resp)) {
+                return ImageIO.read(is);
+            }
+        }
+        LOGGER.info(String.format("Response content: %s", resp.getContentAsString()));
+        Assert.fail(String.format("Expected MIME type %s but got %s", mime, resp.getContentType()));
+        return null;
+    }
 	
 	
 	
@@ -113,7 +134,7 @@ public class NivaTestSupport extends GeoServerSystemTestSupport {
 		resourceCat.setNativeName(nativeName);
 		resourceCat.setNativeCRS(org.geotools.referencing.CRS.decode(srs));
 		resourceCat.setSRS(srs);
-		resourceCat.setProjectionPolicy(ProjectionPolicy.REPROJECT_TO_DECLARED);
+		resourceCat.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
 		resourceCat.setEnabled(true);
 		
 		catalog.add(resourceCat);

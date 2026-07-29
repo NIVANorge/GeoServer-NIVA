@@ -1,9 +1,8 @@
 package niva.geoserver.gwc;
 
 import static org.junit.Assert.assertNotNull;
-
-import java.awt.image.BufferedImage;
 import java.io.InputStream;
+import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerInfo;
@@ -16,7 +15,9 @@ import org.geoserver.data.test.SystemTestData;
 import org.geotools.test.TestData;
 import niva.geoserver.data.NivaTestSupport;
 import niva.geotools.referencing.CRS;
+
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -26,21 +27,20 @@ import org.springframework.mock.web.MockHttpServletResponse;
  * @author Roar Brænden, NIVA
  *
  */
-public class NorgeDigitaltWMSLayerTest extends NivaTestSupport {
-    
+public class NorgeDigitaltWMSLayerTest extends NivaTestSupport {    
 
 	@Override
 	protected void onSetUp(SystemTestData testData) throws Exception {
 		super.onSetUp(testData);
 		final Catalog catalog = getCatalog();
         	
-		WMSStoreInfoImpl store = createWMSStore(catalog, "Toporaster",
-		        "https://wms.geonorge.no/skwms1/wms.toporaster4?service=wms&version=1.3.0");
-		createWMSLayer(catalog, store, "toporaster");
+		WMSStoreInfoImpl store = createWMSStore(catalog, "Kartdata",
+		        "https://wms.geonorge.no/skwms1/wms.kartdata?");
+		createWMSLayer(catalog, store, "kartdata");
 		
-		WMSStoreInfoImpl flyfotoStore = createWMSStore(catalog, "NorgeIBilder",
-		        "https://wms.geonorge.no/skwms1/wms.nib?service=WMS&request=GetCapabilities&version=1.1.1");
-		createWMSLayer(catalog, flyfotoStore, "ortofoto");
+		//WMSStoreInfoImpl flyfotoStore = createWMSStore(catalog, "NorgeIBilder",
+		//        "https://wms.geonorge.no/skwms1/wms.nib?");
+		//createWMSLayer(catalog, flyfotoStore, "ortofoto");
 		
 	}
 	
@@ -89,18 +89,18 @@ public class NorgeDigitaltWMSLayerTest extends NivaTestSupport {
 	 */
 	@Test
 	public void testTopokartWMS() throws Exception {
-		BufferedImage bi = this.getAsImage("wms?service=WMS&version=1.1.0&request=GetMap&layers=no.norgedigitalt:toporaster&styles=&bbox=-127998.0,6377920.0,1145510.0,7976800.0&width=611&height=768&srs=EPSG:32633&format=image%2Fpng", "image/png");
+		BufferedImage bi = this.getAsImage("wms?service=WMS&version=1.3.0&request=GetMap&layers=no.norgedigitalt:kartdata&styles=&bbox=-127998.0,6377920.0,1145510.0,7976800.0&width=611&height=768&srs=EPSG:32633&format=image%2Fpng", "image/png");
 		assertNotNull(bi);
 		
 		ImageIO.write(bi, "png", TestData.temp(this, "topo.png"));
 
 	}
 	
-	/** Fetching an image from NIB. Accepting a ServiceException related to wrong TCP/IP.
-	 * Should work inside NIVAs IP-range */
+	/** Fetching an image from NIB. Service was renewed in 2026. Functionality to use not implemented. */
+	@Ignore
 	@Test
 	public void testOrtofotoWMS() throws Exception {
-		String path = "wms?service=WMS&version=1.1.0&request=GetMap&layers=no.norgedigitalt:ortofoto&bbox=-1038347.839073,949803.942783,586102.169247,3371048.853752&width=515&height=768&srs=EPSG:32633&styles=&format=image%2Fpng";
+		String path = "wms?service=WMS&version=1.3.0&request=GetMap&layers=no.norgedigitalt:ortofoto&bbox=-1038347.839073,949803.942783,586102.169247,3371048.853752&width=515&height=768&srs=EPSG:32633&styles=&format=image%2Fpng";
         MockHttpServletResponse resp = getAsServletResponse(path); 
         if (resp.getContentType().equals("image/png")) {
         	BufferedImage bi;

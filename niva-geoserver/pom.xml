@@ -4,14 +4,14 @@
  <modelVersion>4.0.0</modelVersion>
  <groupId>niva.geoserver</groupId>
  <artifactId>niva-geoserver</artifactId>
- <version>13.0.0</version>
+ <version>13.1.0</version>
  <packaging>jar</packaging>
  <name>Niva GeoServer</name>
  <properties>
-   <gt.version>35.1-NIVA</gt.version>
+   <gt.version>35.4-NIVA</gt.version>
    <gs.version>3.0.0-NIVA</gs.version>
-   <aqm.version>12.0.0</aqm.version>
-   <core.version>4.1.0</core.version>
+   <aqm.version>12.1.0</aqm.version>
+   <core.version>4.4.0</core.version>
    <spring.version>7.0.7</spring.version>
    <spring.security.version>7.0.5</spring.security.version>
    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,7 +20,7 @@
     <dependency>
     	<groupId>org.jfree</groupId>
     	<artifactId>jfreechart</artifactId>
-    	<version>1.5.3</version>
+    	<version>1.5.6</version>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
@@ -38,6 +38,48 @@
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
       <version>6.1.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.activation</groupId>
+      <artifactId>jakarta.activation-api</artifactId>
+      <version>2.1.4</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+      <version>4.0.5</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-core</artifactId>
+      <version>4.0.4</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+      <version>4.0.4</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>txw2</artifactId>
+      <version>4.0.4</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20231013</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.18</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -155,6 +197,12 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.eclipse.imagen</groupId>
+      <artifactId>imagen-core</artifactId>
+      <version>0.9.2</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-core</artifactId>
       <version>10.8.0</version>
@@ -209,11 +257,41 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-		<groupId>org.apache.commons</groupId>
-		<artifactId>commons-lang3</artifactId>
-		<version>3.19.0</version>
-		<scope>provided</scope>
-	</dependency>
+  		<groupId>org.apache.commons</groupId>
+  		<artifactId>commons-lang3</artifactId>
+  		<version>3.19.0</version>
+  		<scope>provided</scope>
+  	</dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <artifactId>httpclient5</artifactId>
+      <version>5.4.4</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents.core5</groupId>
+      <artifactId>httpcore5</artifactId>
+      <version>5.3.6</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents.core5</groupId>
+      <artifactId>httpcore5-h2</artifactId>
+      <version>5.3.4</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>tools.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>3.1.2</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>tools.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>3.1.2</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
 	  <groupId>niva.geotools</groupId>
   	  <artifactId>niva-core</artifactId>
@@ -236,6 +314,10 @@
   	    <!-- Exclude common libraries in GeoServer -->
   	    <exclusion>
   	      <groupId>commons-logging</groupId>
+  	      <artifactId>*</artifactId>
+  	    </exclusion>
+  	    <exclusion>
+  	      <groupId>commons-cli</groupId>
   	      <artifactId>*</artifactId>
   	    </exclusion>
   	    <exclusion>
@@ -419,6 +501,12 @@
       <classifier>tests</classifier>
     </dependency>
     <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>gs-wms1_3</artifactId>
+      <version>${gs.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.geoserver.extension</groupId>
       <artifactId>gs-wps-core</artifactId>
       <version>${gs.version}</version>
@@ -442,12 +530,6 @@
       <groupId>org.geotools</groupId>
       <artifactId>gt-property</artifactId>
       <version>${gt.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-jdk14</artifactId>
-      <version>1.7.36</version>
       <scope>test</scope>
     </dependency>
  </dependencies>
@@ -489,6 +571,30 @@
 				  </configuration>
 			  </execution>
 		  </executions>
+		  <configuration>
+			  <!-- These are declared as 'provided' to prevent copying to lib,
+			       because they already exist in the GeoServer WAR at runtime -->
+			  <ignoredUnusedDeclaredDependencies>
+          <ignoredUnusedDeclaredDependency>jakarta.activation:jakarta.activation-api</ignoredUnusedDeclaredDependency>
+          <ignoredUnusedDeclaredDependency>jakarta.xml.bind:jakarta.xml.bind-api</ignoredUnusedDeclaredDependency>
+          <ignoredUnusedDeclaredDependency>org.glassfish.jaxb:jaxb-core</ignoredUnusedDeclaredDependency>
+          <ignoredUnusedDeclaredDependency>org.glassfish.jaxb:jaxb-runtime</ignoredUnusedDeclaredDependency>
+          <ignoredUnusedDeclaredDependency>org.glassfish.jaxb:txw2</ignoredUnusedDeclaredDependency>
+          <ignoredUnusedDeclaredDependency>org.json:json:jar:20231013</ignoredUnusedDeclaredDependency>
+          <ignoredUnusedDeclaredDependency>org.slf4j:slf4j-api</ignoredUnusedDeclaredDependency>
+          <ignoredUnusedDeclaredDependency>org.geoserver:gs-restconfig</ignoredUnusedDeclaredDependency>
+          <ignoredUnusedDeclaredDependency>org.eclipse.imagen:imagen-core</ignoredUnusedDeclaredDependency>
+          <ignoredUnusedDeclaredDependency>org.springframework:spring-core</ignoredUnusedDeclaredDependency>
+          <ignoredUnusedDeclaredDependency>org.springframework:spring-aop</ignoredUnusedDeclaredDependency>
+          <ignoredUnusedDeclaredDependency>org.springframework:spring-expression</ignoredUnusedDeclaredDependency>
+          <ignoredUnusedDeclaredDependency>com.thoughtworks.xstream:xstream</ignoredUnusedDeclaredDependency>
+          <ignoredUnusedDeclaredDependency>org.apache.httpcomponents.client5:httpclient5</ignoredUnusedDeclaredDependency>
+          <ignoredUnusedDeclaredDependency>org.apache.httpcomponents.core5:httpcore5</ignoredUnusedDeclaredDependency>
+          <ignoredUnusedDeclaredDependency>org.apache.httpcomponents.core5:httpcore5-h2</ignoredUnusedDeclaredDependency>
+          <ignoredUnusedDeclaredDependency>tools.jackson.core:jackson-core</ignoredUnusedDeclaredDependency>
+          <ignoredUnusedDeclaredDependency>tools.jackson.core:jackson-databind</ignoredUnusedDeclaredDependency>
+			  </ignoredUnusedDeclaredDependencies>
+		  </configuration>
 	  </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -497,6 +603,9 @@
         <configuration>
   			<release>17</release>
             <encoding>UTF-8</encoding>
+            <compilerArgs>
+              <arg>-proc:full</arg>
+            </compilerArgs>
   		</configuration>
       </plugin>
       <plugin>

@@ -16,6 +16,8 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.impl.DataStoreInfoImpl;
 import org.geotools.test.TestData;
+import org.geotools.util.NullEntityResolver;
+import org.geotools.util.factory.Hints;
 import org.geotools.util.logging.Logging;
 import org.junit.After;
 import org.junit.Assert;
@@ -35,7 +37,7 @@ import niva.geoserver.data.NivaTestSupport;
  *
  */
 public class CloudWFSTest extends NivaTestSupport {
-	
+
 
 	private static Logger LOGGER = Logging.getLogger(CloudWFSTest.class);
 	
@@ -45,7 +47,8 @@ public class CloudWFSTest extends NivaTestSupport {
 	
 	@Before
 	public void setupInternWFSProxy() throws Exception {
-		Logging.getLogger("org.geotools.http").setLevel(Level.FINE);
+		System.setProperty("org.geotools.http.logging",  "True");
+		Logging.getLogger("org.geotools.http").setLevel(Level.FINEST);
 		Logging.getLogger("org.geotools.data.wfs").setLevel(Level.FINE);
 		Assume.assumeNotNull(TEST_USER, TEST_PWD);
 		Catalog catalog = getCatalog();
@@ -106,12 +109,30 @@ public class CloudWFSTest extends NivaTestSupport {
 		}
 	}
 	
+	/**
+	 * Fetches a map of the Intern_wfs_stations layer from AquaMonitor Geoserver using WMS 1.3.0 and checks that the pixel at the center of the image is red (255, 0, 0, 255).
+	 * 
+	 * Should avoid using DevModeEntityResolver for this test, as it causes issues with the SimpleFeatureBinding parsing of the WFS response.
+	 */
 	@Test
 	public void testWMS_1_3_0_GetMapFullExtentNECoordinates() throws Exception {
-		String path = "no.niva.aquamonitor/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&STYLES&LAYERS=Intern_wfs_stations&SRS=EPSG%3A4326&WIDTH=506&HEIGHT=768&BBOX=37.79296875%2C-24.08203125%2C82.265625%2C43.41796875";
-		BufferedImage img = this.getAsImage(path, "image/png");
-		ImageIO.write(img, "png", new File(TestData.file(this, null), "intern_stations.png"));
-		int[] pixel = img.getData().getPixel(253, 384, new int[4]);
-		Assert.assertArrayEquals(new int[] {255, 0, 0, 255}, pixel);
+    	Object prior = null;
+    	try {
+			prior = Hints.getSystemDefault(Hints.ENTITY_RESOLVER);
+			Hints.putSystemDefault(Hints.ENTITY_RESOLVER, NullEntityResolver.INSTANCE);
+			
+			String path = "no.niva.aquamonitor/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&STYLES=&LAYERS=Intern_wfs_stations&SRS=EPSG%3A4326&WIDTH=506&HEIGHT=768&BBOX=37.79296875%2C-24.08203125%2C82.265625%2C43.41796875";
+			BufferedImage img = this.getAsImage(path, "image/png");
+			ImageIO.write(img, "png", new File(TestData.file(this, null), "intern_stations.png"));
+			int[] pixel = img.getData().getPixel(253, 384, new int[4]);
+			Assert.assertArrayEquals(new int[] {255, 0, 0, 255}, pixel);
+			
+		} finally {
+			if (prior != null) {
+				Hints.putSystemDefault(Hints.ENTITY_RESOLVER, prior);
+			} else {
+				Hints.removeSystemDefault(Hints.ENTITY_RESOLVER);
+			}
+		}
 	}
 }
