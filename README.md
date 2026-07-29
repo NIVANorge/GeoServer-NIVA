@@ -17,19 +17,12 @@ At the moment we're running:
 
 | Software      | Version       |
 |---------------|---------------|
-| OpenJDK       | 11.0.26       |
-| Apache Tomcat | 9.0.98        |
+| OpenJDK       | 21.0.11       |
+| Apache Tomcat | 11.0.24        |
 
 Tomcat should have some "Java Options" for Geoserver to function properly.
 ```
--Dcatalina.home=C:\Program Files\Apache Software Foundation\Tomcat 9.0
--Dcatalina.base=C:\Program Files\Apache Software Foundation\Tomcat 9.0
--Djava.io.tmpdir=C:\Program Files\Apache Software Foundation\Tomcat 9.0\temp
--Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager
--Djava.util.logging.config.file=C:\Program Files\Apache Software Foundation\Tomcat 9.0\conf\logging.properties
--XX:ParallelGCThreads=4
 -Dfile.encoding=UTF-8
--DGEOSERVER_CSRF_WHITELIST=test-aquamonitor.niva.no
 -DAQUAMONITOR_HOST_ADDRESS=https://test-aquamonitor.niva.no/
 -DAQUAMONITOR_SECRET_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 -Djava.locale.providers=COMPAT,CLDR
