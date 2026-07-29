@@ -12,11 +12,11 @@ import org.geotools.console.Option;
 import org.geotools.http.HTTPClient;
 import org.geotools.http.HTTPClientFinder;
 import org.geotools.http.HTTPResponse;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.JsonToken;
+import tools.jackson.databind.MapperFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 
 /**
@@ -120,7 +120,7 @@ public class CreateAquaMonitorSLD extends CommandLine {
     private Styles readStyles() throws IOException {
         HTTPResponse response = client.get(stylesUrl);
         try {
-            JsonParser parser = mapper.getFactory().createParser(response.getResponseStream());
+            JsonParser parser = mapper.createParser(response.getResponseStream());
             if (parser.nextToken() != JsonToken.START_OBJECT) {
                 throw new IllegalStateException("Response from dataTypes should be an array of strings.");
             }

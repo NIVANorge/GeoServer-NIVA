@@ -4,13 +4,13 @@
 
   <groupId>niva.geotools</groupId>
   <artifactId>aquamonitor-tools</artifactId>
-  <version>0.1.0</version>
+  <version>0.2.0</version>
   <packaging>jar</packaging>
 
   <name>AquaMonitor tools</name>
 
   <properties>
-    <gt.version>35.0-NIVA</gt.version>
+    <gt.version>35.4-NIVA</gt.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -18,7 +18,7 @@
     <dependency>
     	<groupId>niva.geoserver</groupId>
     	<artifactId>niva-geoserver</artifactId>
-    	<version>12.7.0</version>
+    	<version>13.1.0</version>
     	<exclusions>
     		<exclusion>
     			<groupId>org.geoserver</groupId>
@@ -96,14 +96,14 @@
     	</exclusions>
     </dependency>
     <dependency>
-	   <groupId>com.fasterxml.jackson.core</groupId>
+	   <groupId>tools.jackson.core</groupId>
 	   <artifactId>jackson-core</artifactId>
-	   <version>2.21.2</version>
+	   <version>3.1.2</version>
 	</dependency>
 	<dependency>
-	   <groupId>com.fasterxml.jackson.core</groupId>
+	   <groupId>tools.jackson.core</groupId>
 	   <artifactId>jackson-databind</artifactId>
-	   <version>2.21.2</version>
+	   <version>3.1.2</version>
 	</dependency>
   </dependencies>
   <build>
@@ -113,10 +113,10 @@
   			<version>3.15.0</version>
   			<configuration>
   				<release>17</release>
-                <encoding>UTF-8</encoding>
-				<compilerArgs>
-					<arg>-proc:none</arg>
-				</compilerArgs>
+          <encoding>UTF-8</encoding>
+				  <compilerArgs>
+					  <arg>-proc:none</arg>
+				  </compilerArgs>
   			</configuration>
   		</plugin>
   		<plugin>
