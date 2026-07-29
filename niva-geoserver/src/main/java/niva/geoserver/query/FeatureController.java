@@ -55,12 +55,12 @@ public class FeatureController extends QueryBaseController {
 	
 	@SuppressWarnings("rawtypes")
 	@GetMapping
-	public Map get(@PathVariable String workspace,
-									@PathVariable String layer,
-									@PathVariable String epsg,
-									@PathVariable Double north,
-									@PathVariable Double east,
-									@PathVariable Double dist) {
+	public Map get(@PathVariable("workspace") String workspace,
+									@PathVariable("layer") String layer,
+									@PathVariable("epsg") String epsg,
+									@PathVariable("north") Double north,
+									@PathVariable("east") Double east,
+									@PathVariable("dist") Double dist) {
 		
 		final SimpleFeatureSource source = this.extractSourceFromPathVariable(workspace, layer);
 		final CoordinateReferenceSystem targetCrs = this.extractCRSFromPathVariable(epsg);

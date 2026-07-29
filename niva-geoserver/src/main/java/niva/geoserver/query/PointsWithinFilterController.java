@@ -55,11 +55,11 @@ public class PointsWithinFilterController extends QueryBaseController {
 	 *  Uses the union of the geometries to make another call for workspace&layer*/
 	@SuppressWarnings("rawtypes")
 	@GetMapping
-	public Map get(@PathVariable String workspace,
-									@PathVariable String layer,
-									@PathVariable String workspace2,
-									@PathVariable String layer2,
-									@PathVariable String filter) {
+	public Map get(@PathVariable("workspace") String workspace,
+									@PathVariable("layer") String layer,
+									@PathVariable("workspace2") String workspace2,
+									@PathVariable("layer2") String layer2,
+									@PathVariable("filter") String filter) {
 		
 		final SimpleFeatureSource pointSource = this.extractSourceFromPathVariable(workspace, layer);
 		final SimpleFeatureSource polySource = this.extractSourceFromPathVariable(workspace2, layer2);

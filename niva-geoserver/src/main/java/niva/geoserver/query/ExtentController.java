@@ -43,7 +43,7 @@ public class ExtentController extends QueryBaseController {
 
 	@SuppressWarnings("rawtypes")
 	@GetMapping()
-	public Map get(@PathVariable String workspace, @PathVariable String layer) {
+	public Map get(@PathVariable("workspace") String workspace, @PathVariable("layer") String layer) {
 		SimpleFeatureSource source = this.extractSourceFromPathVariable(workspace, layer);
 		try {
 			ReferencedEnvelope env = source.getBounds();

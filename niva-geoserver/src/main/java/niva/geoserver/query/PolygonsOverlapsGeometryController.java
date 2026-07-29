@@ -52,10 +52,10 @@ public class PolygonsOverlapsGeometryController extends QueryBaseController {
 
 	@SuppressWarnings("rawtypes")
 	@GetMapping
-	public Map get(@PathVariable String workspace,
-									 @PathVariable String layer,
-									 @PathVariable String epsg,
-									 @PathVariable String geometry) {
+	public Map get(@PathVariable("workspace") String workspace,
+									 @PathVariable("layer") String layer,
+									 @PathVariable("epsg") String epsg,
+									 @PathVariable("geometry") String geometry) {
 		
 		final SimpleFeatureSource source = this.extractSourceFromPathVariable(workspace, layer);
 		final CoordinateReferenceSystem targetCrs = this.extractCRSFromPathVariable(epsg);

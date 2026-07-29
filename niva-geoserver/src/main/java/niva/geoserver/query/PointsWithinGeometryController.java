@@ -65,10 +65,10 @@ public class PointsWithinGeometryController extends QueryBaseController {
 
 	@SuppressWarnings("rawtypes")
 	@GetMapping(path = QueryBaseController.QUERY_ROOT_PATH + "/geometry/{epsg}_{geometry}/features.json")
-	public Map get(@PathVariable String workspace,
-									@PathVariable String layer,
-									@PathVariable String epsg,
-									@PathVariable String geometry) {
+	public Map get(@PathVariable("workspace") String workspace,
+									@PathVariable("layer") String layer,
+									@PathVariable("epsg") String epsg,
+									@PathVariable("geometry") String geometry) {
 		LOGGER.fine("Query a geometry: " + geometry);
 		
 		SimpleFeatureSource source = this.extractSourceFromPathVariable(workspace, layer);
@@ -94,9 +94,9 @@ public class PointsWithinGeometryController extends QueryBaseController {
 
     @SuppressWarnings("rawtypes")
     @PostMapping(path = QueryBaseController.QUERY_ROOT_PATH + "/geometry/{epsg}/features.json")
-    public Map post(@PathVariable String workspace,
-                                    @PathVariable String layer,
-                                    @PathVariable String epsg,                                   
+    public Map post(@PathVariable("workspace") String workspace,
+                                    @PathVariable("layer") String layer,
+                                    @PathVariable("epsg") String epsg,                                   
                                     @RequestBody String geometry) {
         LOGGER.fine("Query a geometry.");
         
