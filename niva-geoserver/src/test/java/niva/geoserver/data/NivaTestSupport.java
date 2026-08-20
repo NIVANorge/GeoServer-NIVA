@@ -52,6 +52,7 @@ public class NivaTestSupport extends GeoServerSystemTestSupport {
 		Catalog catalog = getCatalog();
 		testData.addWorkspace("no.niva.aquamonitor", "http://www.aquamonitor.no/", catalog);
 		testData.addWorkspace("no.norgedigitalt", "http://www.norgedigitalt.no", catalog);
+		testData.addWorkspace("geonorge", "http://geonorge.no/", catalog);
         
 		File dataDir = new File(testData.getDataDirectoryRoot(), "data");
         if (!dataDir.exists()) {
