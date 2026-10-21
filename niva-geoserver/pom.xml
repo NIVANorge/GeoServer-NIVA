@@ -4,14 +4,14 @@
  <modelVersion>4.0.0</modelVersion>
  <groupId>niva.geoserver</groupId>
  <artifactId>niva-geoserver</artifactId>
- <version>13.4.0</version>
+ <version>13.5.0</version>
  <packaging>jar</packaging>
  <name>Niva GeoServer</name>
  <properties>
-   <gt.version>35.5-NIVA</gt.version>
-   <gs.version>3.0.4-NIVA</gs.version>
-   <aqm.version>12.2.0</aqm.version>
-   <core.version>4.6.1</core.version>
+   <gt.version>35.6-NIVA</gt.version>
+   <gs.version>3.0.6-NIVA</gs.version>
+   <aqm.version>12.3.0</aqm.version>
+   <core.version>4.7.0</core.version>
    <spring.version>7.0.9</spring.version>
    <spring.security.version>7.1.1</spring.security.version>
    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -199,7 +199,7 @@
     <dependency>
       <groupId>org.eclipse.imagen</groupId>
       <artifactId>imagen-core</artifactId>
-      <version>0.9.2</version>
+      <version>0.9.3</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -283,13 +283,13 @@
     <dependency>
       <groupId>tools.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-      <version>3.2.0</version>
+      <version>3.2.3</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>tools.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>3.2.0</version>
+      <version>3.2.3</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -484,7 +484,7 @@
     <dependency>
 		<groupId>com.google.guava</groupId>
 		<artifactId>guava</artifactId>
-		<version>33.4.6-jre</version>
+		<version>33.5.0-jre</version>
 		<scope>test</scope>
 	</dependency>
    <dependency>
