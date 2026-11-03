@@ -281,14 +281,19 @@ public class CacheFeatureStore implements SimpleFeatureStore {
 			LOGGER.fine(this.name + " is cached.");
 		    return true;
 		}
-		for (String typeName : dataStore.getCacheStore().getTypeNames()) {
-			if (dataStore.getCacheTypeName(name.getLocalPart()).equals(typeName)) {
-				LOGGER.fine(this.name + " is cached.");
-				return checkSchema();
+		try {
+			for (String typeName : dataStore.getCacheStore().getTypeNames()) {
+				if (dataStore.getCacheTypeName(name.getLocalPart()).equals(typeName)) {
+					LOGGER.fine(this.name + " is cached.");
+					return checkSchema();
+				}
 			}
+			LOGGER.fine(this.name + " isn't cached.");
+			return false;
+		} catch (Exception e) {
+			throw new IOException("Error checking if cache exists for " + this.name, e);
 		}
-		LOGGER.fine(this.name + " isn't cached.");
-		return false;
+
 	}
 
 	/**
